@@ -1,0 +1,3 @@
+[submodule "libs/hi-core"]
+	path = libs/hi-core
+	url = https://github.com/hispindia/hi-android-core.git
