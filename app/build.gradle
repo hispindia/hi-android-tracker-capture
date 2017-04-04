@@ -30,10 +30,10 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
-            def APK_NAME = "hitracker-" + variant.productFlavors[0].name + ".apk"
+            def fileName = "hitracker-" + variant.productFlavors[0].name + ".apk"
             output.outputFile = new File(
                     output.outputFile.parent,
-                    output.outputFile.name.replace(output.outputFile.name, APK_NAME))
+                    output.outputFile.name.replace(output.outputFile.name, fileName))
         }
     }
 
@@ -107,7 +107,6 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
 
-    buildToolsVersion '25.0.0'
 }
 
 apt {
@@ -145,5 +144,23 @@ dependencies {
     compile dependency.supportv4
     compile dependency.recyclerviewv7
 
+    //Dependencies Injection
+    apt dependency.androidAnnotationCompiler
+    compile dependency.androidAnnotation
+    //Dagger
+    apt dependency.daggerCompiler
+    compile dependency.dagger
+    provided dependency.generatedAnnotation
+
+    //Adapters
+    compile dependency.baseAdapter
+    //UI Validations
+    compile dependency.saripaar
+    //Fonts
+    compile dependency.calligraphy
+    //Messages aka EventBus
+    compile dependency.eventBus
+    //Permission
+    compile dependency.npermission
 
 }

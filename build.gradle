@@ -30,8 +30,7 @@ buildscript {
         calligraphyVersion = '2.2.0'
         jodaVersion = '2.9.3'
         hawkVersion = '1.23'
-        permissionsDispatcherVersion = '2.1.3'
-        androidAnnotationsPermissionsVersion = '0.1.0'
+        npermissionVersion = 'v1.2'
         mvpVersion = '3.0.2'
         mvpViewStateVersion = '3.0.2'
 
@@ -93,25 +92,23 @@ buildscript {
                 baseAdapter                  : "com.joanzapata.android:base-adapter-helper:${baseAdapterVersion}",
 
                 // UI Validations
-                saripaar                     : "com.mobsandgeeks:android-saripaar:${saripaarVersion}",
+                saripaar    : "com.mobsandgeeks:android-saripaar:${saripaarVersion}",
 
                 // Fonts
-                calligraphy                  : "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
+                calligraphy : "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
 
                 // Date times
-                joda                         : "net.danlew:android.joda:${jodaVersion}",
+                joda        : "net.danlew:android.joda:${jodaVersion}",
 
                 // Pref storage
-                hawk                         : "com.github.orhanobut:hawk:${hawkVersion}",
+                hawk        : "com.github.orhanobut:hawk:${hawkVersion}",
 
                 // Permissions
-                permissionsDispatcher        : "com.github.hotchemi:permissionsdispatcher:${permissionsDispatcherVersion}",
-                permissionsDispatcherCompiler: "com.github.hotchemi:permissionsdispatcher-processor:${permissionsDispatcherVersion}",
-                androidAnnotationsPermissions: "com.github.AleksanderMielczarek:AndroidAnnotationsPermissionsDispatcherPlugin:${androidAnnotationsPermissionsVersion}",
+                npermission : "com.github.nhancv:nc-android-npermission:${npermissionVersion}",
 
                 // MVP
-                mvp                          : "com.hannesdorfmann.mosby3:mvp:${mvpVersion}",
-                mvpViewState                 : "com.hannesdorfmann.mosby3:viewstate:${mvpViewStateVersion}",
+                mvp         : "com.hannesdorfmann.mosby3:mvp:${mvpVersion}",
+                mvpViewState: "com.hannesdorfmann.mosby3:viewstate:${mvpViewStateVersion}",
 
         ]
     }
