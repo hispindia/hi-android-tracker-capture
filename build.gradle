@@ -1,20 +1,136 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext {
+        // Plugin version.
+        androidPluginVersion = '2.3.0'
+        retroLambdaVersion = '3.2.2'
+        androidAptVersion = '1.8'
+        googleGmsVersion = '3.0.0'
+        realmVersion = '2.3.1'
+        grgitVersion = '1.5.0'
+
+        // Plugin version.
+        androidSupportVersion = '25.3.1'
+        androidSupportMultidexVersion = '1.0.1'
+
+        daggerVersion = '2.8'
+        androidAnnotationVersion = '4.1.0'
+        generatedAnnotationVersion = '1.0'
+        picassoVersion = '2.5.2'
+        gsonVersion = '2.7'
+        retrofitVersion = '2.1.0'
+        urlconnectionVersion = '2.7.5'
+        okhttpVersion = '3.3.1'
+        rxAndroidVersion = '1.2.0'
+        rxJavaVersion = '1.1.5'
+        eventBusVersion = '3.0.0'
+        baseAdapterVersion = '1.1.11'
+        saripaarVersion = '2.0.3'
+        calligraphyVersion = '2.2.0'
+        jodaVersion = '2.9.3'
+        hawkVersion = '1.23'
+        permissionsDispatcherVersion = '2.1.3'
+        androidAnnotationsPermissionsVersion = '0.1.0'
+        mvpVersion = '3.0.2'
+        mvpViewStateVersion = '3.0.2'
+
+        // Configuration.
+        config = [
+                minSdkVersion        : 16,
+                compileSdkVersion    : 25,
+                buildToolsVersion    : '25.0.2',
+                targetSdkVersion     : 25,
+                renderscriptTargetApi: 23
+
+        ]
+        // Plugin
+        plugin = [
+                androidPlugin: "com.android.tools.build:gradle:${androidPluginVersion}",
+                retroLambda  : "me.tatarka:gradle-retrolambda:${retroLambdaVersion}",
+                androidApt   : "com.neenbedankt.gradle.plugins:android-apt:${androidAptVersion}",
+                realm        : "io.realm:realm-gradle-plugin:${realmVersion}",
+                grgit        : "org.ajoberstar:grgit:${grgitVersion}"
+        ]
+
+        // Dependencies
+        dependency = [
+                // Android Support Libraries
+                supportDesign                : "com.android.support:design:${androidSupportVersion}",
+                supportMultidex              : "com.android.support:multidex:${androidSupportMultidexVersion}",
+                supportv4                    : "com.android.support:support-v4:${androidSupportVersion}",
+                appcompatv7                  : "com.android.support:appcompat-v7:${androidSupportVersion}",
+                recyclerviewv7               : "com.android.support:recyclerview-v7:${androidSupportVersion}",
+
+                // Dagger
+                dagger                       : "com.google.dagger:dagger:${daggerVersion}",
+                daggerCompiler               : "com.google.dagger:dagger-compiler:${daggerVersion}",
+                generatedAnnotation          : "javax.annotation:jsr250-api:${generatedAnnotationVersion}",
+
+                // Android annotation
+                androidAnnotation            : "org.androidannotations:androidannotations-api:${androidAnnotationVersion}",
+                androidAnnotationCompiler    : "org.androidannotations:androidannotations:${androidAnnotationVersion}",
+
+                // Image Loader
+                picasso                      : "com.squareup.picasso:picasso:${picassoVersion}",
+
+                // REST client
+                gson                         : "com.google.code.gson:gson:${gsonVersion}",
+                retrofit                     : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+                retrofitConverterGson        : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+                retrofitAdapterRxjava        : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
+                urlconnection                : "com.squareup.okhttp:okhttp-urlconnection:${urlconnectionVersion}",
+                okhttp                       : "com.squareup.okhttp3:okhttp:${okhttpVersion}",
+
+                // EventBus
+                eventBus                     : "org.greenrobot:eventbus:${eventBusVersion}",
+
+                // Async
+                rxAndroid                    : "io.reactivex:rxandroid:${rxAndroidVersion}",
+                rxJava                       : "io.reactivex:rxjava:${rxJavaVersion}",
+
+                // Adapters
+                baseAdapter                  : "com.joanzapata.android:base-adapter-helper:${baseAdapterVersion}",
+
+                // UI Validations
+                saripaar                     : "com.mobsandgeeks:android-saripaar:${saripaarVersion}",
+
+                // Fonts
+                calligraphy                  : "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
+
+                // Date times
+                joda                         : "net.danlew:android.joda:${jodaVersion}",
+
+                // Pref storage
+                hawk                         : "com.github.orhanobut:hawk:${hawkVersion}",
+
+                // Permissions
+                permissionsDispatcher        : "com.github.hotchemi:permissionsdispatcher:${permissionsDispatcherVersion}",
+                permissionsDispatcherCompiler: "com.github.hotchemi:permissionsdispatcher-processor:${permissionsDispatcherVersion}",
+                androidAnnotationsPermissions: "com.github.AleksanderMielczarek:AndroidAnnotationsPermissionsDispatcherPlugin:${androidAnnotationsPermissionsVersion}",
+
+                // MVP
+                mvp                          : "com.hannesdorfmann.mosby3:mvp:${mvpVersion}",
+                mvpViewState                 : "com.hannesdorfmann.mosby3:viewstate:${mvpViewStateVersion}",
+
+        ]
+    }
+
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath project.ext.plugin.androidPlugin
+        classpath project.ext.plugin.androidApt
+        classpath project.ext.plugin.realm
     }
+
 }
 
 allprojects {
     repositories {
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 

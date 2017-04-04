@@ -1,21 +1,116 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath rootProject.ext.plugin.retroLambda
+        classpath rootProject.ext.plugin.grgit
+    }
+}
+
+import org.ajoberstar.grgit.Grgit
+
+ext {
+    git = Grgit.open(currentDir: projectDir)
+    gitVersionName = git.describe()
+    gitVersionCode = git.tag.list().size()
+    gitVersionCodeTime = git.head().time
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'android-apt'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+
+    compileSdkVersion rootProject.ext.config.compileSdkVersion
+    buildToolsVersion rootProject.ext.config.buildToolsVersion
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+
+            def APK_NAME = "hitracker-" + variant.productFlavors[0].name + ".apk"
+            output.outputFile = new File(
+                    output.outputFile.parent,
+                    output.outputFile.name.replace(output.outputFile.name, APK_NAME + ".apk"))
+        }
+    }
+
     defaultConfig {
         applicationId "org.hisp.india.trackercapture"
-        minSdkVersion 16
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.config.minSdkVersion
+        targetSdkVersion rootProject.ext.config.compileSdkVersion
+        versionCode gitVersionCode
+        versionName gitVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file("keystores/keystore-debug.jks")
+            storePassword 'android'
+        }
+        release {
+            keyAlias 'HITRACKER'
+            keyPassword 'org.hisp.india.trackercapture'
+            storeFile file("keystores/keystore-release.jks")
+            storePassword 'org.hisp.india.trackercapture'
+        }
+    }
+
     buildTypes {
         release {
+            debuggable false
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
+
+        debug {
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    productFlavors {
+
+        dev {
+            versionCode gitVersionCodeTime
+            versionName gitVersionName
+            manifestPlaceholders = [appName: "Tracker-" + "dev"]
+        }
+
+        prod {
+            versionCode gitVersionCode
+            versionName gitVersionName
+            manifestPlaceholders = [appName: "Tracker-" + "prod"]
+        }
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0]?.processResources?.manifestFile
+        resourcePackageName android.defaultConfig.applicationId
     }
 }
 
@@ -24,7 +119,16 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+
+    def dependency = rootProject.ext.dependency
+
+    //Android support
+    compile dependency.supportMultidex
+    compile dependency.appcompatv7
+    compile dependency.supportDesign
+    compile dependency.supportv4
+    compile dependency.recyclerviewv7
+
+
 }
