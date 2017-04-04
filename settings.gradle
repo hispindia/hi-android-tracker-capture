@@ -1,1 +1,3 @@
 include ':app'
+include ':hi-core'
+project(':hi-core').projectDir = new File('libs/hi-core/core')
