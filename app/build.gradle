@@ -30,11 +30,10 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
-
             def APK_NAME = "hitracker-" + variant.productFlavors[0].name + ".apk"
             output.outputFile = new File(
                     output.outputFile.parent,
-                    output.outputFile.name.replace(output.outputFile.name, APK_NAME + ".apk"))
+                    output.outputFile.name.replace(output.outputFile.name, APK_NAME))
         }
     }
 
@@ -44,6 +43,9 @@ android {
         targetSdkVersion rootProject.ext.config.compileSdkVersion
         versionCode gitVersionCode
         versionName gitVersionName
+        renderscriptTargetApi rootProject.ext.config.renderscriptTargetApi
+        renderscriptSupportModeEnabled true
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -105,12 +107,25 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
 
+    buildToolsVersion '25.0.0'
 }
 
 apt {
     arguments {
         androidManifestFile variant.outputs[0]?.processResources?.manifestFile
         resourcePackageName android.defaultConfig.applicationId
+    }
+}
+
+afterEvaluate {
+    tasks.matching {
+        it.name.startsWith('dex')
+    }.each { dx ->
+        if (dx.additionalParameters == null) {
+            dx.additionalParameters = ['--multi-dex']
+        } else {
+            dx.additionalParameters += '--multi-dex'
+        }
     }
 }
 
