@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture;
 import android.support.multidex.MultiDexApplication;
 
 import com.logentries.logger.AndroidLogger;
+import com.splunk.mint.Mint;
 
 import java.io.IOException;
 
@@ -18,6 +19,7 @@ public class MainApplication extends MultiDexApplication {
         try {
             AndroidLogger.createInstance(getApplicationContext(),
                     false, true, false, null, 0, "92565dca-71d0-4a1d-9b53-ec0696eda359", true);
+            Mint.initAndStartSession(this, "d80c7dbf");
         } catch (IOException e) {
             e.printStackTrace();
         }
