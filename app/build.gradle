@@ -152,6 +152,9 @@ dependencies {
     compile dependency.dagger
     provided dependency.generatedAnnotation
 
+    //MVP
+    compile dependency.mvp
+    compile dependency.mvpViewState
     //Adapters
     compile dependency.baseAdapter
     //UI Validations
