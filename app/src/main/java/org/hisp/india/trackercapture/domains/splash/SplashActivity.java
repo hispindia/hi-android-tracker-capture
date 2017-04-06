@@ -13,7 +13,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.login.LoginActivity_;
+import org.hisp.india.trackercapture.domains.main.MainActivity_;
 import org.hisp.india.trackercapture.utils.AppUtils;
+import org.hisp.india.trackercapture.utils.PrefManager;
 
 /**
  * Created by nhancao on 4/6/17.
@@ -35,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
     private void scaleUp() {
 
         ObjectAnimator animTranslationY = ObjectAnimator.ofFloat(ivLogo, "translationY", AppUtils.convertDpToPixels(153, this), 0);
-        animTranslationY.setDuration(1000);
+        animTranslationY.setDuration(700);
 
         ObjectAnimator animAlpha = ObjectAnimator.ofFloat(ivLogo, "alpha", 0, 1);
         animAlpha.setDuration(500);
@@ -87,7 +89,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void nextTransaction() {
-        LoginActivity_.intent(SplashActivity.this).start();
+        if (PrefManager.isLogin()) {
+            MainActivity_.intent(this).start();
+        } else {
+            LoginActivity_.intent(SplashActivity.this).start();
+        }
         finish();
     }
 
