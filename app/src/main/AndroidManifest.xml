@@ -23,18 +23,32 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="stateHidden|adjustResize"
         tools:replace="android:label">
+
         <activity
-            android:name=".domains.main.MainActivity_"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".domains.splash.SplashActivity_"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".domains.main.MainActivity_"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+        <activity
+            android:name=".domains.login.LoginActivity_"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+
         </activity>
 
         <activity

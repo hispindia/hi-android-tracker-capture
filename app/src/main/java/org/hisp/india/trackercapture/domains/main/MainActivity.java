@@ -10,7 +10,7 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
-import org.hisp.india.trackercapture.utils.AppUtil;
+import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
 
 import javax.inject.Inject;
@@ -37,7 +37,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
     @AfterViews
     void init() {
         //Making notification bar transparent
-        AppUtil.changeStatusBarColor(this);
+        AppUtils.changeStatusBarColor(this);
         //Setup toolbar
         toolbar.applyMainUi(this, "Main", new NToolbar.MainItemClick() {
             @Override

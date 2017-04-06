@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -12,7 +13,19 @@ import android.view.WindowManager;
  * Created by nhancao on 4/5/17.
  */
 
-public class AppUtil {
+public class AppUtils {
+
+    /**
+     * Convert dp to pixel
+     *
+     * @param dp
+     * @param context
+     * @return
+     */
+    public static int convertDpToPixels(float dp, Context context) {
+        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+        return px;
+    }
 
     /**
      * A method to find height of the status bar
