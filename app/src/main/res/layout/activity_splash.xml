@@ -4,6 +4,7 @@
     android:id="@+id/activity_splash_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_bottom_my_sessions"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:ignore="MissingPrefix">
