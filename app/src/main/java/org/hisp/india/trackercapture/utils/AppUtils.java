@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.utils;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
@@ -23,8 +24,7 @@ public class AppUtils {
      * @return
      */
     public static int convertDpToPixels(float dp, Context context) {
-        int px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-        return px;
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     /**
@@ -58,7 +58,29 @@ public class AppUtils {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
         }
-        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
     }
 
+    /**
+     * Apply animation on height of view
+     *
+     * @param view
+     * @param from
+     * @param to
+     * @param time
+     */
+    public static void animationHeight(final View view, int from, int to, int time) {
+        ValueAnimator va = ValueAnimator.ofInt(from, to);
+        va.setDuration(time);
+        va.addUpdateListener(animation -> {
+            Integer value = (Integer) animation.getAnimatedValue();
+            if (view != null) {
+                view.getLayoutParams().height = value.intValue();
+                view.requestLayout();
+            }
+        });
+        va.start();
+    }
 }

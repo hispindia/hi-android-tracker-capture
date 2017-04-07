@@ -1,10 +1,12 @@
 package org.hisp.india.trackercapture.domains.login;
 
+import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,8 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.main.MainActivity_;
+import org.hisp.india.trackercapture.utils.AppUtils;
+import org.hisp.india.trackercapture.utils.NKeyboard;
 import org.hisp.india.trackercapture.utils.PrefManager;
 
 import java.util.List;
@@ -33,6 +37,7 @@ import javax.inject.Inject;
 
 @EActivity(R.layout.activity_login)
 public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> implements LoginView, Validator.ValidationListener {
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_login_v_username_underline)
     View vUsernameUnderline;
@@ -40,6 +45,10 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
     View vPasswordUnderline;
     @ViewById(R.id.activity_login_bt_login)
     Button btLogin;
+    @ViewById(R.id.activity_login_root_scroll)
+    ScrollView rootScroll;
+    @ViewById(R.id.activity_login_v_bottom_space)
+    View vBottomSpace;
 
     @NotEmpty
     @Length(min = 4)
@@ -72,6 +81,16 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
 
         validator = new Validator(this);
         validator.setValidationListener(this);
+
+        NKeyboard.addListener(this, (isVisible, screenHeight, keyboardHeight) -> {
+            if (isVisible && keyboardHeight > 0) {
+                ObjectAnimator.ofInt(rootScroll, "scrollY", keyboardHeight).setDuration(500).start();
+                AppUtils.animationHeight(vBottomSpace, 0, keyboardHeight, 500);
+            } else {
+                ObjectAnimator.ofInt(rootScroll, "scrollY", 0).setDuration(500).start();
+                AppUtils.animationHeight(vBottomSpace, vBottomSpace.getHeight(), 0, 500);
+            }
+        });
 
     }
 

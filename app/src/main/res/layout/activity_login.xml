@@ -25,132 +25,147 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:background="@color/light_grey" />
 
         </LinearLayout>
 
-        <LinearLayout
+        <ScrollView
+            android:id="@+id/activity_login_root_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="25dp"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:layout_width="92dp"
-                android:layout_height="92dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/bg_circle_white">
-
-                <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="center"
-                    android:src="@mipmap/ic_launcher" />
-
-            </FrameLayout>
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="70dp"
-                android:background="@drawable/bg_dialog"
-                android:orientation="vertical"
-                android:paddingBottom="25dp"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                android:paddingTop="10dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <TextView
-                    fontPath="fonts/Montserrat-Bold.ttf"
+                <FrameLayout
+                    android:layout_width="92dp"
+                    android:layout_height="92dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/bg_circle_white">
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_launcher" />
+
+                </FrameLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:gravity="center_horizontal"
+                    android:layout_marginTop="70dp"
+                    android:background="@drawable/bg_dialog"
+                    android:orientation="vertical"
+                    android:paddingBottom="25dp"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="25dp"
+                    android:paddingTop="10dp">
+
+                    <TextView
+                        fontPath="fonts/Montserrat-Bold.ttf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center_horizontal"
+                        android:text="LOGIN"
+                        android:textColor="#626262"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        fontPath="fonts/Montserrat-Regular.ttf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="USERNAME"
+                        android:textColor="#6A89DF"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/activity_login_et_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@android:color/transparent"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:textCursorDrawable="@null"
+                        android:textSize="14sp"
+                        android:theme="@style/EditText" />
+
+                    <View
+                        android:id="@+id/activity_login_v_username_underline"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="#626262"
+                        android:textColorHint="#626262" />
+
+                    <TextView
+                        fontPath="fonts/Montserrat-Regular.ttf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="PASSWORD"
+                        android:textColor="#6A89DF"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/activity_login_et_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@android:color/transparent"
+                        android:inputType="textPassword"
+                        android:maxLines="1"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:textCursorDrawable="@null"
+                        android:textSize="14sp"
+                        android:theme="@style/EditText" />
+
+                    <View
+                        android:id="@+id/activity_login_v_password_underline"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="#626262"
+                        android:textColorHint="#626262" />
+
+                    <android.support.v4.widget.Space
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/activity_login_bt_login"
+                    fontPath="fonts/Montserrat-Medium.ttf"
+                    android:layout_width="188dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="-25dp"
+                    android:background="@drawable/bg_bt_login"
+                    android:enabled="false"
                     android:text="LOGIN"
-                    android:textColor="#626262"
-                    android:textSize="20sp" />
-
-                <TextView
-                    fontPath="fonts/Montserrat-Regular.ttf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="USERNAME"
-                    android:textColor="#6A89DF"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/activity_login_et_username"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:background="@android:color/transparent"
-                    android:maxLines="1"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:textCursorDrawable="@null"
-                    android:textSize="14sp"
-                    android:theme="@style/EditText" />
-
-                <View
-                    android:id="@+id/activity_login_v_username_underline"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:background="#626262"
-                    android:textColorHint="#626262" />
-
-                <TextView
-                    fontPath="fonts/Montserrat-Regular.ttf"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="PASSWORD"
-                    android:textColor="#6A89DF"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/activity_login_et_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:background="@android:color/transparent"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:textCursorDrawable="@null"
-                    android:textSize="14sp"
-                    android:theme="@style/EditText" />
-
-                <View
-                    android:id="@+id/activity_login_v_password_underline"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:background="#626262"
-                    android:textColorHint="#626262" />
+                    android:textColor="@color/white_smoke"
+                    android:textSize="18sp" />
 
                 <android.support.v4.widget.Space
+                    android:id="@+id/activity_login_v_bottom_space"
                     android:layout_width="match_parent"
-                    android:layout_height="20dp" />
+                    android:layout_height="0dp" />
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/activity_login_bt_login"
-                fontPath="fonts/Montserrat-Medium.ttf"
-                android:layout_width="188dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="-25dp"
-                android:background="@drawable/bg_bt_login"
-                android:enabled="false"
-                android:text="LOGIN"
-                android:textColor="@color/white_smoke"
-                android:textSize="18sp" />
-
-        </LinearLayout>
+        </ScrollView>
 
     </FrameLayout>
 
