@@ -29,6 +29,8 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.main.MainActivity_;
+import org.hisp.india.trackercapture.models.Credentials;
+import org.hisp.india.trackercapture.models.UserResponse;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.utils.NKeyboard;
 import org.hisp.india.trackercapture.utils.PrefManager;
@@ -170,14 +172,14 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
     @Click(R.id.activity_login_bt_login)
     void btLoginClick() {
         if (isValid) {
-            Toast.makeText(this, "Yay! we got it right!", Toast.LENGTH_SHORT).show();
-
             if (llHost.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(etHost.getText())) {
                 PrefManager.setHost(etHost.getText().toString());
             }
+            Credentials credentials = new Credentials(etUsername.getText().toString(), etPassword.getText().toString());
+            PrefManager.setApiToken(credentials.genBasicToken());
 
-            PrefManager.setIsLogin(true);
-            MainActivity_.intent(this).start();
+            presenter.updateCredentialAndLogin(PrefManager.getHost(), PrefManager.getApiToken());
+
         }
     }
 
@@ -191,4 +193,27 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
         validator.validate();
     }
 
+    @Override
+    public void showLoading() {
+        showProgressLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressLoading();
+    }
+
+    @Override
+    public void loginSuccessful(UserResponse user) {
+        Toast.makeText(application, "Login success", Toast.LENGTH_SHORT).show();
+        PrefManager.setUserInfo(user);
+        MainActivity_.intent(this).start();
+    }
+
+    @Override
+    public void loginError(Throwable throwable) {
+        Toast.makeText(application, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+        PrefManager.setApiToken(null);
+
+    }
 }

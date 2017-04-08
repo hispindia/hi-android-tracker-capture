@@ -8,6 +8,10 @@ import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.DefaultRxNetworkProvider;
 import org.hisp.india.core.services.network.RxNetworkProvider;
 import org.hisp.india.trackercapture.BuildConfig;
+import org.hisp.india.trackercapture.services.account.AccountApi;
+import org.hisp.india.trackercapture.services.account.AccountService;
+import org.hisp.india.trackercapture.services.account.DefaultAccountService;
+import org.hisp.india.trackercapture.utils.PrefManager;
 
 import java.io.IOException;
 
@@ -19,6 +23,7 @@ import dagger.Provides;
  */
 @Module
 public class ApplicationModule {
+    private static final String TAG = ApplicationModule.class.getSimpleName();
 
     private Application application;
 
@@ -50,5 +55,17 @@ public class ApplicationModule {
         return new DefaultRxNetworkProvider(application, BuildConfig.DEBUG).addDefaultHeader();
     }
 
+    @Provides
+    @ApplicationScope
+    public AccountService provideAccountService(RxNetworkProvider rxNetworkProvider) {
+
+        AccountApi restService =
+                provideNetworkProvider()
+                        .addDefaultHeader()
+                        .addHeader("Authorization", PrefManager.getApiToken())
+                        .provideApi(PrefManager.getHost(), AccountApi.class);
+
+        return new DefaultAccountService(rxNetworkProvider, restService);
+    }
 
 }

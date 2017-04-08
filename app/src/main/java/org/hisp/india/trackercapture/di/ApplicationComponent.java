@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture.di;
 import org.hisp.india.core.di.ApplicationScope;
 import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.RxNetworkProvider;
+import org.hisp.india.trackercapture.services.account.AccountService;
 
 import dagger.Component;
 
@@ -18,4 +19,5 @@ public interface ApplicationComponent {
 
     RxNetworkProvider networkProvider();
 
+    AccountService accountService();
 }
