@@ -3,9 +3,11 @@ package org.hisp.india.trackercapture.domains.login;
 import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,14 +32,24 @@ import org.hisp.india.trackercapture.domains.main.MainActivity_;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.utils.NKeyboard;
 import org.hisp.india.trackercapture.utils.PrefManager;
+import org.hisp.india.trackercapture.utils.RxHelper;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscription;
 
 @EActivity(R.layout.activity_login)
 public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> implements LoginView, Validator.ValidationListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
+
+    @ViewById(R.id.activity_login_ll_host)
+    LinearLayout llHost;
+    @ViewById(R.id.activity_login_et_host)
+    EditText etHost;
 
     @ViewById(R.id.activity_login_v_username_underline)
     View vUsernameUnderline;
@@ -67,6 +79,8 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
 
     private Validator validator;
     private boolean isValid;
+    private int tapCounter;
+    private Subscription subscription;
 
     @AfterInject
     void inject() {
@@ -136,10 +150,31 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
         }
     }
 
+    @Click(R.id.activity_login_fl_icon)
+    void flIconClick() {
+        tapCounter++;
+        if (tapCounter >= 7) {
+            llHost.setVisibility(View.VISIBLE);
+        } else {
+            llHost.setVisibility(View.GONE);
+        }
+
+        RxHelper.onStop(subscription);
+        subscription = Observable.empty()
+                .delay(2, TimeUnit.SECONDS)
+                .doOnTerminate(() -> tapCounter = 0)
+                .subscribe();
+
+    }
+
     @Click(R.id.activity_login_bt_login)
     void btLoginClick() {
         if (isValid) {
             Toast.makeText(this, "Yay! we got it right!", Toast.LENGTH_SHORT).show();
+
+            if (llHost.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(etHost.getText())) {
+                PrefManager.setHost(etHost.getText().toString());
+            }
 
             PrefManager.setIsLogin(true);
             MainActivity_.intent(this).start();

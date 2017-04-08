@@ -43,6 +43,7 @@
                 android:orientation="vertical">
 
                 <FrameLayout
+                    android:id="@+id/activity_login_fl_icon"
                     android:layout_width="92dp"
                     android:layout_height="92dp"
                     android:layout_gravity="center"
@@ -77,6 +78,36 @@
                         android:text="LOGIN"
                         android:textColor="#626262"
                         android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:id="@+id/activity_login_ll_host"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            fontPath="fonts/Montserrat-Regular.ttf"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="HOST"
+                            android:textColor="#6A89DF"
+                            android:textSize="16sp" />
+
+                        <EditText
+                            android:id="@+id/activity_login_et_host"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_marginBottom="15dp"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:textCursorDrawable="@null"
+                            android:textSize="14sp"
+                            android:theme="@style/EditText" />
+
+                    </LinearLayout>
 
                     <TextView
                         fontPath="fonts/Montserrat-Regular.ttf"
