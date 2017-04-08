@@ -74,7 +74,7 @@ public class SplashActivity extends AppCompatActivity {
 
         ObjectAnimator animTranslationY = ObjectAnimator.ofFloat(ivLogo, "translationY", AppUtils.convertDpToPixels(-173, this));
         ObjectAnimator animAlpha = ObjectAnimator.ofFloat(rlBackground, "alpha", 1, 0);
-        animAlpha.setStartDelay(600);
+        animAlpha.setDuration(1000);
 
         final AnimatorSet animationSet = new AnimatorSet();
         animationSet.playTogether(animScaleX, animScaleY, animTranslationY, animAlpha);
