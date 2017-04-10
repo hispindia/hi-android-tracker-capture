@@ -2,7 +2,7 @@ package org.hisp.india.trackercapture.domains.login;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
-import org.hisp.india.trackercapture.models.UserResponse;
+import org.hisp.india.trackercapture.models.User;
 
 /**
  * Created by nhancao on 5/5/17.
@@ -22,7 +22,7 @@ public interface LoginView extends MvpView {
     /**
      * Login api successful.
      */
-    void loginSuccessful(UserResponse user);
+    void loginSuccessful(User user);
 
     /**
      * Api error.

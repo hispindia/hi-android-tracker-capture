@@ -1,10 +1,8 @@
 package org.hisp.india.trackercapture.utils;
 
-import android.util.Log;
-
 import com.orhanobut.hawk.Hawk;
 
-import org.hisp.india.trackercapture.models.UserResponse;
+import org.hisp.india.trackercapture.models.User;
 
 /**
  * Created by nhancao on 4/6/17.
@@ -37,11 +35,11 @@ public class PrefManager {
         Hawk.put(API_TOKEN, apiToken);
     }
 
-    public static UserResponse getUserInfo() {
+    public static User getUserInfo() {
         return Hawk.get(USER_INFO, null);
     }
 
-    public static void setUserInfo(UserResponse userInfo) {
+    public static void setUserInfo(User userInfo) {
         Hawk.put(USER_INFO, userInfo);
     }
 }

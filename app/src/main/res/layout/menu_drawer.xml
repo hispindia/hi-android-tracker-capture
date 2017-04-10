@@ -23,7 +23,7 @@
             android:background="@drawable/bg_circle_menu" />
 
         <TextView
-            android:id="@+id/textview_username_letter"
+            android:id="@+id/menu_drawer_tv_character_name"
             fontPath="fonts/Montserrat-Bold.ttf"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

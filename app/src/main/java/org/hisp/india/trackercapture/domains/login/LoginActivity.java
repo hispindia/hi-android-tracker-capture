@@ -30,7 +30,7 @@ import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.main.MainActivity_;
 import org.hisp.india.trackercapture.models.Credentials;
-import org.hisp.india.trackercapture.models.UserResponse;
+import org.hisp.india.trackercapture.models.User;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.utils.NKeyboard;
 import org.hisp.india.trackercapture.utils.PrefManager;
@@ -208,7 +208,7 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
     }
 
     @Override
-    public void loginSuccessful(UserResponse user) {
+    public void loginSuccessful(User user) {
         Toast.makeText(application, "Login success", Toast.LENGTH_SHORT).show();
         PrefManager.setUserInfo(user);
         MainActivity_.intent(this).start();

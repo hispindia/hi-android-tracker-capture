@@ -9,7 +9,7 @@ import java.util.List;
  * Created by nhancao on 4/9/17.
  */
 
-public class UserResponse implements Serializable {
+public class User implements Serializable {
 
     @SerializedName("name")
     private String name;

@@ -1,7 +1,7 @@
 package org.hisp.india.trackercapture.services.account;
 
 import org.hisp.india.core.services.network.RxNetworkProvider;
-import org.hisp.india.trackercapture.models.UserResponse;
+import org.hisp.india.trackercapture.models.User;
 
 import rx.Observable;
 
@@ -30,7 +30,7 @@ public class DefaultAccountService implements AccountService {
     }
 
     @Override
-    public Observable<UserResponse> login() {
+    public Observable<User> login() {
         return networkProvider.transformResponse(restService.login(
                 "id,created,lastUpdated,name,displayName,firstName,surname,gender,birthday,introduction,education,employer,interests,jobTitle,languages,email,phoneNumber,teiSearchOrganisationUnits[id],organisationUnits[id]"
         ));

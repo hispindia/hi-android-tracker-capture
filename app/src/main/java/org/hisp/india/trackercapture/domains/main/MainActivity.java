@@ -5,8 +5,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.widget.TextView;
 
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
+import com.yarolegovich.slidingrootnav.SlidingRootNavLayout;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -21,7 +24,9 @@ import org.hisp.india.trackercapture.domains.menu.DrawerItem;
 import org.hisp.india.trackercapture.domains.menu.MenuItem;
 import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
+import org.hisp.india.trackercapture.models.User;
 import org.hisp.india.trackercapture.utils.AppUtils;
+import org.hisp.india.trackercapture.utils.PrefManager;
 
 import java.util.Arrays;
 
@@ -54,12 +59,16 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
         //Setup toolbar
         setSupportActionBar(toolbar);
 
-        //Update menu
-        new SlidingRootNavBuilder(this)
+        //Built menu
+        SlidingRootNavLayout navLayout = new SlidingRootNavBuilder(this)
                 .withToolbarMenuToggle(toolbar)
                 .withMenuOpened(false)
                 .withMenuLayout(R.layout.menu_drawer)
-                .inject();
+                .inject()
+                .getLayout();
+        TextView tvCharacterName = (TextView) navLayout.findViewById(R.id.menu_drawer_tv_character_name);
+        TextView tvDisplayName = (TextView) navLayout.findViewById(R.id.menu_drawer_tv_display_name);
+        TextView tvEmail = (TextView) navLayout.findViewById(R.id.menu_drawer_tv_email);
 
         DrawerAdapter adapter = new DrawerAdapter(Arrays.asList(
                 createItemFor(MenuItem.ENROLL).setChecked(true),
@@ -76,6 +85,24 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
         list.setAdapter(adapter);
 
         adapter.setSelected(MenuItem.ENROLL.ordinal());
+
+        //Update info
+        User user = PrefManager.getUserInfo();
+        String character = "";
+        if (user != null) {
+            if (!TextUtils.isEmpty(user.getFirstName()) && !TextUtils.isEmpty(user.getSurName())) {
+                character = String.valueOf(user.getFirstName().charAt(0)) +
+                        String.valueOf(user.getSurName().charAt(0));
+            } else if (!TextUtils.isEmpty(user.getDisplayName()) && user.getDisplayName().length() > 1) {
+                character = String.valueOf(user.getDisplayName().charAt(0)) +
+                        String.valueOf(user.getDisplayName().charAt(1));
+            }
+            tvCharacterName.setText(character);
+            tvDisplayName.setText(user.getDisplayName());
+            tvEmail.setText(user.getEmail());
+        }
+
+
     }
 
     @NonNull

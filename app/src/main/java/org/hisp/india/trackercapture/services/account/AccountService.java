@@ -1,6 +1,6 @@
 package org.hisp.india.trackercapture.services.account;
 
-import org.hisp.india.trackercapture.models.UserResponse;
+import org.hisp.india.trackercapture.models.User;
 
 import rx.Observable;
 
@@ -12,6 +12,6 @@ public interface AccountService {
 
     void updateCredential(String host, String apiToken);
 
-    Observable<UserResponse> login();
+    Observable<User> login();
 
 }
