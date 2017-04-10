@@ -53,4 +53,17 @@ public class UserResponse implements Serializable {
     public List<OrganisationUnit> getOrganisationUnits() {
         return organisationUnits;
     }
+
+    @Override
+    public String toString() {
+        return "UserResponse{" +
+                "name='" + name + '\'' +
+                ", id='" + id + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", surName='" + surName + '\'' +
+                ", email='" + email + '\'' +
+                ", organisationUnits=" + organisationUnits +
+                '}';
+    }
 }

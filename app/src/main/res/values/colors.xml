@@ -10,4 +10,7 @@
     <color name="dark_grey">#A7A7A7</color>
     <color name="dolphin">#7A7986</color>
 
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+
 </resources>

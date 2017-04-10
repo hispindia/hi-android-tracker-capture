@@ -108,6 +108,10 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
             }
         });
 
+        //Auto fill host
+        if (!PrefManager.getHost().equals(PrefManager.HOST_DEFAULT)) {
+            etHost.setText(PrefManager.getHost());
+        }
     }
 
     @NonNull

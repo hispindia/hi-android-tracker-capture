@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:paddingLeft="24dp"
+    tools:ignore="MissingPrefix">
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="90dp" />
+
+    <FrameLayout
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="16dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_circle_menu" />
+
+        <TextView
+            android:id="@+id/textview_username_letter"
+            fontPath="fonts/Montserrat-Bold.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="NC"
+            android:textAllCaps="true"
+            android:textColor="@color/white_smoke"
+            android:textSize="25sp" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/menu_drawer_tv_display_name"
+        fontPath="fonts/Montserrat-Medium.ttf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nhan Cao"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/menu_drawer_tv_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="nhancv92@gmail.com"
+        android:textSize="14sp" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="56dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/menu_drawer_rv_list"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="40dp" />
+
+</LinearLayout>

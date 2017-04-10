@@ -14,6 +14,7 @@ import rx.Subscription;
  */
 
 public class LoginPresenter extends MvpBasePresenter<LoginView> {
+    private static final String TAG = LoginPresenter.class.getSimpleName();
 
     @Inject
     AccountService accountService;

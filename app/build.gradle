@@ -165,5 +165,7 @@ dependencies {
     compile dependency.eventBus
     //Permission
     compile dependency.npermission
+    //Navigator
+    compile dependency.navigator
 
 }

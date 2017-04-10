@@ -1,5 +1,7 @@
 package org.hisp.india.trackercapture.utils;
 
+import android.util.Log;
+
 import com.orhanobut.hawk.Hawk;
 
 import org.hisp.india.trackercapture.models.UserResponse;
@@ -9,9 +11,9 @@ import org.hisp.india.trackercapture.models.UserResponse;
  */
 
 public class PrefManager {
-
+    public static final String HOST_DEFAULT = "http://localhost:8080/dhis/";
+    private static final String TAG = PrefManager.class.getSimpleName();
     private static final String HOST = "HOST";
-    private static final String HOST_DEFAULT = "http://localhost:8080/dhis/";
     private static final String API_TOKEN = "API_TOKEN";
     private static final String USER_INFO = "USER_INFO";
 

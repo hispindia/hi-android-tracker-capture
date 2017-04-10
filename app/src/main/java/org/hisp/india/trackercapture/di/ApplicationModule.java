@@ -52,7 +52,7 @@ public class ApplicationModule {
     @Provides
     @ApplicationScope
     public RxNetworkProvider provideNetworkProvider() {
-        return new DefaultRxNetworkProvider(application, BuildConfig.DEBUG).addDefaultHeader();
+        return new DefaultRxNetworkProvider(application, BuildConfig.DEBUG);
     }
 
     @Provides
@@ -60,7 +60,7 @@ public class ApplicationModule {
     public AccountService provideAccountService(RxNetworkProvider rxNetworkProvider) {
 
         AccountApi restService =
-                provideNetworkProvider()
+                rxNetworkProvider
                         .addDefaultHeader()
                         .addHeader("Authorization", PrefManager.getApiToken())
                         .provideApi(PrefManager.getHost(), AccountApi.class);
