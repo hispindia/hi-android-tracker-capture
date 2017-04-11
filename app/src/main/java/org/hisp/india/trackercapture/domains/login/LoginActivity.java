@@ -110,6 +110,8 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
         //Auto fill host
         if (!presenter.getCredential().getHost().equals(Constants.HOST_DEFAULT)) {
             etHost.setText(presenter.getCredential().getHost());
+        } else {
+            llHost.setVisibility(View.VISIBLE);
         }
     }
 
