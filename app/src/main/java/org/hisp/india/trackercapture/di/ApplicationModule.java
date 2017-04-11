@@ -2,16 +2,19 @@ package org.hisp.india.trackercapture.di;
 
 import android.app.Application;
 
+import com.orhanobut.hawk.Hawk;
+
 import org.hisp.india.core.di.ApplicationScope;
 import org.hisp.india.core.services.log.DefaultLogService;
 import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.DefaultRxNetworkProvider;
 import org.hisp.india.core.services.network.RxNetworkProvider;
 import org.hisp.india.trackercapture.BuildConfig;
+import org.hisp.india.trackercapture.models.Credentials;
 import org.hisp.india.trackercapture.services.account.AccountApi;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.account.DefaultAccountService;
-import org.hisp.india.trackercapture.utils.PrefManager;
+import org.hisp.india.trackercapture.utils.Constants;
 
 import java.io.IOException;
 
@@ -51,21 +54,27 @@ public class ApplicationModule {
 
     @Provides
     @ApplicationScope
-    public RxNetworkProvider provideNetworkProvider() {
+    Credentials provideCredentials() {
+        return Hawk.get(Constants.CREDENTIALS, new Credentials());
+    }
+
+    @Provides
+    @ApplicationScope
+    RxNetworkProvider provideNetworkProvider() {
         return new DefaultRxNetworkProvider(application, BuildConfig.DEBUG);
     }
 
     @Provides
     @ApplicationScope
-    public AccountService provideAccountService(RxNetworkProvider rxNetworkProvider) {
+    AccountService provideAccountService(RxNetworkProvider rxNetworkProvider, Credentials credentials) {
 
         AccountApi restService =
                 rxNetworkProvider
                         .addDefaultHeader()
-                        .addHeader("Authorization", PrefManager.getApiToken())
-                        .provideApi(PrefManager.getHost(), AccountApi.class);
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), AccountApi.class);
 
-        return new DefaultAccountService(rxNetworkProvider, restService);
+        return new DefaultAccountService(rxNetworkProvider, restService, credentials);
     }
 
 }

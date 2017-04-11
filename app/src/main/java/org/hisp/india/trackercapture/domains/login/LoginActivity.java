@@ -29,11 +29,10 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.main.MainActivity_;
-import org.hisp.india.trackercapture.models.Credentials;
 import org.hisp.india.trackercapture.models.User;
 import org.hisp.india.trackercapture.utils.AppUtils;
+import org.hisp.india.trackercapture.utils.Constants;
 import org.hisp.india.trackercapture.utils.NKeyboard;
-import org.hisp.india.trackercapture.utils.PrefManager;
 import org.hisp.india.trackercapture.utils.RxHelper;
 
 import java.util.List;
@@ -109,8 +108,8 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
         });
 
         //Auto fill host
-        if (!PrefManager.getHost().equals(PrefManager.HOST_DEFAULT)) {
-            etHost.setText(PrefManager.getHost());
+        if (!presenter.getCredential().getHost().equals(Constants.HOST_DEFAULT)) {
+            etHost.setText(presenter.getCredential().getHost());
         }
     }
 
@@ -177,12 +176,9 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
     void btLoginClick() {
         if (isValid) {
             if (llHost.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(etHost.getText())) {
-                PrefManager.setHost(etHost.getText().toString());
+                presenter.updateCredentialHost(etHost.getText().toString());
             }
-            Credentials credentials = new Credentials(etUsername.getText().toString(), etPassword.getText().toString());
-            PrefManager.setApiToken(credentials.genBasicToken());
-
-            presenter.updateCredentialAndLogin(PrefManager.getHost(), PrefManager.getApiToken());
+            presenter.updateCredentialTokenAndLogin(etUsername.getText().toString(), etPassword.getText().toString());
 
         }
     }
@@ -210,14 +206,11 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
     @Override
     public void loginSuccessful(User user) {
         Toast.makeText(application, "Login success", Toast.LENGTH_SHORT).show();
-        PrefManager.setUserInfo(user);
         MainActivity_.intent(this).start();
     }
 
     @Override
     public void loginError(Throwable throwable) {
         Toast.makeText(application, throwable.getMessage(), Toast.LENGTH_SHORT).show();
-        PrefManager.setApiToken(null);
-
     }
 }

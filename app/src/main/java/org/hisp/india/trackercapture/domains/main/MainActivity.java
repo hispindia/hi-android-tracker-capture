@@ -26,7 +26,6 @@ import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
 import org.hisp.india.trackercapture.models.User;
 import org.hisp.india.trackercapture.utils.AppUtils;
-import org.hisp.india.trackercapture.utils.PrefManager;
 
 import java.util.Arrays;
 
@@ -87,7 +86,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
         adapter.setSelected(MenuItem.ENROLL.ordinal());
 
         //Update info
-        User user = PrefManager.getUserInfo();
+        User user = presenter.getUserInfo();
         String character = "";
         if (user != null) {
             if (!TextUtils.isEmpty(user.getFirstName()) && !TextUtils.isEmpty(user.getSurName())) {
@@ -115,6 +114,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
     public void onItemSelected(MenuItem menuItem) {
         switch (menuItem) {
             case LOGOUT:
+                presenter.logout();
                 finish();
                 break;
         }

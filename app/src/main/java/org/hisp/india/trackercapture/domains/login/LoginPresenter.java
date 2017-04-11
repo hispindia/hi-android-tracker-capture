@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.domains.login;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
+import org.hisp.india.trackercapture.models.Credentials;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.utils.RxHelper;
 
@@ -18,14 +19,23 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
 
     @Inject
     AccountService accountService;
+
     private Subscription subscription;
 
     @Inject
     public LoginPresenter() {
     }
 
-    public void updateCredentialAndLogin(String host, String apiToken) {
-        accountService.updateCredential(host, apiToken);
+    public Credentials getCredential() {
+        return accountService.getCredentials();
+    }
+
+    public void updateCredentialHost(String host) {
+        accountService.updateCredentialHost(host);
+    }
+
+    public void updateCredentialTokenAndLogin(String username, String password) {
+        accountService.updateCredentialToken(username, password);
         login();
     }
 

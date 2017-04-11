@@ -4,34 +4,71 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.hannesdorfmann.mosby3.mvp.MvpActivity;
+
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.login.LoginActivity_;
 import org.hisp.india.trackercapture.domains.main.MainActivity_;
 import org.hisp.india.trackercapture.utils.AppUtils;
-import org.hisp.india.trackercapture.utils.PrefManager;
+
+import javax.inject.Inject;
 
 /**
  * Created by nhancao on 4/6/17.
  */
 
 @EActivity(R.layout.activity_splash)
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> implements SplashView {
 
     @ViewById(R.id.activity_splash_background)
     RelativeLayout rlBackground;
     @ViewById(R.id.activity_splash_iv_logo)
     ImageView ivLogo;
 
+    @App
+    MainApplication application;
+    @Inject
+    SplashPresenter presenter;
+
+    @AfterInject
+    void inject() {
+        DaggerSplashComponent.builder()
+                .applicationComponent(application.getApplicationComponent())
+                .build()
+                .inject(this);
+    }
+
     @AfterViews
     void init() {
         scaleUp();
+    }
+
+    @NonNull
+    @Override
+    public SplashPresenter createPresenter() {
+        return presenter;
+    }
+
+    @Override
+    public void goToMain() {
+        MainActivity_.intent(this).start();
+        finish();
+    }
+
+    @Override
+    public void goToLogin() {
+        LoginActivity_.intent(SplashActivity.this).start();
+        finish();
     }
 
     private void scaleUp() {
@@ -82,20 +119,10 @@ public class SplashActivity extends AppCompatActivity {
         animationSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                nextTransaction();
+                presenter.gotoNextScreen();
             }
         });
 
     }
-
-    private void nextTransaction() {
-        if (PrefManager.isLogin()) {
-            MainActivity_.intent(this).start();
-        } else {
-            LoginActivity_.intent(SplashActivity.this).start();
-        }
-        finish();
-    }
-
 
 }
