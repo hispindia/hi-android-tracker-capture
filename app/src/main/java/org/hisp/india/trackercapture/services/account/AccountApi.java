@@ -13,5 +13,7 @@ import rx.Observable;
 public interface AccountApi {
 
     @GET("api/me")
-    Observable<User> login(@Query("fields") String fields);
+    Observable<User> login(
+            @Query("fields")
+                    String fields);
 }

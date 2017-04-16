@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by nhancao on 4/16/17.
  */
 
-public class BaseModel implements Serializable{
+public class BaseModel implements Serializable {
 
     @SerializedName("id")
     private String id;

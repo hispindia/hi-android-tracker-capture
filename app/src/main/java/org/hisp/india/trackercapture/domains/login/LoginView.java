@@ -26,8 +26,6 @@ public interface LoginView extends MvpView {
 
     /**
      * Api error.
-     *
-     * @param throwable
      */
     void loginError(Throwable throwable);
 }

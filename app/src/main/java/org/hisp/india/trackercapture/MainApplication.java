@@ -33,19 +33,19 @@ public class MainApplication extends MultiDexApplication {
         super.onCreate();
 
         Hawk.init(this)
-                .setEncryptionMethod(HawkBuilder.EncryptionMethod.MEDIUM)
-                .setStorage(HawkBuilder.newSharedPrefStorage(this)).build();
+            .setEncryptionMethod(HawkBuilder.EncryptionMethod.MEDIUM)
+            .setStorage(HawkBuilder.newSharedPrefStorage(this)).build();
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/Montserrat-Regular.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build()
-        );
+                                              .setDefaultFontPath("fonts/Montserrat-Regular.ttf")
+                                              .setFontAttrId(R.attr.fontPath)
+                                              .build()
+                                     );
         Mint.initAndStartSession(this, "d80c7dbf");
 
         setApplicationComponent(DaggerApplicationComponent
-                .builder()
-                .applicationModule(new ApplicationModule(this))
-                .build());
+                                        .builder()
+                                        .applicationModule(new ApplicationModule(this))
+                                        .build());
 
         //The Realm file will be located in Context.getFilesDir() with name "default.realm"
         initRealmConfig();

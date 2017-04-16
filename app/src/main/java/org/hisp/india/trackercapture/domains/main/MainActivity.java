@@ -35,8 +35,9 @@ import java.util.Arrays;
 import javax.inject.Inject;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends BaseActivity<MainView, MainPresenter> implements MainView, DrawerAdapter.OnItemSelectedListener,
-                                                                                   NPermission.OnPermissionResult {
+public class MainActivity extends BaseActivity<MainView, MainPresenter>
+        implements MainView, DrawerAdapter.OnItemSelectedListener,
+                   NPermission.OnPermissionResult {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_main_toolbar)
@@ -52,9 +53,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
     @AfterInject
     void inject() {
         DaggerMainComponent.builder()
-                .applicationComponent(application.getApplicationComponent())
-                .build()
-                .inject(this);
+                           .applicationComponent(application.getApplicationComponent())
+                           .build()
+                           .inject(this);
     }
 
     @AfterViews
@@ -100,10 +101,10 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
         if (user != null) {
             if (!TextUtils.isEmpty(user.getFirstName()) && !TextUtils.isEmpty(user.getSurName())) {
                 character = String.valueOf(user.getFirstName().charAt(0)) +
-                        String.valueOf(user.getSurName().charAt(0));
+                            String.valueOf(user.getSurName().charAt(0));
             } else if (!TextUtils.isEmpty(user.getDisplayName()) && user.getDisplayName().length() > 1) {
                 character = String.valueOf(user.getDisplayName().charAt(0)) +
-                        String.valueOf(user.getDisplayName().charAt(1));
+                            String.valueOf(user.getDisplayName().charAt(1));
             }
             tvCharacterName.setText(character);
             tvDisplayName.setText(user.getDisplayName());
@@ -125,7 +126,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull
+                                                   String[] permissions,
+                                           @NonNull
+                                                   int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         nPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -163,8 +168,19 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
         }
     }
 
+    @Override
+    public void showLoading() {
+        showProgressLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressLoading();
+    }
+
     private DrawerItem createItemFor(MenuItem menuItem) {
         return new SimpleItem(menuItem.getTitle(), ContextCompat.getDrawable(this, menuItem.getIcon()));
     }
+
 
 }

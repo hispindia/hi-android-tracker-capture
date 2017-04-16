@@ -26,20 +26,14 @@ public class AppUtils {
 
     /**
      * Convert dp to pixel
-     *
-     * @param dp
-     * @param context
-     * @return
      */
     public static int convertDpToPixels(float dp, Context context) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+        return (int) TypedValue
+                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     /**
      * A method to find height of the status bar
-     *
-     * @param context
-     * @return
      */
     public static int getStatusBarHeight(Context context) {
         int result = 0;
@@ -73,11 +67,6 @@ public class AppUtils {
 
     /**
      * Apply animation on height of view
-     *
-     * @param view
-     * @param from
-     * @param to
-     * @param time
      */
     public static void animationHeight(final View view, int from, int to, int time) {
         ValueAnimator va = ValueAnimator.ofInt(from, to);
@@ -94,9 +83,6 @@ public class AppUtils {
 
     /**
      * Export database to sdcard for backup and debug
-     *
-     * @param context
-     * @param databaseName
      */
     public static void exportDatabase(Context context, String databaseName) {
         try {

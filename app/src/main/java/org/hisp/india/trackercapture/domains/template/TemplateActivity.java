@@ -29,9 +29,9 @@ public class TemplateActivity extends BaseActivity<TemplateView, TemplatePresent
     @AfterInject
     void inject() {
         DaggerTemplateComponent.builder()
-                .applicationComponent(application.getApplicationComponent())
-                .build()
-                .inject(this);
+                               .applicationComponent(application.getApplicationComponent())
+                               .build()
+                               .inject(this);
     }
 
     @AfterViews

@@ -8,7 +8,7 @@ import org.hisp.india.trackercapture.models.OrganizationUnit;
 
 public class TMapping {
 
-    public static TOrganizationUnit from(OrganizationUnit organizationUnit){
+    public static TOrganizationUnit from(OrganizationUnit organizationUnit) {
         TOrganizationUnit tOrganizationUnit = new TOrganizationUnit();
         tOrganizationUnit.setId(organizationUnit.getId());
         tOrganizationUnit.setDisplayName(organizationUnit.getDisplayName());

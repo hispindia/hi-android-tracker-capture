@@ -19,7 +19,9 @@ public enum MenuItem {
     private String title;
     private int icon;
 
-    MenuItem(String title, @DrawableRes int icon) {
+    MenuItem(String title,
+             @DrawableRes
+                     int icon) {
         this.title = title;
         this.icon = icon;
     }

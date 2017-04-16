@@ -28,7 +28,7 @@ public class NKeyboard implements ViewTreeObserver.OnGlobalLayoutListener {
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         keyBoardVisibleThreshold = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100,
-                activity.getResources().getDisplayMetrics());
+                                                                   activity.getResources().getDisplayMetrics());
     }
 
     public static void addListener(Activity act, NKeyboardListener listener) {
@@ -63,7 +63,7 @@ public class NKeyboard implements ViewTreeObserver.OnGlobalLayoutListener {
         View activityRoot = ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
         int visibleThreshold = Math
                 .round((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100,
-                        activity.getResources().getDisplayMetrics()));
+                                                       activity.getResources().getDisplayMetrics()));
 
         activityRoot.getWindowVisibleDisplayFrame(r);
 

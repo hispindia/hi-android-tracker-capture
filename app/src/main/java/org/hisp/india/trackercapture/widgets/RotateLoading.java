@@ -68,7 +68,8 @@ public class RotateLoading extends View {
         if (null != attrs) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.RotateLoading);
             color = typedArray.getColor(R.styleable.RotateLoading_loading_color, Color.WHITE);
-            width = typedArray.getDimensionPixelSize(R.styleable.RotateLoading_loading_width, dpToPx(context, DEFAULT_WIDTH));
+            width = typedArray
+                    .getDimensionPixelSize(R.styleable.RotateLoading_loading_width, dpToPx(context, DEFAULT_WIDTH));
             shadowPosition = typedArray.getInt(R.styleable.RotateLoading_shadow_position, DEFAULT_SHADOW_POSITION);
             typedArray.recycle();
         }
@@ -88,7 +89,8 @@ public class RotateLoading extends View {
         arc = 10;
 
         loadingRectF = new RectF(2 * width, 2 * width, w - 2 * width, h - 2 * width);
-        shadowRectF = new RectF(2 * width + shadowPosition, 2 * width + shadowPosition, w - 2 * width + shadowPosition, h - 2 * width + shadowPosition);
+        shadowRectF = new RectF(2 * width + shadowPosition, 2 * width + shadowPosition, w - 2 * width + shadowPosition,
+                                h - 2 * width + shadowPosition);
     }
 
 
@@ -196,7 +198,8 @@ public class RotateLoading extends View {
 
 
     public int dpToPx(Context context, float dpVal) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, context.getResources().getDisplayMetrics());
+        return (int) TypedValue
+                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, context.getResources().getDisplayMetrics());
     }
 
 }

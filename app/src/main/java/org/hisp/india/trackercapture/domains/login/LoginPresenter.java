@@ -43,11 +43,11 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
         RxScheduler.onStop(subscription);
         getView().showLoading();
         subscription = accountService.login()
-                .compose(RxScheduler.applyIoSchedulers())
-                .doOnTerminate(() -> getView().hideLoading())
-                .subscribe(user -> getView().loginSuccessful(user),
-                        throwable -> getView().loginError(throwable)
-                );
+                                     .compose(RxScheduler.applyIoSchedulers())
+                                     .doOnTerminate(() -> getView().hideLoading())
+                                     .subscribe(user -> getView().loginSuccessful(user),
+                                                throwable -> getView().loginError(throwable)
+                                               );
     }
 
 }

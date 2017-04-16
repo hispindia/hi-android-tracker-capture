@@ -43,9 +43,9 @@ public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> imp
     @AfterInject
     void inject() {
         DaggerSplashComponent.builder()
-                .applicationComponent(application.getApplicationComponent())
-                .build()
-                .inject(this);
+                             .applicationComponent(application.getApplicationComponent())
+                             .build()
+                             .inject(this);
     }
 
     @AfterViews
@@ -73,7 +73,8 @@ public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> imp
 
     private void scaleUp() {
 
-        ObjectAnimator animTranslationY = ObjectAnimator.ofFloat(ivLogo, "translationY", AppUtils.convertDpToPixels(153, this), 0);
+        ObjectAnimator animTranslationY = ObjectAnimator
+                .ofFloat(ivLogo, "translationY", AppUtils.convertDpToPixels(153, this), 0);
         animTranslationY.setDuration(700);
 
         ObjectAnimator animAlpha = ObjectAnimator.ofFloat(ivLogo, "alpha", 0, 1);
@@ -92,7 +93,8 @@ public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> imp
         animSlightBounceY.setDuration(600);
 
         final AnimatorSet animationSet = new AnimatorSet();
-        animationSet.playTogether(animScaleX, animScaleY, animAlpha, animTranslationY, animSlightBounceX, animSlightBounceY);
+        animationSet.playTogether(animScaleX, animScaleY, animAlpha, animTranslationY, animSlightBounceX,
+                                  animSlightBounceY);
         animationSet.start();
         animationSet.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -109,7 +111,8 @@ public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> imp
         ObjectAnimator animScaleY = ObjectAnimator.ofFloat(ivLogo, "scaleY", 1f, 0.6f);
         animScaleY.setDuration(1000);
 
-        ObjectAnimator animTranslationY = ObjectAnimator.ofFloat(ivLogo, "translationY", AppUtils.convertDpToPixels(-173, this));
+        ObjectAnimator animTranslationY = ObjectAnimator
+                .ofFloat(ivLogo, "translationY", AppUtils.convertDpToPixels(-173, this));
         ObjectAnimator animAlpha = ObjectAnimator.ofFloat(rlBackground, "alpha", 1, 0);
         animAlpha.setDuration(1000);
 
