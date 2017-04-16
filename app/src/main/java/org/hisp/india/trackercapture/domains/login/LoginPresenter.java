@@ -2,9 +2,9 @@ package org.hisp.india.trackercapture.domains.login;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
+import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.Credentials;
 import org.hisp.india.trackercapture.services.account.AccountService;
-import org.hisp.india.trackercapture.utils.RxHelper;
 
 import javax.inject.Inject;
 
@@ -40,10 +40,10 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
     }
 
     public void login() {
-        RxHelper.onStop(subscription);
+        RxScheduler.onStop(subscription);
         getView().showLoading();
         subscription = accountService.login()
-                .compose(RxHelper.applyIOSchedulers())
+                .compose(RxScheduler.applyIoSchedulers())
                 .doOnTerminate(() -> getView().hideLoading())
                 .subscribe(user -> getView().loginSuccessful(user),
                         throwable -> getView().loginError(throwable)

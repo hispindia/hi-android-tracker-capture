@@ -15,6 +15,9 @@ import org.hisp.india.trackercapture.services.account.AccountApi;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.account.DefaultAccountService;
 import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
+import org.hisp.india.trackercapture.services.organization.DefaultOrganizationService;
+import org.hisp.india.trackercapture.services.organization.OrganizationApi;
+import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.utils.Constants;
 
 import java.io.IOException;
@@ -83,6 +86,20 @@ public class ApplicationModule {
                         .provideApi(credentials.getHost(), AccountApi.class);
 
         return new DefaultAccountService(rxNetworkProvider, restService, credentials, apiErrorFilter);
+    }
+
+    @Provides
+    @ApplicationScope
+    public OrganizationService provideOrganizationService(NetworkProvider rxNetworkProvider, Credentials credentials,
+                                                          ApiErrorFilter apiErrorFilter) {
+
+        OrganizationApi restService =
+                rxNetworkProvider
+                        .addDefaultHeader()
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), OrganizationApi.class);
+
+        return new DefaultOrganizationService(rxNetworkProvider, restService, apiErrorFilter);
     }
 
 }

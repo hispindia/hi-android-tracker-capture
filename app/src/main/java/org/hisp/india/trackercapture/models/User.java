@@ -9,14 +9,10 @@ import java.util.List;
  * Created by nhancao on 4/9/17.
  */
 
-public class User implements Serializable {
+public class User extends BaseModel implements Serializable {
 
     @SerializedName("name")
     private String name;
-    @SerializedName("id")
-    private String id;
-    @SerializedName("displayName")
-    private String displayName;
     @SerializedName("firstName")
     private String firstName;
     @SerializedName("surname")
@@ -24,18 +20,10 @@ public class User implements Serializable {
     @SerializedName("email")
     private String email;
     @SerializedName("organisationUnits")
-    private List<OrganisationUnit> organisationUnits;
+    private List<OrganizationUnit> organizationUnits;
 
     public String getName() {
         return name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 
     public String getFirstName() {
@@ -50,20 +38,18 @@ public class User implements Serializable {
         return email;
     }
 
-    public List<OrganisationUnit> getOrganisationUnits() {
-        return organisationUnits;
+    public List<OrganizationUnit> getOrganizationUnits() {
+        return organizationUnits;
     }
 
     @Override
     public String toString() {
         return "UserResponse{" +
-                "name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                ", displayName='" + displayName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", surName='" + surName + '\'' +
-                ", email='" + email + '\'' +
-                ", organisationUnits=" + organisationUnits +
-                '}';
+               "name='" + name + '\'' +
+               ", firstName='" + firstName + '\'' +
+               ", surName='" + surName + '\'' +
+               ", email='" + email + '\'' +
+               ", organisationUnits=" + organizationUnits +
+               '}';
     }
 }

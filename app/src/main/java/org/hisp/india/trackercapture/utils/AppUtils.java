@@ -5,16 +5,24 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Environment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 
 /**
  * Created by nhancao on 4/5/17.
  */
 
 public class AppUtils {
+    private static final String TAG = AppUtils.class.getSimpleName();
 
     /**
      * Convert dp to pixel
@@ -83,4 +91,39 @@ public class AppUtils {
         });
         va.start();
     }
+
+    /**
+     * Export database to sdcard for backup and debug
+     *
+     * @param context
+     * @param databaseName
+     */
+    public static void exportDatabase(Context context, String databaseName) {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            if (sd.canWrite()) {
+                String currentDBPath = "//data//" + context.getPackageName() + "//files//" + databaseName;
+                File currentDB = new File(data, currentDBPath);
+                File backupDB = new File(sd, databaseName);
+
+                if (currentDB.exists()) {
+                    FileChannel src = new FileInputStream(currentDB).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                    Log.e(TAG, "exportDatabase: Db file has been backup on sdcard");
+                } else {
+                    Log.e(TAG, "exportDatabase: current db not exists");
+                }
+            } else {
+                Log.e(TAG, "exportDatabase: Sdcard can not Write");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

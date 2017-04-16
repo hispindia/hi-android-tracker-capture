@@ -7,4 +7,14 @@ import com.hannesdorfmann.mosby3.mvp.MvpView;
  */
 
 public interface MainView extends MvpView {
+    /**
+     * Display a loading view while loading data in background.
+     */
+    void showLoading();
+
+    /**
+     * Display a loading view while loading data in background.
+     */
+    void hideLoading();
+
 }

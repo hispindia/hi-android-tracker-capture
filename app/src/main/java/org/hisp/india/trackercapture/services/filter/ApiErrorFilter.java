@@ -10,6 +10,7 @@ import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.BuildConfig;
 
+import es.dmoral.toasty.Toasty;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 
@@ -41,20 +42,20 @@ public class ApiErrorFilter implements InterceptFilter {
                                  .show();
                             break;
                         case PRODUCTION:
-                            logService.log(throwable.toString());
                             if (throwable instanceof ApiException) {
                                 int code = ((ApiException) throwable).getCode();
                                 if (code == ErrorCodes.NETWORK_NOT_AVAILABLE_ERROR) {
-                                    Toast.makeText(networkProvider.getContext(), "Oops! Network error",
-                                                   Toast.LENGTH_SHORT).show();
+                                    Toasty.error(networkProvider.getContext(), "Oops! Network error.",
+                                                 Toast.LENGTH_SHORT, true).show();
                                 } else {
-                                    Toast.makeText(networkProvider.getContext(), "Oops! Something error?",
-                                                   Toast.LENGTH_SHORT)
-                                         .show();
+                                    logService.log(throwable.toString());
+                                    Toasty.error(networkProvider.getContext(), "Oops! Something error?",
+                                                 Toast.LENGTH_SHORT, true).show();
                                 }
                             } else {
-                                Toast.makeText(networkProvider.getContext(), "Oops! Something error?",
-                                               Toast.LENGTH_SHORT).show();
+                                logService.log(throwable.toString());
+                                Toasty.error(networkProvider.getContext(), "Oops! Something error?",
+                                             Toast.LENGTH_SHORT, true).show();
                             }
                             break;
                     }

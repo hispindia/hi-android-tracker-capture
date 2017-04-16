@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +26,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.TextChange;
 import org.androidannotations.annotations.ViewById;
+import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
@@ -33,7 +35,6 @@ import org.hisp.india.trackercapture.models.User;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.utils.Constants;
 import org.hisp.india.trackercapture.utils.NKeyboard;
-import org.hisp.india.trackercapture.utils.RxHelper;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +45,8 @@ import rx.Observable;
 import rx.Subscription;
 
 @EActivity(R.layout.activity_login)
-public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> implements LoginView, Validator.ValidationListener {
+public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
+        implements LoginView, Validator.ValidationListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_login_ll_host)
@@ -86,9 +88,9 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
     @AfterInject
     void inject() {
         DaggerLoginComponent.builder()
-                .applicationComponent(application.getApplicationComponent())
-                .build()
-                .inject(this);
+                            .applicationComponent(application.getApplicationComponent())
+                            .build()
+                            .inject(this);
     }
 
     @AfterViews
@@ -99,7 +101,22 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
 
         NKeyboard.addListener(this, (isVisible, screenHeight, keyboardHeight) -> {
             if (isVisible && keyboardHeight > 0) {
-                ObjectAnimator.ofInt(rootScroll, "scrollY", keyboardHeight).setDuration(500).start();
+
+                int offset = AppUtils.convertDpToPixels(228, this);
+                View view = getCurrentFocus();
+                if (view != null) {
+                    if (view == etUsername) {
+                        offset = AppUtils.convertDpToPixels(164, this);
+                    } else if (view == etPassword) {
+                        if (llHost.getVisibility() == View.VISIBLE) {
+                            offset = AppUtils.convertDpToPixels(100, this);
+                        } else {
+                            offset = AppUtils.convertDpToPixels(100, this);
+                        }
+                    }
+                }
+                Log.e(TAG, "init:offset " + offset);
+                ObjectAnimator.ofInt(rootScroll, "scrollY", offset).setDuration(500).start();
                 AppUtils.animationHeight(vBottomSpace, 0, keyboardHeight, 500);
             } else {
                 ObjectAnimator.ofInt(rootScroll, "scrollY", 0).setDuration(500).start();
@@ -166,11 +183,11 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter> imple
             llHost.setVisibility(View.GONE);
         }
 
-        RxHelper.onStop(subscription);
+        RxScheduler.onStop(subscription);
         subscription = Observable.empty()
-                .delay(2, TimeUnit.SECONDS)
-                .doOnTerminate(() -> tapCounter = 0)
-                .subscribe();
+                                 .delay(2, TimeUnit.SECONDS)
+                                 .doOnTerminate(() -> tapCounter = 0)
+                                 .subscribe();
 
     }
 

@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.domains.main;
 
+import android.Manifest;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.TextView;
 
+import com.nhancv.npermission.NPermission;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 import com.yarolegovich.slidingrootnav.SlidingRootNavLayout;
 
@@ -33,7 +35,8 @@ import java.util.Arrays;
 import javax.inject.Inject;
 
 @EActivity(R.layout.activity_main)
-public class MainActivity extends BaseActivity<MainView, MainPresenter> implements MainView, DrawerAdapter.OnItemSelectedListener {
+public class MainActivity extends BaseActivity<MainView, MainPresenter> implements MainView, DrawerAdapter.OnItemSelectedListener,
+                                                                                   NPermission.OnPermissionResult {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_main_toolbar)
@@ -43,6 +46,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
     MainApplication application;
     @Inject
     MainPresenter presenter;
+
+    private NPermission nPermission;
 
     @AfterInject
     void inject() {
@@ -54,6 +59,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
 
     @AfterViews
     void init() {
+        //@nhancv TODO: force request sdcard permission
+        nPermission = new NPermission(true);
+
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
@@ -102,13 +110,46 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
             tvEmail.setText(user.getEmail());
         }
 
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     @NonNull
     @Override
     public MainPresenter createPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        nPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onPermissionResult(String permission, boolean isGranted) {
+        switch (permission) {
+            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                if (isGranted) {
+                    nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                } else {
+                    nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+                break;
+            case Manifest.permission.READ_EXTERNAL_STORAGE:
+                if (isGranted) {
+                    //@nhancv TODO: after get all required permission
+                    application.initRealmConfig();
+                    presenter.getOrganizations();
+                } else {
+                    nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                }
+                break;
+        }
     }
 
     @Override

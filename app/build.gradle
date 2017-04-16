@@ -22,6 +22,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'android-apt'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'realm-android'
 
 android {
 
@@ -175,5 +176,7 @@ dependencies {
     compile dependency.npermission
     //Navigator
     compile dependency.navigator
+    //Alerter
+    compile dependency.toasty
 
 }
