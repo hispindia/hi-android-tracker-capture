@@ -136,7 +136,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:2.7.22'
     testApt 'com.google.dagger:dagger-compiler:2.0'
-
+    androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'org.mockito:mockito-core:2.7.22'
     androidTestCompile 'com.linkedin.dexmaker:dexmaker:2.2.0'
     androidTestCompile 'com.linkedin.dexmaker:dexmaker-mockito:2.2.0'

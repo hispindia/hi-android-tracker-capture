@@ -17,13 +17,13 @@ import rx.Subscription;
 public class LoginPresenter extends MvpBasePresenter<LoginView> {
     private static final String TAG = LoginPresenter.class.getSimpleName();
 
-    @Inject
-    AccountService accountService;
+    private AccountService accountService;
 
     private Subscription subscription;
 
     @Inject
-    public LoginPresenter() {
+    public LoginPresenter(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     public Credentials getCredential() {
@@ -39,7 +39,7 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
         login();
     }
 
-    private void login() {
+    public void login() {
         RxHelper.onStop(subscription);
         getView().showLoading();
         subscription = accountService.login()

@@ -2,13 +2,14 @@ package org.hisp.india.trackercapture.services.account;
 
 import com.orhanobut.hawk.Hawk;
 
-import org.hisp.india.core.services.network.RxNetworkProvider;
+import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.Credentials;
 import org.hisp.india.trackercapture.models.User;
+import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
+import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 import org.hisp.india.trackercapture.utils.Constants;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by nhancao on 4/9/17.
@@ -16,14 +17,17 @@ import rx.schedulers.Schedulers;
 
 public class DefaultAccountService implements AccountService {
 
-    private RxNetworkProvider networkProvider;
+    private NetworkProvider networkProvider;
     private AccountApi restService;
     private Credentials credentials;
+    private ApiErrorFilter apiErrorFilter;
 
-    public DefaultAccountService(RxNetworkProvider networkProvider, AccountApi restService, Credentials credentials) {
+    public DefaultAccountService(NetworkProvider networkProvider, AccountApi restService, Credentials credentials,
+                                 ApiErrorFilter apiErrorFilter) {
         this.networkProvider = networkProvider;
         this.restService = restService;
         this.credentials = credentials;
+        this.apiErrorFilter = apiErrorFilter;
     }
 
     @Override
@@ -52,7 +56,6 @@ public class DefaultAccountService implements AccountService {
     @Override
     public void updateCredentialToken(String username, String password) {
         credentials.setApiToken(username, password);
-
         restService = networkProvider
                 .addDefaultHeader()
                 .addHeader("Authorization", credentials.getApiToken())
@@ -65,13 +68,9 @@ public class DefaultAccountService implements AccountService {
         return networkProvider
                 .transformResponse(restService.login(
                         "id,created,lastUpdated,name,displayName,firstName,surname,gender,birthday,introduction,education,employer,interests,jobTitle,languages,email,phoneNumber,teiSearchOrganisationUnits[id],organisationUnits[id]"
-                ))
-                .observeOn(Schedulers.computation())
-                .flatMap(user -> {
-                    credentials.setUserInfo(user);
-                    Hawk.put(Constants.CREDENTIALS, credentials);
-                    return Observable.just(user);
-                });
+                                                    ))
+                .compose(new AuthenticationSuccessFilter(credentials).execute())
+                .compose(apiErrorFilter.execute());
     }
 
     @Override

@@ -2,8 +2,9 @@ package org.hisp.india.trackercapture.di;
 
 import org.hisp.india.core.di.ApplicationScope;
 import org.hisp.india.core.services.log.LogService;
-import org.hisp.india.core.services.network.RxNetworkProvider;
+import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.services.account.AccountService;
+import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 
 import dagger.Component;
 
@@ -17,7 +18,9 @@ public interface ApplicationComponent {
 
     LogService logService();
 
-    RxNetworkProvider networkProvider();
+    NetworkProvider networkProvider();
+
+    ApiErrorFilter apiErrorFilter();
 
     AccountService accountService();
 }

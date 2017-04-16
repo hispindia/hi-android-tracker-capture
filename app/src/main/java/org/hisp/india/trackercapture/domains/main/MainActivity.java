@@ -19,6 +19,7 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
+import org.hisp.india.trackercapture.domains.login.LoginActivity_;
 import org.hisp.india.trackercapture.domains.menu.DrawerAdapter;
 import org.hisp.india.trackercapture.domains.menu.DrawerItem;
 import org.hisp.india.trackercapture.domains.menu.MenuItem;
@@ -115,6 +116,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter> implemen
         switch (menuItem) {
             case LOGOUT:
                 presenter.logout();
+                LoginActivity_.intent(this).start();
                 finish();
                 break;
         }
