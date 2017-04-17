@@ -178,5 +178,7 @@ dependencies {
     compile dependency.navigator
     //Alerter
     compile dependency.toasty
+    //Realm browser
+    compile dependency.realmBrowser
 
 }

@@ -2,7 +2,10 @@ package org.hisp.india.trackercapture;
 
 import android.os.Environment;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
+import com.nhancv.realmbowser.NRealmDiscovery;
+import com.nhancv.realmbowser.NRealmServer;
 import com.orhanobut.hawk.Hawk;
 import com.orhanobut.hawk.HawkBuilder;
 import com.splunk.mint.Mint;
@@ -25,6 +28,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 @EApplication
 public class MainApplication extends MultiDexApplication {
+    private static final String TAG = MainApplication.class.getSimpleName();
 
     private ApplicationComponent applicationComponent;
 
@@ -40,6 +44,7 @@ public class MainApplication extends MultiDexApplication {
                                               .setFontAttrId(R.attr.fontPath)
                                               .build()
                                      );
+        Mint.disableNetworkMonitoring();
         Mint.initAndStartSession(this, "d80c7dbf");
 
         setApplicationComponent(DaggerApplicationComponent
@@ -50,6 +55,14 @@ public class MainApplication extends MultiDexApplication {
         //The Realm file will be located in Context.getFilesDir() with name "default.realm"
         initRealmConfig();
 
+    }
+
+    @Override
+    public void onTerminate() {
+        if (NRealmServer.isStart()) {
+            NRealmServer.stop();
+        }
+        super.onTerminate();
     }
 
     public boolean initRealmConfig() {
@@ -68,9 +81,20 @@ public class MainApplication extends MultiDexApplication {
                     .migration(new RMigration())
                     .build();
             Realm.setDefaultConfiguration(config);
+
+            //Start realm browser
+//            startRealmBrowserServer(config);
+
             success = true;
         }
         return success;
+    }
+
+    private void startRealmBrowserServer(RealmConfiguration config) {
+        NRealmServer.init(new NRealmDiscovery(this, config));
+        NRealmServer.start();
+        String address = NRealmServer.getServerAddress(this);
+        Log.e(TAG, "Server address: " + address);
     }
 
     public ApplicationComponent getApplicationComponent() {

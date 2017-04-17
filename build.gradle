@@ -36,6 +36,7 @@ buildscript {
 
         navigatorVersion = '1.0.2'
         toastyVersion = '1.1.5'
+        realmBrowserVersion = '1.2.1'
 
         //Configuration.
         config = [
@@ -107,16 +108,18 @@ buildscript {
                 hawk                     : "com.github.orhanobut:hawk:${hawkVersion}",
 
                 //Permissions
-                npermission              : "com.github.nhancv:nc-android-npermission:${npermissionVersion}",
+                npermission : "com.github.nhancv:nc-android-npermission:${npermissionVersion}",
 
                 //MVP
-                mvp                      : "com.hannesdorfmann.mosby3:mvp:${mvpVersion}",
-                mvpViewState             : "com.hannesdorfmann.mosby3:viewstate:${mvpViewStateVersion}",
+                mvp         : "com.hannesdorfmann.mosby3:mvp:${mvpVersion}",
+                mvpViewState: "com.hannesdorfmann.mosby3:viewstate:${mvpViewStateVersion}",
 
                 //Navigator
-                navigator                : "com.yarolegovich:sliding-root-nav:${navigatorVersion}",
+                navigator   : "com.yarolegovich:sliding-root-nav:${navigatorVersion}",
                 //Toasty
-                toasty                   : "com.github.GrenderG:Toasty:${toastyVersion}"
+                toasty      : "com.github.GrenderG:Toasty:${toastyVersion}",
+                //Realm browser
+                realmBrowser: "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}"
         ]
     }
 
