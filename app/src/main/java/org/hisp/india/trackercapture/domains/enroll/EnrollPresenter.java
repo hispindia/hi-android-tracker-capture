@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import ru.terrakok.cicerone.Router;
 
 /**
  * Created by nhancao on 5/5/17.
@@ -22,13 +23,15 @@ import io.realm.RealmResults;
 public class EnrollPresenter extends MvpBasePresenter<EnrollView> {
     private static final String TAG = EnrollPresenter.class.getSimpleName();
 
+    private Router router;
+
     private OrganizationService organizationService;
     private Realm realm;
-
     private RealmResults<TOrganizationUnit> tOrganizationUnits;
 
     @Inject
-    public EnrollPresenter(OrganizationService organizationService) {
+    public EnrollPresenter(Router router, OrganizationService organizationService) {
+        this.router = router;
         this.organizationService = organizationService;
     }
 

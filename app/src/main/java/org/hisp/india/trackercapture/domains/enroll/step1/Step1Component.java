@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.enroll;
+package org.hisp.india.trackercapture.domains.enroll.step1;
 
 import org.hisp.india.core.di.ActivityScope;
 import org.hisp.india.trackercapture.di.ApplicationComponent;
@@ -18,8 +18,8 @@ import dagger.Component;
                 NavigationModule.class,
                 LocalNavigationModule.class
         })
-public interface EnrollComponent {
-    EnrollPresenter presenter();
+public interface Step1Component {
+    Step1Presenter presenter();
 
-    void inject(EnrollActivity enrollActivity);
+    void inject(Step1Fragment step1Fragment);
 }
