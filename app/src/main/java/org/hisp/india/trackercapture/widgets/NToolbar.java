@@ -43,30 +43,49 @@ public class NToolbar extends RelativeLayout {
         }
     }
 
-    //Update for main ui
-    public void applyMainUi(AppCompatActivity activity, String title, MainItemClick itemClick) {
+
+    public void applyTemplatelUi(AppCompatActivity activity, String title, TemplateToolbarItemClick itemClick) {
         //Setup toolbar
         applyCommonUi(activity);
 
         tvTitle.setText(title);
-        toolbarIcon.setVisibility(View.VISIBLE);
-        toolbarClose.setVisibility(View.GONE);
-        toolbarSetting.setVisibility(View.VISIBLE);
+        toolbarIcon.setVisibility(View.GONE);
+        toolbarClose.setVisibility(View.VISIBLE);
+        toolbarSetting.setVisibility(View.GONE);
 
-        toolbarIcon.setOnClickListener(v -> {
-            itemClick.toolbarIconClick();
-        });
-        toolbarSetting.setOnClickListener(v -> {
-            itemClick.toolbarProfileClick();
+        toolbarClose.setOnClickListener(v -> {
+            itemClick.toolbarCloseClick();
         });
 
     }
 
+    public void applyEnrollUi(AppCompatActivity activity, String title, EnrollToolbarItemClick itemClick) {
+        //Setup toolbar
+        applyCommonUi(activity);
 
-    public interface MainItemClick {
-        void toolbarIconClick();
+        tvTitle.setText(title);
+        toolbarIcon.setVisibility(View.GONE);
+        toolbarClose.setVisibility(View.VISIBLE);
+        toolbarSetting.setVisibility(View.VISIBLE);
 
-        void toolbarProfileClick();
+        toolbarClose.setOnClickListener(v -> {
+            itemClick.toolbarCloseClick();
+        });
+        toolbarSetting.setOnClickListener(v -> {
+            itemClick.toolbarSettingClick();
+        });
+
+    }
+
+    public interface TemplateToolbarItemClick {
+        void toolbarCloseClick();
+    }
+
+
+    public interface EnrollToolbarItemClick {
+        void toolbarCloseClick();
+
+        void toolbarSettingClick();
     }
 
 }

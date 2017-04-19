@@ -37,6 +37,7 @@ buildscript {
         navigatorVersion = '1.0.2'
         toastyVersion = '1.1.5'
         realmBrowserVersion = '1.2.1'
+        ciceroneVersion = '1.2.1'
 
         //Configuration.
         config = [
@@ -96,16 +97,16 @@ buildscript {
                 baseAdapter              : "com.joanzapata.android:base-adapter-helper:${baseAdapterVersion}",
 
                 //UI Validations
-                saripaar                 : "com.mobsandgeeks:android-saripaar:${saripaarVersion}",
+                saripaar    : "com.mobsandgeeks:android-saripaar:${saripaarVersion}",
 
                 //Fonts
-                calligraphy              : "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
+                calligraphy : "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
 
                 //Date times
-                joda                     : "net.danlew:android.joda:${jodaVersion}",
+                joda        : "net.danlew:android.joda:${jodaVersion}",
 
                 //Pref storage
-                hawk                     : "com.github.orhanobut:hawk:${hawkVersion}",
+                hawk        : "com.github.orhanobut:hawk:${hawkVersion}",
 
                 //Permissions
                 npermission : "com.github.nhancv:nc-android-npermission:${npermissionVersion}",
@@ -119,7 +120,9 @@ buildscript {
                 //Toasty
                 toasty      : "com.github.GrenderG:Toasty:${toastyVersion}",
                 //Realm browser
-                realmBrowser: "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}"
+                realmBrowser: "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}",
+                //Cicerone
+                cicerone    : "ru.terrakok.cicerone:cicerone:${ciceroneVersion}"
         ]
     }
 

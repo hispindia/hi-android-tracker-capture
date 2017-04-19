@@ -180,5 +180,6 @@ dependencies {
     compile dependency.toasty
     //Realm browser
     compile dependency.realmBrowser
-
+    //Cicerone
+    compile dependency.cicerone
 }

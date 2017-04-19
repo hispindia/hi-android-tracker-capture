@@ -195,7 +195,14 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     void btLoginClick() {
         if (isValid) {
             if (llHost.getVisibility() == View.VISIBLE && !TextUtils.isEmpty(etHost.getText())) {
-                presenter.updateCredentialHost(etHost.getText().toString());
+                String host = etHost.getText().toString();
+                if (!host.contains("http")) {
+                    host = "http://" + host;
+                }
+                if (host.charAt(host.length() - 1) != '/') {
+                    host += "/";
+                }
+                presenter.updateCredentialHost(host);
             }
             presenter.updateCredentialTokenAndLogin(etUsername.getText().toString(), etPassword.getText().toString());
 

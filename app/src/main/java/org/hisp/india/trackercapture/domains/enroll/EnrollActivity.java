@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.template;
+package org.hisp.india.trackercapture.domains.enroll;
 
 import android.support.annotation.NonNull;
 
@@ -15,23 +15,23 @@ import org.hisp.india.trackercapture.widgets.NToolbar;
 
 import javax.inject.Inject;
 
-@EActivity(R.layout.activity_template)
-public class TemplateActivity extends BaseActivity<TemplateView, TemplatePresenter> implements TemplateView {
+@EActivity(R.layout.activity_enroll)
+public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> implements EnrollView {
 
-    @ViewById(R.id.activity_main_toolbar)
+    @ViewById(R.id.activity_enroll_toolbar)
     NToolbar toolbar;
 
     @App
     MainApplication application;
     @Inject
-    TemplatePresenter presenter;
+    EnrollPresenter presenter;
 
     @AfterInject
     void inject() {
-        DaggerTemplateComponent.builder()
-                               .applicationComponent(application.getApplicationComponent())
-                               .build()
-                               .inject(this);
+        DaggerEnrollComponent.builder()
+                             .applicationComponent(application.getApplicationComponent())
+                             .build()
+                             .inject(this);
     }
 
     @AfterViews
@@ -39,8 +39,16 @@ public class TemplateActivity extends BaseActivity<TemplateView, TemplatePresent
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
-        toolbar.applyTemplatelUi(this, "Main", () -> {
+        toolbar.applyEnrollUi(this, "Enroll", new NToolbar.EnrollToolbarItemClick() {
+            @Override
+            public void toolbarCloseClick() {
+                finish();
+            }
 
+            @Override
+            public void toolbarSettingClick() {
+
+            }
         });
         //Update other things here
 
@@ -48,8 +56,18 @@ public class TemplateActivity extends BaseActivity<TemplateView, TemplatePresent
 
     @NonNull
     @Override
-    public TemplatePresenter createPresenter() {
+    public EnrollPresenter createPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressLoading();
+    }
+
+    @Override
+    public void hideLoading() {
+        hideProgressLoading();
     }
 
 }

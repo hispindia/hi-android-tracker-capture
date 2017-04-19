@@ -21,6 +21,7 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
+import org.hisp.india.trackercapture.domains.enroll.EnrollActivity_;
 import org.hisp.india.trackercapture.domains.login.LoginActivity_;
 import org.hisp.india.trackercapture.domains.menu.DrawerAdapter;
 import org.hisp.india.trackercapture.domains.menu.DrawerItem;
@@ -93,8 +94,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setAdapter(adapter);
 
-        adapter.setSelected(MenuItem.ENROLL.ordinal());
-
         //Update info
         User user = presenter.getUserInfo();
         String character = "";
@@ -160,6 +159,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Override
     public void onItemSelected(MenuItem menuItem) {
         switch (menuItem) {
+            case ENROLL:
+                EnrollActivity_.intent(this).start();
+                break;
             case LOGOUT:
                 presenter.logout();
                 LoginActivity_.intent(this).start();
