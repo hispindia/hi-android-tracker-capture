@@ -13,6 +13,7 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll.step1.Step1Fragment;
+import org.hisp.india.trackercapture.domains.enroll.step2.Step2Fragment;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
@@ -20,7 +21,6 @@ import org.hisp.india.trackercapture.widgets.NToolbar;
 import javax.inject.Inject;
 
 import ru.terrakok.cicerone.Navigator;
-import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.android.SupportFragmentNavigator;
 import ru.terrakok.cicerone.commands.Replace;
 
@@ -35,23 +35,33 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
     MainApplication application;
     @Inject
     EnrollPresenter presenter;
-    @Inject
-    NavigatorHolder navigatorHolder;
 
     private Navigator navigator = new SupportFragmentNavigator(getSupportFragmentManager(), R.id.main_container) {
+        private String currentScreenKey;
+
         @Override
         protected Fragment createFragment(String screenKey, Object data) {
-            return Step1Fragment.getNewInstance((int) data);
+            this.currentScreenKey = screenKey;
+            if (screenKey.equals(Screens.STEP1_SCREEN)) {
+                return Step1Fragment.getNewInstance();
+            } else if (screenKey.equals(Screens.STEP2_SCREEN)) {
+                return Step2Fragment.getNewInstance();
+            }
+            return null;
         }
 
         @Override
         protected void showSystemMessage(String message) {
-            Toast.makeText(EnrollActivity.this, message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(application, message, Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected void exit() {
-            finish();
+            if (currentScreenKey != null && currentScreenKey.equals(Screens.STEP1_SCREEN)) {
+                finish();
+            } else {
+                applyCommand(new Replace(Screens.STEP1_SCREEN, null));
+            }
         }
 
     };
@@ -72,35 +82,28 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
         toolbar.applyEnrollUi(this, "Enroll", new NToolbar.EnrollToolbarItemClick() {
             @Override
             public void toolbarCloseClick() {
-                finish();
+                presenter.onBackCommandClick();
             }
 
             @Override
             public void toolbarSettingClick() {
-
+                presenter.gotoStep2Fragment();
             }
         });
-        //Update other things here
-        navigator.applyCommand(new Replace(Screens.SAMPLE_SCREEN, 1));
 
-    }
+        presenter.gotoStep1Fragment();
 
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-        navigatorHolder.setNavigator(navigator);
-    }
-
-    @Override
-    protected void onPause() {
-        navigatorHolder.removeNavigator();
-        super.onPause();
     }
 
     @NonNull
     @Override
     public EnrollPresenter createPresenter() {
         return presenter;
+    }
+
+    @Override
+    public Navigator getNavigator() {
+        return navigator;
     }
 
     @Override

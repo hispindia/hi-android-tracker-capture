@@ -8,12 +8,14 @@ import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.OrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.TMapping;
 import org.hisp.india.trackercapture.models.storage.TOrganizationUnit;
+import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
 
 import javax.inject.Inject;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
 
 /**
@@ -23,6 +25,7 @@ import ru.terrakok.cicerone.Router;
 public class EnrollPresenter extends MvpBasePresenter<EnrollView> {
     private static final String TAG = EnrollPresenter.class.getSimpleName();
 
+    private NavigatorHolder navigatorHolder;
     private Router router;
 
     private OrganizationService organizationService;
@@ -30,21 +33,36 @@ public class EnrollPresenter extends MvpBasePresenter<EnrollView> {
     private RealmResults<TOrganizationUnit> tOrganizationUnits;
 
     @Inject
-    public EnrollPresenter(Router router, OrganizationService organizationService) {
+    public EnrollPresenter(Router router, NavigatorHolder navigatorHolder, OrganizationService organizationService) {
         this.router = router;
         this.organizationService = organizationService;
+        this.navigatorHolder = navigatorHolder;
     }
 
     @Override
     public void attachView(EnrollView view) {
         super.attachView(view);
         realm = Realm.getDefaultInstance();
+        navigatorHolder.setNavigator(view.getNavigator());
     }
 
     @Override
     public void detachView(boolean retainInstance) {
-        super.detachView(retainInstance);
         realm.close();
+        navigatorHolder.removeNavigator();
+        super.detachView(retainInstance);
+    }
+
+    public void onBackCommandClick() {
+        router.exit();
+    }
+
+    public void gotoStep1Fragment() {
+        router.replaceScreen(Screens.STEP1_SCREEN);
+    }
+
+    public void gotoStep2Fragment() {
+        router.replaceScreen(Screens.STEP2_SCREEN);
     }
 
     public void getOrganizations() {

@@ -1,4 +1,6 @@
-package org.hisp.india.trackercapture.domains.enroll.step1;
+package org.hisp.india.trackercapture.domains.enroll.step2;
+
+import android.os.Bundle;
 
 import com.hannesdorfmann.mosby3.mvp.MvpFragment;
 
@@ -7,6 +9,8 @@ import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EFragment;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
+import org.hisp.india.trackercapture.domains.enroll.step1.DaggerStep1Component;
+import org.hisp.india.trackercapture.domains.enroll.step1.Step1Fragment_;
 
 import javax.inject.Inject;
 
@@ -14,28 +18,28 @@ import javax.inject.Inject;
  * Created by nhancao on 4/20/17.
  */
 
-@EFragment(R.layout.fragment_step1)
-public class Step1Fragment extends MvpFragment<Step1View, Step1Presenter> implements Step1View {
+@EFragment(R.layout.fragment_step2)
+public class Step2Fragment extends MvpFragment<Step2View, Step2Presenter> implements Step2View {
 
     @App
     MainApplication application;
     @Inject
-    Step1Presenter presenter;
+    Step2Presenter presenter;
 
-    public static Step1Fragment getNewInstance() {
-        return new Step1Fragment_();
+    public static Step2Fragment getNewInstance() {
+        return new Step2Fragment_();
     }
 
     @AfterInject
     void inject() {
-        DaggerStep1Component.builder()
+        DaggerStep2Component.builder()
                             .applicationComponent(application.getApplicationComponent())
                             .build()
                             .inject(this);
     }
 
     @Override
-    public Step1Presenter createPresenter() {
+    public Step2Presenter createPresenter() {
         return presenter;
     }
 
