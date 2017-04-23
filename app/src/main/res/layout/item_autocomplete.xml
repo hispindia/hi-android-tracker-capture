@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#0e181e"
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix"
+    >
+
+    <TextView
+        android:id="@+id/item_autocomplete_tv_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="9.2dp"
+        android:layout_marginLeft="12.5dp"
+        android:layout_marginRight="12.5dp"
+        android:layout_marginTop="14.2dp"
+        android:text="India"
+        android:textColor="#9ea8b2"
+        android:textSize="12.5sp"
+        app:fontPath="fonts/Montserrat-Regular.ttf"
+        />
+</LinearLayout>
