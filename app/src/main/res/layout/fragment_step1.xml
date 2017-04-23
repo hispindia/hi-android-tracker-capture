@@ -6,11 +6,12 @@
     android:orientation="vertical"
     >
 
-    <AutoCompleteTextView
+    <org.hisp.india.trackercapture.widgets.autocomplete.NAutoCompleteTextView
         android:id="@+id/fragment_step1_at_org"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:background="@android:color/transparent"
+        android:gravity="center_vertical"
         android:hint="Search Org"
         android:inputType="text"
         android:maxLines="1"

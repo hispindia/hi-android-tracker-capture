@@ -113,9 +113,9 @@ public class DefaultAutoCompleteAdapter<T extends Model> extends ArrayAdapter<T>
         return 0;
     }
 
-    public void setResultList(List<T> resultList) {
-        this.originalList = resultList;
-        this.resultList = resultList;
+    public void setModelList(List<T> modelList) {
+        this.originalList = modelList;
+        this.resultList = modelList;
         notifyDataSetChanged();
     }
 
