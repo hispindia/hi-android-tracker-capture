@@ -13,7 +13,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.models.Model;
+import org.hisp.india.trackercapture.models.base.Model;
 import org.hisp.india.trackercapture.utils.AppUtils;
 
 import java.util.ArrayList;

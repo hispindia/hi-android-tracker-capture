@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.models;
+package org.hisp.india.trackercapture.models.base;
 
 /**
  * Created by nhancao on 4/23/17.

@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models;
 
+import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.utils.Constants;
 
 import java.io.Serializable;

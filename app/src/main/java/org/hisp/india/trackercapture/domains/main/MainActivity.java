@@ -1,6 +1,7 @@
 package org.hisp.india.trackercapture.domains.main;
 
 import android.Manifest;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,17 +23,22 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll.EnrollActivity_;
+import org.hisp.india.trackercapture.domains.login.LoginActivity_;
 import org.hisp.india.trackercapture.domains.menu.DrawerAdapter;
 import org.hisp.india.trackercapture.domains.menu.DrawerItem;
 import org.hisp.india.trackercapture.domains.menu.MenuItem;
 import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
-import org.hisp.india.trackercapture.models.User;
+import org.hisp.india.trackercapture.models.base.User;
+import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 
 import java.util.Arrays;
 
 import javax.inject.Inject;
+
+import ru.terrakok.cicerone.Navigator;
+import ru.terrakok.cicerone.commands.Replace;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity<MainView, MainPresenter>
@@ -49,6 +55,15 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     MainPresenter presenter;
 
     private NPermission nPermission;
+
+    private Navigator navigator = command -> {
+        if (command instanceof Replace) {
+            if (((Replace) command).getScreenKey().equals(Screens.LOGIN_SCREEN)) {
+                LoginActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
+                              .start();
+            }
+        }
+    };
 
     @AfterInject
     void inject() {
@@ -147,7 +162,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 if (isGranted) {
                     //@nhancv TODO: after get all required permission
                     application.initRealmConfig();
-                    presenter.getOrganizations();
                 } else {
                     nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
                 }
@@ -163,9 +177,13 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 break;
             case LOGOUT:
                 presenter.logout();
-                recreate();
                 break;
         }
+    }
+
+    @Override
+    public Navigator getNavigator() {
+        return navigator;
     }
 
     @Override

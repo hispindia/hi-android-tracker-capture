@@ -1,10 +1,10 @@
 package org.hisp.india.trackercapture.domains.login;
 
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +31,8 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.main.MainActivity_;
-import org.hisp.india.trackercapture.models.User;
+import org.hisp.india.trackercapture.models.base.User;
+import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.utils.Constants;
 import org.hisp.india.trackercapture.utils.NKeyboard;
@@ -41,6 +42,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import ru.terrakok.cicerone.Navigator;
+import ru.terrakok.cicerone.commands.Replace;
 import rx.Observable;
 import rx.Subscription;
 
@@ -85,6 +88,15 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     private int tapCounter;
     private Subscription subscription;
 
+    private Navigator navigator = command -> {
+        if (command instanceof Replace) {
+            if (((Replace) command).getScreenKey().equals(Screens.MAIN_SCREEN)) {
+                MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
+                             .start();
+            }
+        }
+    };
+
     @AfterInject
     void inject() {
         DaggerLoginComponent.builder()
@@ -115,7 +127,6 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
                         }
                     }
                 }
-                Log.e(TAG, "init:offset " + offset);
                 ObjectAnimator.ofInt(rootScroll, "scrollY", offset).setDuration(500).start();
                 AppUtils.animationHeight(vBottomSpace, 0, keyboardHeight, 500);
             } else {
@@ -220,6 +231,11 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     }
 
     @Override
+    public Navigator getNavigator() {
+        return navigator;
+    }
+
+    @Override
     public void showLoading() {
         showProgressLoading();
     }
@@ -232,7 +248,7 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     @Override
     public void loginSuccessful(User user) {
         Toast.makeText(application, "Login success", Toast.LENGTH_SHORT).show();
-        MainActivity_.intent(this).start();
+        application.refreshApplicationModule();
     }
 
     @Override

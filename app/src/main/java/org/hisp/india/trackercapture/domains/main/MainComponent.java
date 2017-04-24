@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.domains.main;
 
+import org.hisp.india.core.di.module.NavigationModule;
 import org.hisp.india.core.di.scope.ActivityScope;
 import org.hisp.india.trackercapture.di.ApplicationComponent;
 
@@ -11,7 +12,10 @@ import dagger.Component;
 
 @ActivityScope
 @Component(
-        dependencies = ApplicationComponent.class)
+        dependencies = ApplicationComponent.class,
+        modules = {
+                NavigationModule.class
+        })
 public interface MainComponent {
     MainPresenter presenter();
 

@@ -4,10 +4,13 @@ import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.Credentials;
+import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.account.AccountService;
 
 import javax.inject.Inject;
 
+import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.Router;
 import rx.Subscription;
 
 /**
@@ -17,13 +20,29 @@ import rx.Subscription;
 public class LoginPresenter extends MvpBasePresenter<LoginView> {
     private static final String TAG = LoginPresenter.class.getSimpleName();
 
-    private AccountService accountService;
+    private Router router;
+    private NavigatorHolder navigatorHolder;
 
+    private AccountService accountService;
     private Subscription subscription;
 
     @Inject
-    public LoginPresenter(AccountService accountService) {
+    public LoginPresenter(Router router, NavigatorHolder navigatorHolder, AccountService accountService) {
+        this.router = router;
+        this.navigatorHolder = navigatorHolder;
         this.accountService = accountService;
+    }
+
+    @Override
+    public void attachView(LoginView view) {
+        super.attachView(view);
+        navigatorHolder.setNavigator(view.getNavigator());
+    }
+
+    @Override
+    public void detachView(boolean retainInstance) {
+        navigatorHolder.removeNavigator();
+        super.detachView(retainInstance);
     }
 
     public Credentials getCredential() {
@@ -45,7 +64,10 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
         subscription = accountService.login()
                                      .compose(RxScheduler.applyIoSchedulers())
                                      .doOnTerminate(() -> getView().hideLoading())
-                                     .subscribe(user -> getView().loginSuccessful(user),
+                                     .subscribe(user -> {
+                                                    getView().loginSuccessful(user);
+                                                    router.replaceScreen(Screens.MAIN_SCREEN);
+                                                },
                                                 throwable -> getView().loginError(throwable)
                                                );
     }

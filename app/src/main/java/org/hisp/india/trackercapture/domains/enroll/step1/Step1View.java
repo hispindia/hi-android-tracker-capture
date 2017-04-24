@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture.domains.enroll.step1;
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
 import org.hisp.india.trackercapture.models.storage.TOrganizationUnit;
+import org.hisp.india.trackercapture.models.storage.TProgram;
 
 import java.util.List;
 
@@ -23,5 +24,7 @@ public interface Step1View extends MvpView {
     void hideLoading();
 
     void showOrgList(List<TOrganizationUnit> organizationUnitList);
+
+    void showProgramList(List<TProgram> programList);
 
 }

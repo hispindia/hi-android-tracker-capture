@@ -5,12 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-
-    <org.hisp.india.trackercapture.widgets.autocomplete.NAutoCompleteTextView
+    <!--Organization-->
+    <AutoCompleteTextView
         android:id="@+id/fragment_step1_at_org"
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="45dp"
         android:background="@android:color/transparent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:gravity="center_vertical"
         android:hint="Search Org"
         android:inputType="text"
@@ -23,7 +25,31 @@
         />
 
     <View
-        android:id="@+id/activity_login_v_password_underline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#5f626262"
+        android:textColorHint="#626262"
+        />
+    <!--Program-->
+    <AutoCompleteTextView
+        android:id="@+id/fragment_step1_at_program"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@android:color/transparent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center_vertical"
+        android:hint="Search Program"
+        android:inputType="text"
+        android:maxLines="1"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:textCursorDrawable="@null"
+        android:textSize="14sp"
+        android:theme="@style/EditText"
+        />
+
+    <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#5f626262"

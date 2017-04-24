@@ -2,7 +2,7 @@ package org.hisp.india.trackercapture.models.response;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.hisp.india.trackercapture.models.OrganizationUnit;
+import org.hisp.india.trackercapture.models.base.OrganizationUnit;
 
 import java.util.List;
 

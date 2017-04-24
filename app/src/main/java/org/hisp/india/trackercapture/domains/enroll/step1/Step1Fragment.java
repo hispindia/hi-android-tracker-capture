@@ -1,5 +1,7 @@
 package org.hisp.india.trackercapture.domains.enroll.step1;
 
+import android.widget.AutoCompleteTextView;
+
 import com.hannesdorfmann.mosby3.mvp.MvpFragment;
 
 import org.androidannotations.annotations.AfterInject;
@@ -11,6 +13,7 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.enroll.EnrollActivity;
 import org.hisp.india.trackercapture.models.storage.TOrganizationUnit;
+import org.hisp.india.trackercapture.models.storage.TProgram;
 import org.hisp.india.trackercapture.widgets.autocomplete.NAutoCompleteTextView;
 
 import java.util.List;
@@ -26,14 +29,18 @@ public class Step1Fragment extends MvpFragment<Step1View, Step1Presenter> implem
     private static final String TAG = Step1Fragment.class.getSimpleName();
 
     @ViewById(R.id.fragment_step1_at_org)
-    NAutoCompleteTextView<TOrganizationUnit> atOrg;
+    AutoCompleteTextView atOrg;
+    @ViewById(R.id.fragment_step1_at_program)
+    AutoCompleteTextView atProgram;
 
     @App
     MainApplication application;
     @Inject
     Step1Presenter presenter;
 
-    EnrollActivity activity;
+    private EnrollActivity activity;
+    private NAutoCompleteTextView<TOrganizationUnit> orgAutoCompleteTextView;
+    private NAutoCompleteTextView<TProgram> programAutoCompleteTextView;
 
     public static Step1Fragment getNewInstance() {
         return new Step1Fragment_();
@@ -51,7 +58,12 @@ public class Step1Fragment extends MvpFragment<Step1View, Step1Presenter> implem
     void init() {
 
         activity = (EnrollActivity) getActivity();
+
+        orgAutoCompleteTextView = new NAutoCompleteTextView<>(atOrg);
+        programAutoCompleteTextView = new NAutoCompleteTextView<>(atProgram);
+
         presenter.getOrganizations();
+        presenter.getPrograms();
 
     }
 
@@ -73,7 +85,12 @@ public class Step1Fragment extends MvpFragment<Step1View, Step1Presenter> implem
 
     @Override
     public void showOrgList(List<TOrganizationUnit> organizationUnitList) {
-        atOrg.setModelList(organizationUnitList);
+        orgAutoCompleteTextView.setModelList(organizationUnitList);
+    }
+
+    @Override
+    public void showProgramList(List<TProgram> programList) {
+        programAutoCompleteTextView.setModelList(programList);
     }
 
 }

@@ -6,6 +6,7 @@ import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
+import org.hisp.india.trackercapture.services.programs.ProgramService;
 
 import dagger.Component;
 
@@ -26,4 +27,6 @@ public interface ApplicationComponent {
     AccountService accountService();
 
     OrganizationService organizationService();
+
+    ProgramService programService();
 }

@@ -1,11 +1,10 @@
 package org.hisp.india.trackercapture.widgets.autocomplete;
 
 
-import android.content.Context;
-import android.util.AttributeSet;
+import android.widget.AutoCompleteTextView;
 
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.models.Model;
+import org.hisp.india.trackercapture.models.base.Model;
 
 import java.util.List;
 
@@ -13,39 +12,32 @@ import java.util.List;
  * Created by nhancao on 4/23/17.
  */
 
-public class NAutoCompleteTextView<T extends Model> extends android.widget.AutoCompleteTextView {
+public class NAutoCompleteTextView<T extends Model> {
+    private static final String TAG = NAutoCompleteTextView.class.getSimpleName();
 
+    private AutoCompleteTextView autoCompleteTextView;
     private DefaultAutoCompleteAdapter<T> adapter;
     private T selected;
 
-    public NAutoCompleteTextView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public NAutoCompleteTextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public NAutoCompleteTextView(AutoCompleteTextView autoCompleteTextView) {
+        this.autoCompleteTextView = autoCompleteTextView;
         init();
     }
 
     public void init() {
-        adapter = new DefaultAutoCompleteAdapter<>(getContext(), R.layout.item_autocomplete);
-        setAdapter(adapter);
-        setThreshold(1);
-        setOnItemClickListener((parent, view, position, id) -> {
+        adapter = new DefaultAutoCompleteAdapter<>(autoCompleteTextView.getContext(), R.layout.item_autocomplete);
+        autoCompleteTextView.setAdapter(adapter);
+        autoCompleteTextView.setThreshold(1);
+        autoCompleteTextView.setOnItemClickListener((parent, view, position, id) -> {
             selected = adapter.getItem(position);
             if (selected != null) {
-                setText(selected.getDisplayName());
+                autoCompleteTextView.setText(selected.getDisplayName());
             }
         });
     }
 
-    @Override
     public DefaultAutoCompleteAdapter<T> getAdapter() {
         return adapter;
-    }
-
-    public void setAdapter(DefaultAutoCompleteAdapter<T> adapter) {
-        this.adapter = adapter;
     }
 
     public void setModelList(List<T> modelList) {

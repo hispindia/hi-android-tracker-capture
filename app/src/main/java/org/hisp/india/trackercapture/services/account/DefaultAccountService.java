@@ -4,7 +4,7 @@ import com.orhanobut.hawk.Hawk;
 
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.Credentials;
-import org.hisp.india.trackercapture.models.User;
+import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 import org.hisp.india.trackercapture.utils.Constants;

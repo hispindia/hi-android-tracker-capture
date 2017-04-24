@@ -18,6 +18,9 @@ import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 import org.hisp.india.trackercapture.services.organization.DefaultOrganizationService;
 import org.hisp.india.trackercapture.services.organization.OrganizationApi;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
+import org.hisp.india.trackercapture.services.programs.DefaultProgramService;
+import org.hisp.india.trackercapture.services.programs.ProgramApi;
+import org.hisp.india.trackercapture.services.programs.ProgramService;
 import org.hisp.india.trackercapture.utils.Constants;
 
 import java.io.IOException;
@@ -98,6 +101,19 @@ public class ApplicationModule {
                         .provideApi(credentials.getHost(), OrganizationApi.class);
 
         return new DefaultOrganizationService(rxNetworkProvider, restService, apiErrorFilter);
+    }
+
+    @Provides
+    @ApplicationScope
+    public ProgramService provideProgramService(NetworkProvider rxNetworkProvider, Credentials credentials,
+                                                ApiErrorFilter apiErrorFilter) {
+
+        ProgramApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), ProgramApi.class);
+
+        return new DefaultProgramService(rxNetworkProvider, restService, apiErrorFilter);
     }
 
 }

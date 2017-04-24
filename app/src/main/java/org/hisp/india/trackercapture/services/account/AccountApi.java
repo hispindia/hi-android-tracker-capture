@@ -1,6 +1,6 @@
 package org.hisp.india.trackercapture.services.account;
 
-import org.hisp.india.trackercapture.models.User;
+import org.hisp.india.trackercapture.models.base.User;
 
 import retrofit2.http.GET;
 import retrofit2.http.Query;
