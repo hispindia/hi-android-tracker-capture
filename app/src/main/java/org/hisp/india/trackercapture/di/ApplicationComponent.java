@@ -1,6 +1,6 @@
 package org.hisp.india.trackercapture.di;
 
-import org.hisp.india.core.di.ApplicationScope;
+import org.hisp.india.core.di.scope.ApplicationScope;
 import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.services.account.AccountService;

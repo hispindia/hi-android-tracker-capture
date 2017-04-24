@@ -1,7 +1,5 @@
 package org.hisp.india.trackercapture.domains.enroll.step2;
 
-import android.os.Bundle;
-
 import com.hannesdorfmann.mosby3.mvp.MvpFragment;
 
 import org.androidannotations.annotations.AfterInject;
@@ -9,8 +7,6 @@ import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EFragment;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.domains.enroll.step1.DaggerStep1Component;
-import org.hisp.india.trackercapture.domains.enroll.step1.Step1Fragment_;
 
 import javax.inject.Inject;
 

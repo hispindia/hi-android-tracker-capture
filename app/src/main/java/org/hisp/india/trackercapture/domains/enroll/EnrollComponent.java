@@ -1,9 +1,9 @@
 package org.hisp.india.trackercapture.domains.enroll;
 
-import org.hisp.india.core.di.ActivityScope;
+import org.hisp.india.core.di.module.LocalNavigationModule;
+import org.hisp.india.core.di.module.NavigationModule;
+import org.hisp.india.core.di.scope.ActivityScope;
 import org.hisp.india.trackercapture.di.ApplicationComponent;
-import org.hisp.india.trackercapture.di.LocalNavigationModule;
-import org.hisp.india.trackercapture.di.NavigationModule;
 
 import dagger.Component;
 

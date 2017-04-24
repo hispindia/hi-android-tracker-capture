@@ -1,9 +1,8 @@
 package org.hisp.india.trackercapture.domains.enroll.step2;
 
-import org.hisp.india.core.di.ActivityScope;
+import org.hisp.india.core.di.module.NavigationModule;
+import org.hisp.india.core.di.scope.ActivityScope;
 import org.hisp.india.trackercapture.di.ApplicationComponent;
-import org.hisp.india.trackercapture.di.LocalNavigationModule;
-import org.hisp.india.trackercapture.di.NavigationModule;
 
 import dagger.Component;
 
@@ -15,8 +14,7 @@ import dagger.Component;
 @Component(
         dependencies = ApplicationComponent.class,
         modules = {
-                NavigationModule.class,
-                LocalNavigationModule.class
+                NavigationModule.class
         })
 public interface Step2Component {
     Step2Presenter presenter();

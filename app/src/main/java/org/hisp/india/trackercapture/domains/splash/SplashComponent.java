@@ -1,6 +1,6 @@
 package org.hisp.india.trackercapture.domains.splash;
 
-import org.hisp.india.core.di.ActivityScope;
+import org.hisp.india.core.di.scope.ActivityScope;
 import org.hisp.india.trackercapture.di.ApplicationComponent;
 
 import dagger.Component;

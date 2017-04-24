@@ -120,9 +120,7 @@ buildscript {
                 //Toasty
                 toasty      : "com.github.GrenderG:Toasty:${toastyVersion}",
                 //Realm browser
-                realmBrowser: "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}",
-                //Cicerone
-                cicerone    : "ru.terrakok.cicerone:cicerone:${ciceroneVersion}"
+                realmBrowser: "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}"
         ]
     }
 

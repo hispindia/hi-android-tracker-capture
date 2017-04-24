@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.orhanobut.hawk.Hawk;
 
-import org.hisp.india.core.di.ApplicationScope;
+import org.hisp.india.core.di.scope.ApplicationScope;
 import org.hisp.india.core.services.log.DefaultLogService;
 import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.DefaultNetworkProvider;
@@ -71,7 +71,7 @@ public class ApplicationModule {
     @Provides
     @ApplicationScope
     public NetworkProvider provideNetworkProvider() {
-        return new DefaultNetworkProvider(application, BuildConfig.DEBUG);
+        return new DefaultNetworkProvider(application, BuildConfig.DEBUG).addDefaultHeader();
     }
 
     @Provides
@@ -81,7 +81,6 @@ public class ApplicationModule {
 
         AccountApi restService =
                 rxNetworkProvider
-                        .addDefaultHeader()
                         .addHeader("Authorization", credentials.getApiToken())
                         .provideApi(credentials.getHost(), AccountApi.class);
 
@@ -95,7 +94,6 @@ public class ApplicationModule {
 
         OrganizationApi restService =
                 rxNetworkProvider
-                        .addDefaultHeader()
                         .addHeader("Authorization", credentials.getApiToken())
                         .provideApi(credentials.getHost(), OrganizationApi.class);
 
