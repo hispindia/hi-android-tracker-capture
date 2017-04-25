@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.nhancv.npermission.NPermission;
@@ -17,6 +18,7 @@ import com.yarolegovich.slidingrootnav.SlidingRootNavLayout;
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
@@ -30,10 +32,14 @@ import org.hisp.india.trackercapture.domains.menu.MenuItem;
 import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
 import org.hisp.india.trackercapture.models.base.User;
+import org.hisp.india.trackercapture.models.storage.TOrganizationUnit;
+import org.hisp.india.trackercapture.models.storage.TProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
+import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -48,12 +54,18 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @ViewById(R.id.activity_main_toolbar)
     Toolbar toolbar;
+    @ViewById(R.id.activity_main_tv_organization)
+    TextView tvOrganization;
+    @ViewById(R.id.activity_main_tv_program)
+    TextView tvProgram;
 
     @App
     MainApplication application;
     @Inject
     MainPresenter presenter;
 
+    private List<TProgram> programList;
+    private List<TOrganizationUnit> organizationUnitList;
     private NPermission nPermission;
 
     private Navigator navigator = command -> {
@@ -124,6 +136,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             tvEmail.setText(user.getEmail());
         }
 
+        presenter.getOrganizations();
+        presenter.getPrograms();
     }
 
     @Override
@@ -194,6 +208,34 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Override
     public void hideLoading() {
         hideProgressLoading();
+    }
+
+    @Override
+    public void showOrgList(List<TOrganizationUnit> organizationUnitList) {
+        this.organizationUnitList = organizationUnitList;
+        tvOrganization.setEnabled(true);
+    }
+
+    @Override
+    public void showProgramList(List<TProgram> programList) {
+        this.programList = programList;
+        tvProgram.setEnabled(true);
+    }
+
+    @Click(R.id.activity_main_tv_organization)
+    void tvOrganizationClick() {
+        Log.e(TAG, "tvOrganizationClick: ");
+        if (organizationUnitList != null) {
+            AutocompleteDialog.newInstance(organizationUnitList).show(getSupportFragmentManager());
+        }
+    }
+
+    @Click(R.id.activity_main_tv_program)
+    void tvProgramClick() {
+        Log.e(TAG, "tvProgramClick: ");
+        if (programList != null) {
+            AutocompleteDialog.newInstance(programList).show(getSupportFragmentManager());
+        }
     }
 
     private DrawerItem createItemFor(MenuItem menuItem) {

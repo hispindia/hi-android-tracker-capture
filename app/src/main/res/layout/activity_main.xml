@@ -39,7 +39,7 @@
         >
         <!--content here-->
         <ScrollView
-            android:id="@+id/activity_login_root_scroll"
+            android:id="@+id/activity_main_root_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
@@ -73,10 +73,13 @@
                         />
 
                     <TextView
-                        android:id="@+id/activity_login_et_organization"
+                        android:id="@+id/activity_main_tv_organization"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/bg_item_background"
+                        android:enabled="false"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
                         android:inputType="text"
                         android:maxLines="1"
                         android:paddingLeft="5dp"
@@ -87,11 +90,9 @@
                         />
 
                     <View
-                        android:id="@+id/activity_login_v_username_underline"
+                        android:id="@+id/activity_main_v_username_underline"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
                         android:background="#626262"
                         android:textColorHint="#626262"
                         />
@@ -107,10 +108,11 @@
                         />
 
                     <TextView
-                        android:id="@+id/activity_login_et_program"
+                        android:id="@+id/activity_main_tv_program"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
-                        android:background="@android:color/transparent"
+                        android:background="@drawable/bg_item_background"
+                        android:enabled="false"
                         android:inputType="text"
                         android:maxLines="1"
                         android:paddingLeft="5dp"
@@ -121,11 +123,9 @@
                         />
 
                     <View
-                        android:id="@+id/activity_login_v_password_underline"
+                        android:id="@+id/activity_main_v_password_underline"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
                         android:background="#626262"
                         android:textColorHint="#626262"
                         />
@@ -137,7 +137,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/activity_login_bt_search"
+                    android:id="@+id/activity_main_bt_search"
                     fontPath="fonts/Montserrat-Medium.ttf"
                     android:layout_width="188dp"
                     android:layout_height="50dp"

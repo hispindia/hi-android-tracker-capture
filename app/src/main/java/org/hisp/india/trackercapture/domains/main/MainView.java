@@ -2,6 +2,11 @@ package org.hisp.india.trackercapture.domains.main;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
+import org.hisp.india.trackercapture.models.storage.TOrganizationUnit;
+import org.hisp.india.trackercapture.models.storage.TProgram;
+
+import java.util.List;
+
 import ru.terrakok.cicerone.Navigator;
 
 /**
@@ -21,4 +26,7 @@ public interface MainView extends MvpView {
      */
     void hideLoading();
 
+    void showOrgList(List<TOrganizationUnit> organizationUnitList);
+
+    void showProgramList(List<TProgram> programList);
 }
