@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.nhancv.npermission.NPermission;
@@ -58,12 +58,18 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     TextView tvOrganization;
     @ViewById(R.id.activity_main_tv_program)
     TextView tvProgram;
+    @ViewById(R.id.activity_main_bt_search)
+    Button btSearch;
 
     @App
     MainApplication application;
     @Inject
     MainPresenter presenter;
 
+    private TProgram program;
+    private TOrganizationUnit organizationUnit;
+
+    private AutocompleteDialog dialog;
     private List<TProgram> programList;
     private List<TOrganizationUnit> organizationUnitList;
     private NPermission nPermission;
@@ -224,17 +230,39 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @Click(R.id.activity_main_tv_organization)
     void tvOrganizationClick() {
-        Log.e(TAG, "tvOrganizationClick: ");
         if (organizationUnitList != null) {
-            AutocompleteDialog.newInstance(organizationUnitList).show(getSupportFragmentManager());
+            dialog = AutocompleteDialog.newInstance(organizationUnitList, (parent, view, position, id, model) -> {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                tvOrganization.setText(model.getDisplayName());
+                organizationUnit = model;
+                updateBtSearch();
+            });
+            dialog.show(getSupportFragmentManager());
         }
     }
 
     @Click(R.id.activity_main_tv_program)
     void tvProgramClick() {
-        Log.e(TAG, "tvProgramClick: ");
         if (programList != null) {
-            AutocompleteDialog.newInstance(programList).show(getSupportFragmentManager());
+            dialog = AutocompleteDialog.newInstance(programList, (parent, view, position, id, model) -> {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                tvProgram.setText(model.getDisplayName());
+                program = model;
+                updateBtSearch();
+            });
+            dialog.show(getSupportFragmentManager());
+        }
+    }
+
+    private void updateBtSearch() {
+        if (program != null && organizationUnit != null) {
+            btSearch.setEnabled(true);
+        } else {
+            btSearch.setEnabled(false);
         }
     }
 

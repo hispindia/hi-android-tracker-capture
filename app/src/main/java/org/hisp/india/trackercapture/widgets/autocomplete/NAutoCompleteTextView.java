@@ -18,6 +18,7 @@ public class NAutoCompleteTextView<T extends Model> {
     private AutoCompleteTextView autoCompleteTextView;
     private DefaultAutoCompleteAdapter<T> adapter;
     private T selected;
+    private ItemClickListener<T> onItemClickListener;
 
     public NAutoCompleteTextView(AutoCompleteTextView autoCompleteTextView) {
         this.autoCompleteTextView = autoCompleteTextView;
@@ -32,7 +33,15 @@ public class NAutoCompleteTextView<T extends Model> {
             selected = adapter.getItem(position);
             if (selected != null) {
                 autoCompleteTextView.setText(selected.getDisplayName());
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(parent, view, position, id, selected);
+                }
             }
+        });
+
+        //Config auto show dialog
+        autoCompleteTextView.setOnClickListener(v -> {
+            autoCompleteTextView.showDropDown();
         });
     }
 
@@ -42,6 +51,7 @@ public class NAutoCompleteTextView<T extends Model> {
 
     public void setModelList(List<T> modelList) {
         adapter.setModelList(modelList);
+        autoCompleteTextView.post(() -> autoCompleteTextView.showDropDown());
     }
 
     public T getSelected() {
@@ -51,4 +61,9 @@ public class NAutoCompleteTextView<T extends Model> {
     public void setSelected(T selected) {
         this.selected = selected;
     }
+
+    public void setOnItemClickListener(ItemClickListener<T> onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
 }

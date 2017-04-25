@@ -76,10 +76,12 @@ public class DefaultAutoCompleteAdapter<T extends Model> extends ArrayAdapter<T>
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (constraint == null || constraint.length() == 0) {
                     resultList = originalList;
+                    notifyDataSetInvalidated();
                 } else {
                     resultList = (List<T>) results.values;
+                    notifyDataSetChanged();
                 }
-                notifyDataSetChanged();
+
             }
         };
 

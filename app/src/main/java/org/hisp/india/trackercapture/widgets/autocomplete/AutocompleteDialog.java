@@ -28,30 +28,26 @@ public class AutocompleteDialog<T extends Model> extends DialogFragment {
 
     @ViewById(R.id.dialog_autocomplete_et_search)
     AutoCompleteTextView etSearch;
-    private NAutoCompleteTextView<T> tAutoCompleteTextView;
-    private List<T> modelList;
 
-    public static <T extends Model> AutocompleteDialog newInstance(List<T> modelList) {
+    private List<T> modelList;
+    private ItemClickListener<T> onItemClickListener;
+
+    public static <T extends Model> AutocompleteDialog newInstance(List<T> modelList,
+                                                                   ItemClickListener<T> onItemClickListener) {
         AutocompleteDialog<T> autocompleteDialog = AutocompleteDialog_.<T>builder().build();
         autocompleteDialog.setModelList(modelList);
+        autocompleteDialog.setOnItemClickListener(onItemClickListener);
         return autocompleteDialog;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = new Dialog(getActivity(), getTheme()) {
-            @Override
-            public void onBackPressed() {
-                super.onBackPressed();
-            }
-        };
-
+        Dialog dialog = new Dialog(getActivity(), getTheme());
         if (dialog.getWindow() != null) {
             dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
-
         return dialog;
     }
 
@@ -59,25 +55,15 @@ public class AutocompleteDialog<T extends Model> extends DialogFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getDialog().getWindow() != null) {
-//            getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
             getDialog().getWindow().setGravity(Gravity.TOP);
         }
     }
 
-    @Override
-    public void onResume() {
-        if (getDialog().getWindow() != null) {
-//            WindowManager.LayoutParams params = getDialog().getWindow().getAttributes();
-//            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-//            getDialog().getWindow().setAttributes(params);
-        }
-        super.onResume();
-    }
-
     @AfterViews
     void init() {
-        tAutoCompleteTextView = new NAutoCompleteTextView<>(etSearch);
+        NAutoCompleteTextView<T> tAutoCompleteTextView = new NAutoCompleteTextView<>(etSearch);
         tAutoCompleteTextView.setModelList(modelList);
+        tAutoCompleteTextView.setOnItemClickListener(onItemClickListener);
     }
 
     public void show(FragmentManager manager) {
@@ -86,5 +72,9 @@ public class AutocompleteDialog<T extends Model> extends DialogFragment {
 
     public void setModelList(List<T> modelList) {
         this.modelList = modelList;
+    }
+
+    public void setOnItemClickListener(ItemClickListener<T> onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 }
