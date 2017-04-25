@@ -15,6 +15,14 @@ public class BaseModel implements Serializable, Model {
     @SerializedName("displayName")
     private String displayName;
 
+    public BaseModel() {
+    }
+
+    public BaseModel(String id, String displayName) {
+        this.id = id;
+        this.displayName = displayName;
+    }
+
     @Override
     public String getId() {
         return id;

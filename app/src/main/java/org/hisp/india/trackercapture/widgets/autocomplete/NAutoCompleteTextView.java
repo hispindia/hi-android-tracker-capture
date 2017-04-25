@@ -34,7 +34,7 @@ public class NAutoCompleteTextView<T extends Model> {
             if (selected != null) {
                 autoCompleteTextView.setText(selected.getDisplayName());
                 if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(parent, view, position, id, selected);
+                    onItemClickListener.onItemClick(selected);
                 }
             }
         });

@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/activity_enroll_app_bar_layout"
-        android:background="@android:color/white"
+        android:background="@android:color/darker_gray"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:ignore="MissingPrefix"

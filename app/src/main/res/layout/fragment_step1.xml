@@ -1,58 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main_root_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:scrollbars="none"
     >
-    <!--Organization-->
-    <AutoCompleteTextView
-        android:id="@+id/fragment_step1_at_org"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@android:color/transparent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:gravity="center_vertical"
-        android:hint="Search Org"
-        android:inputType="text"
-        android:maxLines="1"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textCursorDrawable="@null"
-        android:textSize="14sp"
-        android:theme="@style/EditText"
-        />
 
-    <View
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#5f626262"
-        android:textColorHint="#626262"
-        />
-    <!--Program-->
-    <AutoCompleteTextView
-        android:id="@+id/fragment_step1_at_program"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@android:color/transparent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:gravity="center_vertical"
-        android:hint="Search Program"
-        android:inputType="text"
-        android:maxLines="1"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textCursorDrawable="@null"
-        android:textSize="14sp"
-        android:theme="@style/EditText"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingPrefix"
+        >
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#5f626262"
-        android:textColorHint="#626262"
-        />
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_dialog"
+            android:orientation="vertical"
+            android:paddingBottom="25dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:paddingTop="10dp"
+            >
+
+            <TextView
+                fontPath="fonts/Montserrat-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Date of enrollment"
+                android:textColor="#6A89DF"
+                android:textSize="16sp"
+                />
+
+            <TextView
+                android:id="@+id/fragment_step1_tv_enroll_date"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:hint="Select"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textCursorDrawable="@null"
+                android:textSize="14sp"
+                android:theme="@style/EditText"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="#626262"
+                android:textColorHint="#626262"
+                />
+
+            <TextView
+                fontPath="fonts/Montserrat-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Date of birth"
+                android:textColor="#6A89DF"
+                android:textSize="16sp"
+                />
+
+            <TextView
+                android:id="@+id/fragment_step1_tv_date_of_birth"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:hint="Select"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textCursorDrawable="@null"
+                android:textSize="14sp"
+                android:theme="@style/EditText"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="#626262"
+                android:textColorHint="#626262"
+                />
+
+            <TextView
+                fontPath="fonts/Montserrat-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="First name"
+                android:textColor="#6A89DF"
+                android:textSize="16sp"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:hint="Input"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textCursorDrawable="@null"
+                android:textSize="14sp"
+                android:theme="@style/EditText"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="#626262"
+                android:textColorHint="#626262"
+                />
+
+            <TextView
+                fontPath="fonts/Montserrat-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Last name"
+                android:textColor="#6A89DF"
+                android:textSize="16sp"
+                />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:hint="Input"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textCursorDrawable="@null"
+                android:textSize="14sp"
+                android:theme="@style/EditText"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="#626262"
+                android:textColorHint="#626262"
+                />
+
+            <TextView
+                fontPath="fonts/Montserrat-Regular.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Gender"
+                android:textColor="#6A89DF"
+                android:textSize="16sp"
+                />
+
+            <TextView
+                android:id="@+id/fragment_step1_tv_gender"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@android:color/transparent"
+                android:hint="Select"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textCursorDrawable="@null"
+                android:textSize="14sp"
+                android:theme="@style/EditText"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="#626262"
+                android:textColorHint="#626262"
+                />
+
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/activity_login_bt_login"
+            fontPath="fonts/Montserrat-Medium.ttf"
+            android:layout_width="188dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="-25dp"
+            android:background="@drawable/bg_bt_login"
+            android:enabled="false"
+            android:text="Next"
+            android:textColor="@color/white_smoke"
+            android:textSize="18sp"
+            />
+    </LinearLayout>
+</ScrollView>

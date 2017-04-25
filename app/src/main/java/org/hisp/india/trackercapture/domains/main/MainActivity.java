@@ -231,7 +231,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Click(R.id.activity_main_tv_organization)
     void tvOrganizationClick() {
         if (organizationUnitList != null) {
-            dialog = AutocompleteDialog.newInstance(organizationUnitList, (parent, view, position, id, model) -> {
+            dialog = AutocompleteDialog.newInstance(organizationUnitList, (model) -> {
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -246,7 +246,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Click(R.id.activity_main_tv_program)
     void tvProgramClick() {
         if (programList != null) {
-            dialog = AutocompleteDialog.newInstance(programList, (parent, view, position, id, model) -> {
+            dialog = AutocompleteDialog.newInstance(programList, (model) -> {
                 if (dialog != null) {
                     dialog.dismiss();
                 }

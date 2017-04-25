@@ -15,6 +15,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -176,6 +181,22 @@ public class AppUtils {
             }
         }
         return originalText;
+    }
+
+
+    public static DateTime parseDate(String pattern, String date) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
+        return formatter.parseDateTime(date);
+    }
+
+    public static String formatDate(String pattern, DateTime date) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
+        return formatter.print(date.withZone(DateTimeZone.UTC));
+    }
+
+    public static String getDateFormatted(int year, int month, int dayOfMonth) {
+        return AppUtils.formatDate("yyyy-mm-dd",
+                                   new DateTime().withYear(year).withMonthOfYear(month).withDayOfMonth(dayOfMonth));
     }
 
 }
