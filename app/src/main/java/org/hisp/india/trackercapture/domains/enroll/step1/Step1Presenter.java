@@ -2,8 +2,8 @@ package org.hisp.india.trackercapture.domains.enroll.step1;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
-import org.hisp.india.trackercapture.models.storage.TOrganizationUnit;
-import org.hisp.india.trackercapture.models.storage.TProgram;
+import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
+import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.services.programs.ProgramService;
 
@@ -25,8 +25,8 @@ public class Step1Presenter extends MvpBasePresenter<Step1View> {
     private OrganizationService organizationService;
     private ProgramService programService;
 
-    private List<TOrganizationUnit> tOrganizationUnits;
-    private List<TProgram> tPrograms;
+    private List<ROrganizationUnit> tOrganizationUnits;
+    private List<RProgram> tPrograms;
 
     @Inject
     public Step1Presenter(Router router, OrganizationService organizationService, ProgramService programService) {

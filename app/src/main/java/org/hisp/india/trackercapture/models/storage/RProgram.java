@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by nhancao on 4/24/17.
  */
 
-public class TProgram extends RealmObject implements Model {
+public class RProgram extends RealmObject implements Model {
 
     @PrimaryKey
     private String id;

@@ -1,6 +1,6 @@
-package org.hisp.india.trackercapture.services.organization;
+package org.hisp.india.trackercapture.services.constants;
 
-import org.hisp.india.trackercapture.models.storage.TOrganizationUnit;
+import org.hisp.india.trackercapture.models.storage.RConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,14 +12,14 @@ import io.realm.RealmResults;
  * Created by nhancao on 4/24/17.
  */
 
-public class MOrganization {
+public class ConstantModel {
 
-    public static List<TOrganizationUnit> getAllOrganization() {
+    public static List<RConstant> getAllConstants() {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<TOrganizationUnit> tOrganizationUnits = realm.where(TOrganizationUnit.class).findAll();
-            return realm.copyFromRealm(tOrganizationUnits);
+            RealmResults<RConstant> programs = realm.where(RConstant.class).findAll();
+            return realm.copyFromRealm(programs);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -31,12 +31,12 @@ public class MOrganization {
         return new ArrayList<>();
     }
 
-    public static void insertOrUpdate(List<TOrganizationUnit> organizationUnitList) {
+    public static void insertOrUpdate(List<RConstant> programList) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
-            realm.insertOrUpdate(organizationUnitList);
+            realm.insertOrUpdate(programList);
             realm.commitTransaction();
         } catch (Exception e) {
             e.printStackTrace();

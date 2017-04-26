@@ -6,10 +6,10 @@ import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by nhancao on 4/16/17.
+ * Created by nhancao on 4/24/17.
  */
 
-public class TOrganizationUnit extends RealmObject implements Model {
+public class RTrackedEntityInstance extends RealmObject implements Model {
 
     @PrimaryKey
     private String id;
@@ -32,6 +32,5 @@ public class TOrganizationUnit extends RealmObject implements Model {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
-
 
 }

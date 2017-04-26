@@ -32,8 +32,8 @@ import org.hisp.india.trackercapture.domains.menu.MenuItem;
 import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
 import org.hisp.india.trackercapture.models.base.User;
-import org.hisp.india.trackercapture.models.storage.TOrganizationUnit;
-import org.hisp.india.trackercapture.models.storage.TProgram;
+import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
+import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
@@ -66,12 +66,12 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Inject
     MainPresenter presenter;
 
-    private TProgram program;
-    private TOrganizationUnit organizationUnit;
+    private RProgram program;
+    private ROrganizationUnit organizationUnit;
 
     private AutocompleteDialog dialog;
-    private List<TProgram> programList;
-    private List<TOrganizationUnit> organizationUnitList;
+    private List<RProgram> programList;
+    private List<ROrganizationUnit> organizationUnitList;
     private NPermission nPermission;
 
     private Navigator navigator = command -> {
@@ -217,13 +217,13 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     }
 
     @Override
-    public void showOrgList(List<TOrganizationUnit> organizationUnitList) {
+    public void showOrgList(List<ROrganizationUnit> organizationUnitList) {
         this.organizationUnitList = organizationUnitList;
         tvOrganization.setEnabled(true);
     }
 
     @Override
-    public void showProgramList(List<TProgram> programList) {
+    public void showProgramList(List<RProgram> programList) {
         this.programList = programList;
         tvProgram.setEnabled(true);
     }

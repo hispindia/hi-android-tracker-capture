@@ -4,13 +4,13 @@ import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.base.User;
-import org.hisp.india.trackercapture.models.storage.TMapping;
-import org.hisp.india.trackercapture.models.storage.TOrganizationUnit;
-import org.hisp.india.trackercapture.models.storage.TProgram;
+import org.hisp.india.trackercapture.models.storage.RMapping;
+import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
+import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.account.AccountService;
-import org.hisp.india.trackercapture.services.organization.MOrganization;
-import org.hisp.india.trackercapture.services.organization.MProgram;
+import org.hisp.india.trackercapture.services.organization.OrganizationModel;
+import org.hisp.india.trackercapture.services.programs.ProgramModel;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.services.programs.ProgramService;
 
@@ -68,8 +68,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     }
 
     public void getOrganizations() {
-        List<TOrganizationUnit> tOrganizationUnits;
-        tOrganizationUnits = MOrganization.getAllOrganization();
+        List<ROrganizationUnit> tOrganizationUnits;
+        tOrganizationUnits = OrganizationModel.getAllOrganization();
         getView().showOrgList(tOrganizationUnits);
 
         getView().showLoading();
@@ -78,10 +78,10 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                            .doOnTerminate(() -> getView().hideLoading())
                            .subscribe(organizationUnitsResponse -> {
                                Observable.from(organizationUnitsResponse.getOrganizationUnits())
-                                         .map(TMapping::from)
+                                         .map(RMapping::from)
                                          .toList()
                                          .map(organizationUnitList -> {
-                                             MOrganization.insertOrUpdate(organizationUnitList);
+                                             OrganizationModel.insertOrUpdate(organizationUnitList);
                                              return organizationUnitList;
                                          }).subscribe(
                                        organizationUnitList -> getView().showOrgList(organizationUnitList));
@@ -91,8 +91,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     }
 
     public void getPrograms() {
-        List<TProgram> tPrograms;
-        tPrograms = MProgram.getAllPrograms();
+        List<RProgram> tPrograms;
+        tPrograms = ProgramModel.getAllPrograms();
         getView().showProgramList(tPrograms);
 
         getView().showLoading();
@@ -101,10 +101,10 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                       .doOnTerminate(() -> getView().hideLoading())
                       .subscribe(programsResponse -> {
                           Observable.from(programsResponse.getPrograms())
-                                    .map(TMapping::from)
+                                    .map(RMapping::from)
                                     .toList()
                                     .map(programList -> {
-                                        MProgram.insertOrUpdate(programList);
+                                        ProgramModel.insertOrUpdate(programList);
                                         return programList;
                                     }).subscribe(programList -> getView().showProgramList(programList));
                       }, Throwable::printStackTrace);

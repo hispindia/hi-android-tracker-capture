@@ -1,6 +1,6 @@
-package org.hisp.india.trackercapture.services.organization;
+package org.hisp.india.trackercapture.services.program_rule_actions;
 
-import org.hisp.india.trackercapture.models.storage.TProgram;
+import org.hisp.india.trackercapture.models.storage.RProgramRuleAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +12,13 @@ import io.realm.RealmResults;
  * Created by nhancao on 4/24/17.
  */
 
-public class MProgram {
+public class ProgramRuleActionModel {
 
-    public static List<TProgram> getAllPrograms() {
+    public static List<RProgramRuleAction> getAllProgramRuleActions() {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
-            RealmResults<TProgram> programs = realm.where(TProgram.class).findAll();
+            RealmResults<RProgramRuleAction> programs = realm.where(RProgramRuleAction.class).findAll();
             return realm.copyFromRealm(programs);
         } catch (Exception e) {
             e.printStackTrace();
@@ -31,7 +31,7 @@ public class MProgram {
         return new ArrayList<>();
     }
 
-    public static void insertOrUpdate(List<TProgram> programList) {
+    public static void insertOrUpdate(List<RProgramRuleAction> programList) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
