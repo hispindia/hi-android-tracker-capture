@@ -18,7 +18,7 @@ import org.hisp.india.trackercapture.models.base.BaseModel;
 import org.hisp.india.trackercapture.models.base.Model;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
-import org.hisp.india.trackercapture.widgets.OptionDialog;
+import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 
 import java.util.ArrayList;
 import java.util.List;

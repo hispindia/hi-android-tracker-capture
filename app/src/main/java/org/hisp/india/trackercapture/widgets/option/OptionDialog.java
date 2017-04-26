@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.widgets;
+package org.hisp.india.trackercapture.widgets.option;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -8,13 +8,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.joanzapata.android.BaseAdapterHelper;
-import com.joanzapata.android.QuickAdapter;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -23,9 +22,9 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.Model;
 import org.hisp.india.trackercapture.utils.AppUtils;
+import org.hisp.india.trackercapture.widgets.NTextChange;
 import org.hisp.india.trackercapture.widgets.autocomplete.ItemClickListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +41,7 @@ public class OptionDialog<T extends Model> extends DialogFragment {
     ListView lvItem;
 
     private ItemClickListener<T> onItemClickListener;
-    private QuickAdapter<T> adapter;
+    private OptionAdapter<T> adapter;
     private List<T> modelList;
 
     public static <T extends Model> OptionDialog newInstance(List<T> modelList,
@@ -67,10 +66,12 @@ public class OptionDialog<T extends Model> extends DialogFragment {
     @AfterViews
     void init() {
 
-        adapter = new QuickAdapter<T>(getContext(), R.layout.item_dialog_option) {
+        adapter = new OptionAdapter<T>(getContext(), R.layout.item_dialog_option) {
             @Override
             protected void convert(BaseAdapterHelper helper, T item) {
-                helper.setText(R.id.item_dialog_option_title, item.getDisplayName());
+                TextView tvDisplay = helper.getView(R.id.item_dialog_option_title);
+                tvDisplay.setText(AppUtils.highlightText(etSearch.getText().toString(), item.getDisplayName(),
+                                                         Color.parseColor("#7A7986")));
             }
         };
         lvItem.setAdapter(adapter);
@@ -82,17 +83,7 @@ public class OptionDialog<T extends Model> extends DialogFragment {
             @Override
             public void after(Editable editable) {
                 String query = etSearch.getText().toString();
-                if (!TextUtils.isEmpty(query) && modelList != null) {
-                    List<T> resultsData = new ArrayList<>();
-                    for (T item : modelList) {
-                        if (AppUtils.isContainText(query, item.getDisplayName())) {
-                            resultsData.add(item);
-                        }
-                    }
-                    adapter.replaceAll(resultsData);
-                } else {
-                    adapter.replaceAll(modelList);
-                }
+                adapter.getFilter().filter(query);
             }
 
             @Override

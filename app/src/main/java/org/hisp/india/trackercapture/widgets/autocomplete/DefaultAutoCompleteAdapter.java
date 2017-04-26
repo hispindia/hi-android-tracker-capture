@@ -58,9 +58,9 @@ public class DefaultAutoCompleteAdapter<T extends Model> extends ArrayAdapter<T>
                     results.count = originalList.size();
                     results.values = originalList;
                 } else {
-                    List<Model> resultsData = new ArrayList<>();
+                    List<T> resultsData = new ArrayList<>();
                     String searchStr = constraint.toString();
-                    for (Model item : originalList) {
+                    for (T item : originalList) {
                         if (AppUtils.isContainText(searchStr, item.getDisplayName())) {
                             resultsData.add(item);
                         }
@@ -76,11 +76,10 @@ public class DefaultAutoCompleteAdapter<T extends Model> extends ArrayAdapter<T>
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 if (constraint == null || constraint.length() == 0) {
                     resultList = originalList;
-                    notifyDataSetInvalidated();
                 } else {
                     resultList = (List<T>) results.values;
-                    notifyDataSetChanged();
                 }
+                notifyDataSetChanged();
 
             }
         };

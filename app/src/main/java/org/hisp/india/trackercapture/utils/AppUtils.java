@@ -154,13 +154,14 @@ public class AppUtils {
      * @return CharSequence had been high lighted
      */
     public static CharSequence highlightText(String search, String originalText) {
-        return highlightText(search, originalText, false);
+        return highlightText(search, originalText, false, Color.WHITE);
     }
 
-    /**
-     * Highlight text
-     */
-    public static CharSequence highlightText(String search, String originalText, boolean caseSensitive) {
+    public static CharSequence highlightText(String search, String originalText, int color) {
+        return highlightText(search, originalText, false, color);
+    }
+
+    public static CharSequence highlightText(String search, String originalText, boolean caseSensitive, int color) {
         if (search != null && !search.equalsIgnoreCase("")) {
             String normalizedText = Normalizer.normalize(originalText, Normalizer.Form.NFD)
                                               .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
@@ -173,7 +174,7 @@ public class AppUtils {
                 while (start >= 0) {
                     int spanStart = Math.min(start, originalText.length());
                     int spanEnd = Math.min(start + search.length(), originalText.length());
-                    highlighted.setSpan(new ForegroundColorSpan(Color.WHITE), spanStart, spanEnd,
+                    highlighted.setSpan(new ForegroundColorSpan(color), spanStart, spanEnd,
                                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     start = normalizedText.indexOf(search, spanEnd);
                 }
@@ -182,7 +183,6 @@ public class AppUtils {
         }
         return originalText;
     }
-
 
     public static DateTime parseDate(String pattern, String date) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
