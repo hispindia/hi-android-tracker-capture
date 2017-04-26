@@ -15,7 +15,7 @@ public class OptionSetsResponse {
     @SerializedName("optionSets")
     private List<OptionSet> optionSets;
 
-    public List<OptionSet> getPrograms() {
+    public List<OptionSet> getOptionSets() {
         return optionSets;
     }
 }

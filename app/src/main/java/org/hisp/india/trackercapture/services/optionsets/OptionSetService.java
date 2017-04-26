@@ -13,6 +13,6 @@ import rx.Observable;
 
 public interface OptionSetService {
 
-    Observable<OptionSetsResponse> getPrograms();
+    Observable<OptionSetsResponse> getOptionSets();
 
 }

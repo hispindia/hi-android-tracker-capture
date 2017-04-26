@@ -25,7 +25,7 @@ public class DefaultOptionSetService implements OptionSetService {
     }
 
     @Override
-    public Observable<OptionSetsResponse> getPrograms() {
+    public Observable<OptionSetsResponse> getOptionSets() {
         return networkProvider
                 .transformResponse(restService.getOptionSets())
                 .compose(apiErrorFilter.execute());
