@@ -53,35 +53,35 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_login_ll_host)
-    LinearLayout llHost;
+    protected LinearLayout llHost;
     @ViewById(R.id.activity_login_et_host)
-    EditText etHost;
+    protected EditText etHost;
 
     @ViewById(R.id.activity_login_v_username_underline)
-    View vUsernameUnderline;
+    protected View vUsernameUnderline;
     @ViewById(R.id.activity_login_v_password_underline)
-    View vPasswordUnderline;
+    protected View vPasswordUnderline;
     @ViewById(R.id.activity_login_bt_login)
-    Button btLogin;
+    protected Button btLogin;
     @ViewById(R.id.activity_login_root_scroll)
-    ScrollView rootScroll;
+    protected ScrollView rootScroll;
     @ViewById(R.id.activity_login_v_bottom_space)
-    View vBottomSpace;
+    protected View vBottomSpace;
 
     @NotEmpty
     @Length(min = 4)
     @ViewById(R.id.activity_login_et_username)
-    EditText etUsername;
+    protected EditText etUsername;
 
     @NotEmpty
     @Password(min = 6)
     @ViewById(R.id.activity_login_et_password)
-    EditText etPassword;
+    protected EditText etPassword;
 
     @App
-    MainApplication application;
+    protected MainApplication application;
     @Inject
-    LoginPresenter presenter;
+    protected LoginPresenter presenter;
 
     private Validator validator;
     private boolean isValid;

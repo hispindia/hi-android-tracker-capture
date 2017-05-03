@@ -1,5 +1,7 @@
 package org.hisp.india.trackercapture.domains.enroll.step2;
 
+import android.support.annotation.NonNull;
+
 import com.hannesdorfmann.mosby3.mvp.MvpFragment;
 
 import org.androidannotations.annotations.AfterInject;
@@ -18,9 +20,9 @@ import javax.inject.Inject;
 public class Step2Fragment extends MvpFragment<Step2View, Step2Presenter> implements Step2View {
 
     @App
-    MainApplication application;
+    protected MainApplication application;
     @Inject
-    Step2Presenter presenter;
+    protected Step2Presenter presenter;
 
     public static Step2Fragment getNewInstance() {
         return new Step2Fragment_();
@@ -34,6 +36,7 @@ public class Step2Fragment extends MvpFragment<Step2View, Step2Presenter> implem
                             .inject(this);
     }
 
+    @NonNull
     @Override
     public Step2Presenter createPresenter() {
         return presenter;

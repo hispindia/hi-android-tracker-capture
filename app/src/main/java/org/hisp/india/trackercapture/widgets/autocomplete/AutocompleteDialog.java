@@ -27,7 +27,7 @@ import java.util.List;
 public class AutocompleteDialog<T extends Model> extends DialogFragment {
 
     @ViewById(R.id.dialog_autocomplete_et_search)
-    AutoCompleteTextView etSearch;
+    protected AutoCompleteTextView etSearch;
 
     private List<T> modelList;
     private ItemClickListener<T> onItemClickListener;

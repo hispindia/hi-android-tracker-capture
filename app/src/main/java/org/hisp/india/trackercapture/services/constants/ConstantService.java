@@ -1,6 +1,3 @@
-
-
-
 package org.hisp.india.trackercapture.services.constants;
 
 import org.hisp.india.trackercapture.models.response.ConstantsResponse;

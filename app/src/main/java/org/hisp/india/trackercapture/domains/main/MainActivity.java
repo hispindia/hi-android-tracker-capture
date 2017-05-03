@@ -53,18 +53,18 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_main_toolbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
     @ViewById(R.id.activity_main_tv_organization)
-    TextView tvOrganization;
+    protected TextView tvOrganization;
     @ViewById(R.id.activity_main_tv_program)
-    TextView tvProgram;
+    protected TextView tvProgram;
     @ViewById(R.id.activity_main_bt_search)
-    Button btSearch;
+    protected Button btSearch;
 
     @App
-    MainApplication application;
+    protected MainApplication application;
     @Inject
-    MainPresenter presenter;
+    protected MainPresenter presenter;
 
     private RProgram program;
     private ROrganizationUnit organizationUnit;
@@ -186,6 +186,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                     nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
                 }
                 break;
+            default:
+                break;
         }
     }
 
@@ -197,6 +199,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 break;
             case LOGOUT:
                 presenter.logout();
+                break;
+            default:
                 break;
         }
     }

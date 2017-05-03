@@ -21,15 +21,15 @@ public class NToolbar extends RelativeLayout {
     private static final String TAG = NToolbar.class.getSimpleName();
 
     @ViewById(R.id.view_toolbar)
-    Toolbar toolbar;
+    protected Toolbar toolbar;
     @ViewById(R.id.view_toolbar_icon)
-    View toolbarIcon;
+    protected View toolbarIcon;
     @ViewById(R.id.view_toolbar_close)
-    View toolbarClose;
+    protected View toolbarClose;
     @ViewById(R.id.view_toolbar_tv_title)
-    TextView tvTitle;
+    protected TextView tvTitle;
     @ViewById(R.id.view_toolbar_setting)
-    View toolbarSetting;
+    protected View toolbarSetting;
 
     public NToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -42,7 +42,6 @@ public class NToolbar extends RelativeLayout {
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
     }
-
 
     public void applyTemplatelUi(AppCompatActivity activity, String title, TemplateToolbarItemClick itemClick) {
         //Setup toolbar
@@ -80,7 +79,6 @@ public class NToolbar extends RelativeLayout {
     public interface TemplateToolbarItemClick {
         void toolbarCloseClick();
     }
-
 
     public interface EnrollToolbarItemClick {
         void toolbarCloseClick();

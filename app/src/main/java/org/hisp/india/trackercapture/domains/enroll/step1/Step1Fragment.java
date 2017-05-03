@@ -34,16 +34,16 @@ public class Step1Fragment extends MvpFragment<Step1View, Step1Presenter> implem
     private static final String TAG = Step1Fragment.class.getSimpleName();
 
     @ViewById(R.id.fragment_step1_tv_date_of_birth)
-    TextView tvDateOfBirth;
+    protected TextView tvDateOfBirth;
     @ViewById(R.id.fragment_step1_tv_enroll_date)
-    TextView tvEnrollDate;
+    protected TextView tvEnrollDate;
     @ViewById(R.id.fragment_step1_tv_gender)
-    TextView tvGender;
+    protected TextView tvGender;
 
     @App
-    MainApplication application;
+    protected MainApplication application;
     @Inject
-    Step1Presenter presenter;
+    protected Step1Presenter presenter;
 
     private EnrollActivity activity;
 
@@ -68,7 +68,6 @@ public class Step1Fragment extends MvpFragment<Step1View, Step1Presenter> implem
     public Step1Presenter createPresenter() {
         return presenter;
     }
-
 
     @Override
     public void showLoading() {

@@ -13,7 +13,7 @@ import javax.inject.Inject;
 public class SplashPresenter extends MvpBasePresenter<SplashView> {
 
     @Inject
-    AccountService accountService;
+    protected AccountService accountService;
 
     @Inject
     public SplashPresenter() {

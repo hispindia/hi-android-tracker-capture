@@ -31,14 +31,14 @@ import javax.inject.Inject;
 public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> implements SplashView {
 
     @ViewById(R.id.activity_splash_background)
-    RelativeLayout rlBackground;
+    protected RelativeLayout rlBackground;
     @ViewById(R.id.activity_splash_iv_logo)
-    ImageView ivLogo;
+    protected ImageView ivLogo;
 
     @App
-    MainApplication application;
+    protected MainApplication application;
     @Inject
-    SplashPresenter presenter;
+    protected SplashPresenter presenter;
 
     @AfterInject
     void inject() {

@@ -19,12 +19,12 @@ import javax.inject.Inject;
 public class TemplateActivity extends BaseActivity<TemplateView, TemplatePresenter> implements TemplateView {
 
     @ViewById(R.id.activity_main_toolbar)
-    NToolbar toolbar;
+    protected NToolbar toolbar;
 
     @App
-    MainApplication application;
+    protected MainApplication application;
     @Inject
-    TemplatePresenter presenter;
+    protected TemplatePresenter presenter;
 
     @AfterInject
     void inject() {

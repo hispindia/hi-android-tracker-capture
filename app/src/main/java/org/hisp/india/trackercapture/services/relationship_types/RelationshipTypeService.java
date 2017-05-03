@@ -1,6 +1,3 @@
-
-
-
 package org.hisp.india.trackercapture.services.relationship_types;
 
 import org.hisp.india.trackercapture.models.response.RelationshipTypesResponse;

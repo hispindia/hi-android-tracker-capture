@@ -1,6 +1,3 @@
-
-
-
 package org.hisp.india.trackercapture.services.program_rule_actions;
 
 import org.hisp.india.trackercapture.models.response.ProgramRuleActionsResponse;

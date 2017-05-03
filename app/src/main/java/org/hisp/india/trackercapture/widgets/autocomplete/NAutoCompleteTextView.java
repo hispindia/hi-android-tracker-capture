@@ -1,6 +1,5 @@
 package org.hisp.india.trackercapture.widgets.autocomplete;
 
-
 import android.widget.AutoCompleteTextView;
 
 import org.hisp.india.trackercapture.R;

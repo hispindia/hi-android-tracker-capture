@@ -46,7 +46,7 @@ public class DefaultAutoCompleteAdapter<T extends Model> extends ArrayAdapter<T>
         return resultList.get(position);
     }
 
-
+    @NonNull
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -109,8 +109,9 @@ public class DefaultAutoCompleteAdapter<T extends Model> extends ArrayAdapter<T>
     @Override
     public int getCount() {
         // Last item will be the footer
-        if (resultList != null)
+        if (resultList != null) {
             return resultList.size();
+        }
         return 0;
     }
 

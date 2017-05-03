@@ -30,8 +30,9 @@ public abstract class BaseActivity<V extends MvpView, P extends MvpPresenter<V>>
 
     public void showProgressLoading() {
 
-        if (progressDialogLoading != null)
+        if (progressDialogLoading != null) {
             progressDialogLoading.dismiss();
+        }
         View view = getLayoutInflater().inflate(R.layout.layout_progress_loading, null);
         RotateLoading rotateloading = (RotateLoading) view.findViewById(R.id.layout_loading_rotate);
         rotateloading.start();
@@ -50,8 +51,9 @@ public abstract class BaseActivity<V extends MvpView, P extends MvpPresenter<V>>
     }
 
     public void hideProgressLoading() {
-        if (progressDialogLoading != null && progressDialogLoading.isShowing())
+        if (progressDialogLoading != null && progressDialogLoading.isShowing()) {
             progressDialogLoading.dismiss();
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by nhancao on 4/7/17.
@@ -45,8 +46,8 @@ public class NKeyboard implements ViewTreeObserver.OnGlobalLayoutListener {
     }
 
     public static void removeAllListeners() {
-        for (NKeyboardListener l : listenerMap.keySet()) {
-            listenerMap.get(l).removeListener();
+        for (Map.Entry<NKeyboardListener, NKeyboard> nKeyboardListenerNKeyboardEntry : listenerMap.entrySet()) {
+            nKeyboardListenerNKeyboardEntry.getValue().removeListener();
         }
         listenerMap.clear();
     }
@@ -62,8 +63,8 @@ public class NKeyboard implements ViewTreeObserver.OnGlobalLayoutListener {
 
         View activityRoot = ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
         int visibleThreshold = Math
-                .round((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100,
-                                                       activity.getResources().getDisplayMetrics()));
+                .round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100,
+                                                 activity.getResources().getDisplayMetrics()));
 
         activityRoot.getWindowVisibleDisplayFrame(r);
 

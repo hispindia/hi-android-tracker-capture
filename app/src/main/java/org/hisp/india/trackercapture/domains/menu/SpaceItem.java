@@ -39,7 +39,7 @@ public class SpaceItem extends DrawerItem<SpaceItem.ViewHolder> {
 
     static class ViewHolder extends DrawerAdapter.ViewHolder {
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
         }
     }

@@ -36,9 +36,9 @@ public class OptionDialog<T extends Model> extends DialogFragment {
     private static final String TAG = OptionDialog.class.getSimpleName();
 
     @ViewById(R.id.dialog_option_et_search)
-    EditText etSearch;
+    protected EditText etSearch;
     @ViewById(R.id.dialog_option_lv_item)
-    ListView lvItem;
+    protected ListView lvItem;
 
     private ItemClickListener<T> onItemClickListener;
     private OptionAdapter<T> adapter;

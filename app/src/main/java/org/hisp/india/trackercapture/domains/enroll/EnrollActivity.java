@@ -29,12 +29,12 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
     private static final String TAG = EnrollActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_enroll_toolbar)
-    NToolbar toolbar;
+    protected NToolbar toolbar;
 
     @App
-    MainApplication application;
+    protected MainApplication application;
     @Inject
-    EnrollPresenter presenter;
+    protected EnrollPresenter presenter;
 
     private Navigator navigator = new SupportFragmentNavigator(getSupportFragmentManager(), R.id.main_container) {
         private String currentScreenKey;

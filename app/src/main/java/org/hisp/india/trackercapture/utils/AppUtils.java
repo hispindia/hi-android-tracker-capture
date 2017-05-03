@@ -99,13 +99,13 @@ public class AppUtils {
             File data = Environment.getDataDirectory();
 
             if (sd.canWrite()) {
-                String currentDBPath = "//data//" + context.getPackageName() + "//files//" + databaseName;
-                File currentDB = new File(data, currentDBPath);
-                File backupDB = new File(sd, databaseName);
+                String currentDbPath = "//data//" + context.getPackageName() + "//files//" + databaseName;
+                File currentDb = new File(data, currentDbPath);
+                File backupDb = new File(sd, databaseName);
 
-                if (currentDB.exists()) {
-                    FileChannel src = new FileInputStream(currentDB).getChannel();
-                    FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                if (currentDb.exists()) {
+                    FileChannel src = new FileInputStream(currentDb).getChannel();
+                    FileChannel dst = new FileOutputStream(backupDb).getChannel();
                     dst.transferFrom(src, 0, src.size());
                     src.close();
                     dst.close();

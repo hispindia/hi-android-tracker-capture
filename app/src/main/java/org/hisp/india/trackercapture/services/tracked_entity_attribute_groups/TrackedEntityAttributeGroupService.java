@@ -1,6 +1,3 @@
-
-
-
 package org.hisp.india.trackercapture.services.tracked_entity_attribute_groups;
 
 import org.hisp.india.trackercapture.models.response.TrackedEntityAttributeGroupsResponse;
