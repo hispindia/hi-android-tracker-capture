@@ -1,13 +1,12 @@
 package org.hisp.india.trackercapture.services.account;
 
-import com.orhanobut.hawk.Hawk;
+import android.util.Log;
 
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.Credentials;
 import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
-import org.hisp.india.trackercapture.utils.Constants;
 
 import rx.Observable;
 
@@ -16,6 +15,7 @@ import rx.Observable;
  */
 
 public class DefaultAccountService implements AccountService {
+    private static final String TAG = DefaultAccountService.class.getSimpleName();
 
     private NetworkProvider networkProvider;
     private AccountApi restService;
@@ -37,6 +37,7 @@ public class DefaultAccountService implements AccountService {
 
     @Override
     public boolean isLogin() {
+        Log.e(TAG, "isLogin: " + credentials.isLoginSuccess());
         return credentials.isLoginSuccess();
     }
 
@@ -48,8 +49,6 @@ public class DefaultAccountService implements AccountService {
                 .addDefaultHeader()
                 .addHeader("Authorization", credentials.getApiToken())
                 .provideApi(credentials.getHost(), AccountApi.class);
-
-        Hawk.put(Constants.CREDENTIALS, credentials);
 
     }
 
@@ -78,7 +77,6 @@ public class DefaultAccountService implements AccountService {
     @Override
     public void logout() {
         credentials.clear();
-        Hawk.put(Constants.CREDENTIALS, credentials);
     }
 
 }

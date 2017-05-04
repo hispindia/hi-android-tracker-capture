@@ -1,5 +1,7 @@
 package org.hisp.india.trackercapture.models;
 
+import com.orhanobut.hawk.Hawk;
+
 import org.hisp.india.trackercapture.utils.Constants;
 
 import java.io.Serializable;
@@ -38,6 +40,7 @@ public class Credentials implements Serializable {
 
     public void setApiToken(String username, String password) {
         apiToken = genBasicToken(username, password);
+        savePref();
     }
 
     public String getHost() {
@@ -46,11 +49,13 @@ public class Credentials implements Serializable {
 
     public void setHost(String host) {
         this.host = host;
+        savePref();
     }
 
     public void clear() {
         apiToken = null;
         loginSuccess = false;
+        savePref();
     }
 
     public boolean isLoginSuccess() {
@@ -59,5 +64,10 @@ public class Credentials implements Serializable {
 
     public void setLoginSuccess(boolean loginSuccess) {
         this.loginSuccess = loginSuccess;
+        savePref();
+    }
+
+    private void savePref() {
+        Hawk.put(Constants.CREDENTIALS, this);
     }
 }

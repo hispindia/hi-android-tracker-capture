@@ -9,9 +9,7 @@ import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.organization.OrganizationModel;
-import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.services.programs.ProgramModel;
-import org.hisp.india.trackercapture.services.programs.ProgramService;
 
 import java.util.List;
 
@@ -31,17 +29,12 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     private NavigatorHolder navigatorHolder;
 
     private AccountService accountService;
-    private OrganizationService organizationService;
-    private ProgramService programService;
 
     @Inject
-    public MainPresenter(Router router, NavigatorHolder navigatorHolder, AccountService accountService,
-                         OrganizationService organizationService, ProgramService programService) {
+    public MainPresenter(Router router, NavigatorHolder navigatorHolder, AccountService accountService) {
         this.router = router;
         this.navigatorHolder = navigatorHolder;
         this.accountService = accountService;
-        this.organizationService = organizationService;
-        this.programService = programService;
     }
 
     @Override
@@ -69,12 +62,14 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         List<ROrganizationUnit> tOrganizationUnits;
         tOrganizationUnits = OrganizationModel.getAllOrganization();
         getView().showOrgList(tOrganizationUnits);
+        if (tOrganizationUnits.size() > 0) {
+            getView().showProgramList(tOrganizationUnits.get(0).getPrograms());
+        }
     }
 
     public void getPrograms() {
         List<RProgram> tPrograms;
         tPrograms = ProgramModel.getAllPrograms();
-        getView().showProgramList(tPrograms);
     }
 
 }

@@ -33,6 +33,7 @@ public class AuthenticationSuccessFilter
                     });
 
                     credentials.setLoginSuccess(true);
+
                     return Observable.just(user);
                 });
     }

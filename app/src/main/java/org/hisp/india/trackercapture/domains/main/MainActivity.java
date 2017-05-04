@@ -241,6 +241,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 }
                 tvOrganization.setText(model.getDisplayName());
                 organizationUnit = model;
+                //update program list
+                programList = model.getPrograms();
+                program = null;
+                tvProgram.setText("");
+
                 updateBtSearch();
             });
             dialog.show(getSupportFragmentManager());
