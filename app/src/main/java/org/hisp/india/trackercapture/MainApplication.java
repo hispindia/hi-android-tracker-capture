@@ -80,7 +80,7 @@ public class MainApplication extends MultiDexApplication {
             Realm.setDefaultConfiguration(config);
 
             //Start realm browser
-//            startRealmBrowserServer(config);
+            startRealmBrowserServer(config);
 
             success = true;
         }

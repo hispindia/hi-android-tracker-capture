@@ -2,6 +2,9 @@ package org.hisp.india.trackercapture.models.storage;
 
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
 import org.hisp.india.trackercapture.models.base.Program;
+import org.hisp.india.trackercapture.models.base.User;
+
+import io.realm.RealmList;
 
 /**
  * Created by nhancao on 4/16/17.
@@ -9,10 +12,32 @@ import org.hisp.india.trackercapture.models.base.Program;
 
 public class RMapping {
 
+    public static RUser from(User user) {
+        RUser model = new RUser();
+        model.setId(user.getId());
+        model.setDisplayName(user.getDisplayName());
+        model.setEmail(user.getEmail());
+        model.setFirstName(user.getFirstName());
+        model.setName(user.getName());
+        model.setSurName(user.getSurName());
+        model.setOrganizationUnits(new RealmList<>());
+        for (OrganizationUnit organizationUnit : user.getOrganizationUnits()) {
+            model.getOrganizationUnits().add(RMapping.from(organizationUnit));
+        }
+
+        return model;
+    }
+
     public static ROrganizationUnit from(OrganizationUnit organizationUnit) {
         ROrganizationUnit model = new ROrganizationUnit();
         model.setId(organizationUnit.getId());
         model.setDisplayName(organizationUnit.getDisplayName());
+        model.setPrograms(new RealmList<>());
+
+        for (Program program : organizationUnit.getPrograms()) {
+            model.getPrograms().add(from(program));
+        }
+
         return model;
     }
 

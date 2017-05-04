@@ -31,9 +31,9 @@ import org.hisp.india.trackercapture.domains.menu.DrawerItem;
 import org.hisp.india.trackercapture.domains.menu.MenuItem;
 import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
-import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
@@ -127,7 +127,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         list.setAdapter(adapter);
 
         //Update info
-        User user = presenter.getUserInfo();
+        RUser user = presenter.getUserInfo();
         String character = "";
         if (user != null) {
             if (!TextUtils.isEmpty(user.getFirstName()) && !TextUtils.isEmpty(user.getSurName())) {

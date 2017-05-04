@@ -1,11 +1,10 @@
 package org.hisp.india.trackercapture.services.filter;
 
-import com.orhanobut.hawk.Hawk;
-
 import org.hisp.india.core.services.filter.OutputFilter;
 import org.hisp.india.trackercapture.models.Credentials;
 import org.hisp.india.trackercapture.models.base.User;
-import org.hisp.india.trackercapture.utils.Constants;
+import org.hisp.india.trackercapture.models.storage.RMapping;
+import org.hisp.india.trackercapture.utils.RealmHelper;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -28,8 +27,12 @@ public class AuthenticationSuccessFilter
         return userObservable -> userObservable
                 .observeOn(Schedulers.computation())
                 .flatMap(user -> {
-                    credentials.setUserInfo(user);
-                    Hawk.put(Constants.CREDENTIALS, credentials);
+
+                    RealmHelper.transaction(realm -> {
+                        realm.copyToRealmOrUpdate(RMapping.from(user));
+                    });
+
+                    credentials.setLoginSuccess(true);
                     return Observable.just(user);
                 });
     }

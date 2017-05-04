@@ -1,6 +1,5 @@
 package org.hisp.india.trackercapture.models;
 
-import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.utils.Constants;
 
 import java.io.Serializable;
@@ -16,7 +15,7 @@ public class Credentials implements Serializable {
 
     private String host;
     private String apiToken;
-    private User userInfo;
+    private boolean loginSuccess;
 
     public Credentials() {
         host = Constants.HOST_DEFAULT;
@@ -49,16 +48,16 @@ public class Credentials implements Serializable {
         this.host = host;
     }
 
-    public User getUserInfo() {
-        return userInfo;
-    }
-
-    public void setUserInfo(User userInfo) {
-        this.userInfo = userInfo;
-    }
-
     public void clear() {
-        userInfo = null;
         apiToken = null;
+        loginSuccess = false;
+    }
+
+    public boolean isLoginSuccess() {
+        return loginSuccess;
+    }
+
+    public void setLoginSuccess(boolean loginSuccess) {
+        this.loginSuccess = loginSuccess;
     }
 }

@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.models.storage;
 
 import org.hisp.india.trackercapture.models.base.Model;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -14,6 +15,7 @@ public class ROrganizationUnit extends RealmObject implements Model {
     @PrimaryKey
     private String id;
     private String displayName;
+    private RealmList<RProgram> programs;
 
     @Override
     public String getId() {
@@ -33,5 +35,11 @@ public class ROrganizationUnit extends RealmObject implements Model {
         this.displayName = displayName;
     }
 
+    public RealmList<RProgram> getPrograms() {
+        return programs;
+    }
 
+    public void setPrograms(RealmList<RProgram> programs) {
+        this.programs = programs;
+    }
 }

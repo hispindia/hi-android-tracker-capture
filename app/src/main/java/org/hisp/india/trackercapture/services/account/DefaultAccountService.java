@@ -37,7 +37,7 @@ public class DefaultAccountService implements AccountService {
 
     @Override
     public boolean isLogin() {
-        return credentials.getUserInfo() != null;
+        return credentials.isLoginSuccess();
     }
 
     @Override
@@ -67,7 +67,9 @@ public class DefaultAccountService implements AccountService {
     public Observable<User> login() {
         return networkProvider
                 .transformResponse(restService.login(
-                        "id,created,lastUpdated,name,displayName,firstName,surname,gender,birthday,introduction,education,employer,interests,jobTitle,languages,email,phoneNumber,teiSearchOrganisationUnits[id],organisationUnits[id]"
+                        "id,created,lastUpdated,name,displayName,firstName,surname,gender," +
+                        "birthday,introduction,education,employer,interests,jobTitle,languages," +
+                        "email,phoneNumber,organisationUnits[id,displayName,programs[id,displayName]]"
                                                     ))
                 .compose(new AuthenticationSuccessFilter(credentials).execute())
                 .compose(apiErrorFilter.execute());

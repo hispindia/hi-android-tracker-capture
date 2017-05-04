@@ -59,7 +59,7 @@ public class ApiErrorFilter implements InterceptFilter {
                             }
                             break;
                     }
-                    return Observable.empty();
+                    return Observable.error(throwable);
                 });
     }
 }
