@@ -1,7 +1,5 @@
 package org.hisp.india.trackercapture.services.account;
 
-import android.util.Log;
-
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.Credentials;
 import org.hisp.india.trackercapture.models.base.User;
@@ -37,7 +35,6 @@ public class DefaultAccountService implements AccountService {
 
     @Override
     public boolean isLogin() {
-        Log.e(TAG, "isLogin: " + credentials.isLoginSuccess());
         return credentials.isLoginSuccess();
     }
 

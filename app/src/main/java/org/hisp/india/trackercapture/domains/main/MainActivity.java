@@ -8,8 +8,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.widget.Button;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nhancv.npermission.NPermission;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
@@ -59,7 +61,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @ViewById(R.id.activity_main_tv_program)
     protected TextView tvProgram;
     @ViewById(R.id.activity_main_bt_search)
-    protected Button btSearch;
+    protected View btSearch;
+    @ViewById(R.id.activity_main_bt_enroll)
+    protected View btEnroll;
 
     @App
     protected MainApplication application;
@@ -113,7 +117,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         TextView tvEmail = (TextView) navLayout.findViewById(R.id.menu_drawer_tv_email);
 
         DrawerAdapter adapter = new DrawerAdapter(Arrays.asList(
-                createItemFor(MenuItem.ENROLL).setChecked(true),
+                createItemFor(MenuItem.SYNC),
                 createItemFor(MenuItem.SETTINGS),
                 createItemFor(MenuItem.INFO),
                 new SpaceItem(48),
@@ -141,6 +145,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             tvDisplayName.setText(user.getDisplayName());
             tvEmail.setText(user.getEmail());
         }
+
+        updateBtSearch();
 
         presenter.getOrganizations();
         presenter.getPrograms();
@@ -194,8 +200,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Override
     public void onItemSelected(MenuItem menuItem) {
         switch (menuItem) {
-            case ENROLL:
-                EnrollActivity_.intent(this).start();
+            case SYNC:
+
                 break;
             case LOGOUT:
                 presenter.logout();
@@ -267,11 +273,28 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         }
     }
 
+    @Click(R.id.activity_main_bt_enroll)
+    void btEnrollClick() {
+        if (program != null && organizationUnit != null) {
+            EnrollActivity_.intent(this).organizationUnitId(organizationUnit.getId()).programId(program.getId())
+                           .start();
+        } else {
+            Toast.makeText(application, "Need select org and program first", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Click(R.id.activity_main_bt_search)
+    void btSearch() {
+        Log.e(TAG, "btSearch: ");
+    }
+
     private void updateBtSearch() {
         if (program != null && organizationUnit != null) {
             btSearch.setEnabled(true);
+            btEnroll.setEnabled(true);
         } else {
             btSearch.setEnabled(false);
+            btEnroll.setEnabled(false);
         }
     }
 

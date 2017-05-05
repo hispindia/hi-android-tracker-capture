@@ -9,7 +9,7 @@ import org.hisp.india.trackercapture.R;
  */
 
 public enum MenuItem {
-    ENROLL("Enroll", R.drawable.ic_enroll),
+    SYNC("Sync", R.drawable.ic_sync),
     SETTINGS("Settings", R.drawable.ic_settings),
     INFO("Information", R.drawable.ic_info),
     SPACE("", 0),

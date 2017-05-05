@@ -132,19 +132,62 @@
                         />
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/activity_main_bt_search"
-                    fontPath="fonts/Montserrat-Medium.ttf"
-                    android:layout_width="188dp"
-                    android:layout_height="50dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="-45dp"
-                    android:background="@drawable/bg_bt_login"
-                    android:enabled="false"
-                    android:text="Search"
-                    android:textColor="@color/white_smoke"
-                    android:textSize="18sp"
-                    />
+                    android:gravity="center"
+                    >
+
+                    <FrameLayout
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginRight="10dp"
+                        >
+
+                        <ImageButton
+                            android:id="@+id/activity_main_bt_enroll"
+                            fontPath="fonts/Montserrat-Medium.ttf"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_bt_login"
+                            android:textColor="@color/white_smoke"
+                            android:textSize="18sp"
+                            />
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/bt_enroll"
+                            />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginLeft="10dp"
+                        >
+
+                        <ImageButton
+                            android:id="@+id/activity_main_bt_search"
+                            fontPath="fonts/Montserrat-Medium.ttf"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_bt_login"
+                            android:textColor="@color/white_smoke"
+                            android:textSize="18sp"
+                            />
+
+                        <View
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/bt_search"
+                            />
+                    </FrameLayout>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

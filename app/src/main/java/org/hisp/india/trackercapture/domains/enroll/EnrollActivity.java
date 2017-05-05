@@ -2,12 +2,14 @@ package org.hisp.india.trackercapture.domains.enroll;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
@@ -33,6 +35,10 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
 
     @App
     protected MainApplication application;
+    @Extra
+    protected String organizationUnitId;
+    @Extra
+    protected String programId;
     @Inject
     protected EnrollPresenter presenter;
 
@@ -92,6 +98,8 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
         });
 
         presenter.gotoStep1Fragment();
+
+        Log.e(TAG, "init: " + organizationUnitId);
 
     }
 

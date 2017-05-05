@@ -194,8 +194,12 @@ public class AppUtils {
         return formatter.print(date.withZone(DateTimeZone.UTC));
     }
 
+    /**
+     * Format input year, month, day to string
+     * Ex: 2017 5 4 => 2017-05-04
+     */
     public static String getDateFormatted(int year, int month, int dayOfMonth) {
-        return AppUtils.formatDate("yyyy-mm-dd",
+        return AppUtils.formatDate("yyyy-MM-dd",
                                    new DateTime().withYear(year).withMonthOfYear(month).withDayOfMonth(dayOfMonth));
     }
 

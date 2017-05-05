@@ -1,6 +1,5 @@
 package org.hisp.india.trackercapture.domains.enroll.step1;
 
-import android.util.Log;
 import android.widget.TextView;
 
 import com.hannesdorfmann.mosby3.mvp.MvpFragment;
@@ -83,8 +82,7 @@ public class Step1Fragment extends MvpFragment<Step1View, Step1Presenter> implem
     void tvEnrollDateClick() {
         DatePickerDialog datePicker = DatePickerDialog.newInstance(false);
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-            Log.e(TAG, "tvEnrollDateClick: " + year + " " + month + " " + dayOfMonth);
-            tvEnrollDate.setText(AppUtils.getDateFormatted(year, month, dayOfMonth));
+            tvEnrollDate.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
         });
         datePicker.show(activity.getSupportFragmentManager());
     }
@@ -93,8 +91,7 @@ public class Step1Fragment extends MvpFragment<Step1View, Step1Presenter> implem
     void tvDateOfBirthClick() {
         DatePickerDialog datePicker = DatePickerDialog.newInstance(false);
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-            Log.e(TAG, "tvDateOfBirthClick: " + year + " " + month + " " + dayOfMonth);
-            tvDateOfBirth.setText(AppUtils.getDateFormatted(year, month, dayOfMonth));
+            tvDateOfBirth.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
         });
         datePicker.show(activity.getSupportFragmentManager());
     }
@@ -108,7 +105,6 @@ public class Step1Fragment extends MvpFragment<Step1View, Step1Presenter> implem
             }
         };
         OptionDialog.newInstance(modelList, model -> {
-            Log.e(TAG, "tvGenderClick: " + model);
             tvGender.setText(model.getDisplayName());
         }).show(activity.getSupportFragmentManager());
     }
