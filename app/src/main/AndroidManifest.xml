@@ -38,6 +38,7 @@
         <activity
             android:name=".domains.enroll.EnrollActivity_"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
             >
         </activity>
         <activity

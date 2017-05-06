@@ -1,6 +1,6 @@
 package org.hisp.india.trackercapture.services.account;
 
-import org.hisp.india.trackercapture.models.Credentials;
+import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.models.base.User;
 
 import rx.Observable;

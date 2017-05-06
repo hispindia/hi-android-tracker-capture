@@ -10,7 +10,7 @@ import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.DefaultNetworkProvider;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.BuildConfig;
-import org.hisp.india.trackercapture.models.Credentials;
+import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.services.account.AccountApi;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.account.DefaultAccountService;

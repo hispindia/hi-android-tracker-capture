@@ -9,10 +9,16 @@ import java.io.Serializable;
  */
 
 public class TrackedEntityAttribute extends BaseModel implements Serializable {
-    @SerializedName("mandatory")
-    private boolean mandatory;
-    @SerializedName("displayInList")
-    private boolean displayInList;
-    @SerializedName("valueType")
-    private String valueType;
+    @SerializedName("optionSetValue")
+    private boolean optionSetValue;
+    @SerializedName("optionSet")
+    private OptionSet optionSet;
+
+    public boolean isOptionSetValue() {
+        return optionSetValue;
+    }
+
+    public OptionSet getOptionSet() {
+        return optionSet;
+    }
 }

@@ -17,8 +17,10 @@ public interface ProgramApi {
     Observable<ProgramsResponse> getPrograms();
 
     @GET("api/programs/{programId}?fields=id,displayName,programRuleVariables[*],programStages[*],programRules[*]," +
-         "enrollmentDateLabel,selectEnrollmentDatesInFuture,incidentDateLabel,selectIncidentDatesInFuture," +
-         "programTrackedEntityAttributes[*]")
+         "enrollmentDateLabel,selectEnrollmentDatesInFuture,incidentDateLabel," +
+         "selectIncidentDatesInFuture,displayIncidentDate," +
+         "programTrackedEntityAttributes[*," +
+         "trackedEntityAttribute[optionSetValue,optionSet[id,displayName,valueType,options[id,displayName]]]]")
     Observable<ProgramDetailResponse> getProgramDetail(
             @Path("programId")
                     String programId);

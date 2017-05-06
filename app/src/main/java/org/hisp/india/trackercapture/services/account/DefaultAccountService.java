@@ -1,7 +1,7 @@
 package org.hisp.india.trackercapture.services.account;
 
 import org.hisp.india.core.services.network.NetworkProvider;
-import org.hisp.india.trackercapture.models.Credentials;
+import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 

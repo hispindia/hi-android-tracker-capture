@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import org.hisp.india.trackercapture.models.base.BaseModel;
 import org.hisp.india.trackercapture.models.base.ProgramRule;
 import org.hisp.india.trackercapture.models.base.ProgramRuleVariable;
-import org.hisp.india.trackercapture.models.base.TrackedEntityAttribute;
+import org.hisp.india.trackercapture.models.base.ProgramTrackedEntityAttribute;
 
 import java.io.Serializable;
 import java.util.List;
@@ -23,16 +23,14 @@ public class ProgramDetailResponse extends BaseModel implements Serializable {
     private boolean selectEnrollmentDatesInFuture;
     @SerializedName("selectIncidentDatesInFuture")
     private boolean selectIncidentDatesInFuture;
-
+    @SerializedName("displayIncidentDate")
+    private boolean displayIncidentDate;
     @SerializedName("programStages")
     private List<ProgramStage> programStages;
-
     @SerializedName("programRuleVariables")
     private List<ProgramRuleVariable> programRuleVariables;
-
     @SerializedName("programTrackedEntityAttributes")
-    private List<TrackedEntityAttribute> programTrackedEntityAttributes;
-
+    private List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes;
     @SerializedName("programRules")
     private List<ProgramRule> programRules;
 
@@ -60,11 +58,15 @@ public class ProgramDetailResponse extends BaseModel implements Serializable {
         return programRuleVariables;
     }
 
-    public List<TrackedEntityAttribute> getProgramTrackedEntityAttributes() {
+    public List<ProgramTrackedEntityAttribute> getProgramTrackedEntityAttributes() {
         return programTrackedEntityAttributes;
     }
 
     public List<ProgramRule> getProgramRules() {
         return programRules;
+    }
+
+    public boolean isDisplayIncidentDate() {
+        return displayIncidentDate;
     }
 }

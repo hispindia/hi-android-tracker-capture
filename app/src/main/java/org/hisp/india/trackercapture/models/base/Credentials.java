@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.models;
+package org.hisp.india.trackercapture.models.base;
 
 import com.orhanobut.hawk.Hawk;
 

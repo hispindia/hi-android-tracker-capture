@@ -3,7 +3,7 @@ package org.hisp.india.trackercapture.domains.login;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
-import org.hisp.india.trackercapture.models.Credentials;
+import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.account.AccountService;
 

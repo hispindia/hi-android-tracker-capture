@@ -1,7 +1,7 @@
 package org.hisp.india.trackercapture.services.filter;
 
 import org.hisp.india.core.services.filter.OutputFilter;
-import org.hisp.india.trackercapture.models.Credentials;
+import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.models.storage.RMapping;
 import org.hisp.india.trackercapture.utils.RealmHelper;
