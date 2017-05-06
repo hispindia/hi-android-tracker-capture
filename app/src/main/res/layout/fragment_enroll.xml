@@ -39,7 +39,7 @@
                 />
 
             <TextView
-                android:id="@+id/fragment_step1_tv_enroll_date"
+                android:id="@+id/fragment_enroll_tv_enroll_date"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:background="@android:color/transparent"
@@ -48,6 +48,7 @@
                 android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:textColor="@android:color/black"
                 android:textCursorDrawable="@null"
                 android:textSize="14sp"
                 android:theme="@style/EditText"
@@ -73,7 +74,7 @@
                 />
 
             <TextView
-                android:id="@+id/fragment_step1_tv_date_of_birth"
+                android:id="@+id/fragment_enroll_tv_date_of_birth"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:background="@android:color/transparent"
@@ -82,6 +83,7 @@
                 android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:textColor="@android:color/black"
                 android:textCursorDrawable="@null"
                 android:textSize="14sp"
                 android:theme="@style/EditText"
@@ -115,6 +117,7 @@
                 android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:textColor="@android:color/black"
                 android:textCursorDrawable="@null"
                 android:textSize="14sp"
                 android:theme="@style/EditText"
@@ -148,6 +151,7 @@
                 android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:textColor="@android:color/black"
                 android:textCursorDrawable="@null"
                 android:textSize="14sp"
                 android:theme="@style/EditText"
@@ -173,7 +177,7 @@
                 />
 
             <TextView
-                android:id="@+id/fragment_step1_tv_gender"
+                android:id="@+id/fragment_enroll_tv_gender"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:background="@android:color/transparent"
@@ -182,6 +186,7 @@
                 android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:textColor="@android:color/black"
                 android:textCursorDrawable="@null"
                 android:textSize="14sp"
                 android:theme="@style/EditText"

@@ -36,11 +36,7 @@
         tools:ignore="MissingPrefix"
         >
         <!--content here-->
-        <FrameLayout
-            android:id="@+id/main_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+        <include layout="@layout/fragment_enroll" />
     </LinearLayout>
 </RelativeLayout>
 
