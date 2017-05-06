@@ -1,6 +1,7 @@
 package org.hisp.india.trackercapture.domains.enroll;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterInject;
@@ -15,6 +16,7 @@ import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.models.base.BaseModel;
 import org.hisp.india.trackercapture.models.base.Model;
+import org.hisp.india.trackercapture.models.response.ProgramDetailResponse;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
 import org.hisp.india.trackercapture.widgets.NToolbar;
@@ -81,6 +83,8 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
             }
         });
 
+        presenter.getProgramDetail(programId);
+
 
     }
 
@@ -103,6 +107,11 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
     @Override
     public void hideLoading() {
         hideProgressLoading();
+    }
+
+    @Override
+    public void getProgramDetailSuccess(ProgramDetailResponse programDetailResponse) {
+        Log.e(TAG, "getProgramDetailSuccess: " + programDetailResponse);
     }
 
     @Click(R.id.fragment_enroll_tv_enroll_date)

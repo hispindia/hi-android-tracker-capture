@@ -4,7 +4,6 @@ import org.hisp.india.core.di.scope.ApplicationScope;
 import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.services.account.AccountService;
-import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.services.programs.ProgramService;
 
@@ -21,8 +20,6 @@ public interface ApplicationComponent {
     LogService logService();
 
     NetworkProvider networkProvider();
-
-    ApiErrorFilter apiErrorFilter();
 
     AccountService accountService();
 

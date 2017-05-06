@@ -36,4 +36,35 @@ public class ProgramDetailResponse extends BaseModel implements Serializable {
     @SerializedName("programRules")
     private List<ProgramRule> programRules;
 
+    public String getEnrollmentDateLabel() {
+        return enrollmentDateLabel;
+    }
+
+    public String getIncidentDateLabel() {
+        return incidentDateLabel;
+    }
+
+    public boolean isSelectEnrollmentDatesInFuture() {
+        return selectEnrollmentDatesInFuture;
+    }
+
+    public boolean isSelectIncidentDatesInFuture() {
+        return selectIncidentDatesInFuture;
+    }
+
+    public List<ProgramStage> getProgramStages() {
+        return programStages;
+    }
+
+    public List<ProgramRuleVariable> getProgramRuleVariables() {
+        return programRuleVariables;
+    }
+
+    public List<TrackedEntityAttribute> getProgramTrackedEntityAttributes() {
+        return programTrackedEntityAttributes;
+    }
+
+    public List<ProgramRule> getProgramRules() {
+        return programRules;
+    }
 }

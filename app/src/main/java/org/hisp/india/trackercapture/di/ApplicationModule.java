@@ -61,59 +61,53 @@ public class ApplicationModule {
 
     @Provides
     @ApplicationScope
-    public ApiErrorFilter provideApiErrorFilter(NetworkProvider networkProvider, LogService logService) {
-        return new ApiErrorFilter(networkProvider, logService);
-    }
-
-    @Provides
-    @ApplicationScope
     public Credentials provideCredentials() {
         return Hawk.get(Constants.CREDENTIALS, new Credentials());
     }
 
     @Provides
     @ApplicationScope
-    public NetworkProvider provideNetworkProvider() {
-        return new DefaultNetworkProvider(application, BuildConfig.DEBUG).addDefaultHeader();
+    public NetworkProvider provideNetworkProvider(LogService logService) {
+        NetworkProvider networkProvider = new DefaultNetworkProvider(application, BuildConfig.DEBUG);
+        return networkProvider.addDefaultHeader()
+                              .enableFilter(true)
+                              .addFilter(new ApiErrorFilter(networkProvider, logService));
     }
 
     @Provides
     @ApplicationScope
-    public AccountService provideAccountService(NetworkProvider rxNetworkProvider, Credentials credentials,
-                                                ApiErrorFilter apiErrorFilter) {
+    public AccountService provideAccountService(NetworkProvider rxNetworkProvider, Credentials credentials) {
 
         AccountApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
                         .provideApi(credentials.getHost(), AccountApi.class);
 
-        return new DefaultAccountService(rxNetworkProvider, restService, credentials, apiErrorFilter);
+        return new DefaultAccountService(rxNetworkProvider, restService, credentials);
     }
 
     @Provides
     @ApplicationScope
-    public OrganizationService provideOrganizationService(NetworkProvider rxNetworkProvider, Credentials credentials,
-                                                          ApiErrorFilter apiErrorFilter) {
+    public OrganizationService provideOrganizationService(NetworkProvider rxNetworkProvider, Credentials credentials) {
 
         OrganizationApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
                         .provideApi(credentials.getHost(), OrganizationApi.class);
 
-        return new DefaultOrganizationService(rxNetworkProvider, restService, apiErrorFilter);
+        return new DefaultOrganizationService(rxNetworkProvider, restService);
     }
 
     @Provides
     @ApplicationScope
-    public ProgramService provideProgramService(NetworkProvider rxNetworkProvider, Credentials credentials,
-                                                ApiErrorFilter apiErrorFilter) {
+    public ProgramService provideProgramService(NetworkProvider rxNetworkProvider, Credentials credentials) {
 
         ProgramApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
                         .provideApi(credentials.getHost(), ProgramApi.class);
 
-        return new DefaultProgramService(rxNetworkProvider, restService, apiErrorFilter);
+        return new DefaultProgramService(rxNetworkProvider, restService);
     }
 
 }

@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.services.programs;
 
+import org.hisp.india.trackercapture.models.response.ProgramDetailResponse;
 import org.hisp.india.trackercapture.models.response.ProgramsResponse;
 
 import rx.Observable;
@@ -11,5 +12,7 @@ import rx.Observable;
 public interface ProgramService {
 
     Observable<ProgramsResponse> getPrograms();
+
+    Observable<ProgramDetailResponse> getProgramDetail(String programId);
 
 }

@@ -2,6 +2,8 @@ package org.hisp.india.trackercapture.domains.enroll;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
+import org.hisp.india.trackercapture.models.response.ProgramDetailResponse;
+
 import ru.terrakok.cicerone.Navigator;
 
 /**
@@ -20,4 +22,6 @@ public interface EnrollView extends MvpView {
      * Display a loading view while loading data in background.
      */
     void hideLoading();
+
+    void getProgramDetailSuccess(ProgramDetailResponse programDetailResponse);
 }

@@ -2,7 +2,6 @@ package org.hisp.india.trackercapture.services.tracked_entity_instances;
 
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.response.TrackedEntityInstancesResponse;
-import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 
 import rx.Observable;
 
@@ -14,20 +13,16 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
 
     private NetworkProvider networkProvider;
     private TrackedEntityInstanceApi restService;
-    private ApiErrorFilter apiErrorFilter;
 
     public DefaultTrackedEntityInstanceService(NetworkProvider networkProvider,
-                                               TrackedEntityInstanceApi restService,
-                                               ApiErrorFilter apiErrorFilter) {
+                                               TrackedEntityInstanceApi restService) {
         this.networkProvider = networkProvider;
         this.restService = restService;
-        this.apiErrorFilter = apiErrorFilter;
     }
 
     @Override
     public Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances() {
         return networkProvider
-                .transformResponse(restService.getTrackedEntityInstances())
-                .compose(apiErrorFilter.execute());
+                .transformResponse(restService.getTrackedEntityInstances());
     }
 }

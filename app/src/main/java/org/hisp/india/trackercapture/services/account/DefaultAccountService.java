@@ -3,7 +3,6 @@ package org.hisp.india.trackercapture.services.account;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.Credentials;
 import org.hisp.india.trackercapture.models.base.User;
-import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 
 import rx.Observable;
@@ -18,14 +17,11 @@ public class DefaultAccountService implements AccountService {
     private NetworkProvider networkProvider;
     private AccountApi restService;
     private Credentials credentials;
-    private ApiErrorFilter apiErrorFilter;
 
-    public DefaultAccountService(NetworkProvider networkProvider, AccountApi restService, Credentials credentials,
-                                 ApiErrorFilter apiErrorFilter) {
+    public DefaultAccountService(NetworkProvider networkProvider, AccountApi restService, Credentials credentials) {
         this.networkProvider = networkProvider;
         this.restService = restService;
         this.credentials = credentials;
-        this.apiErrorFilter = apiErrorFilter;
     }
 
     @Override
@@ -67,8 +63,7 @@ public class DefaultAccountService implements AccountService {
                         "birthday,introduction,education,employer,interests,jobTitle,languages," +
                         "email,phoneNumber,organisationUnits[id,displayName,programs[id,displayName]]"
                                                     ))
-                .compose(new AuthenticationSuccessFilter(credentials).execute())
-                .compose(apiErrorFilter.execute());
+                .compose(new AuthenticationSuccessFilter(credentials).execute());
     }
 
     @Override

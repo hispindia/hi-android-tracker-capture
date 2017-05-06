@@ -2,6 +2,9 @@ package org.hisp.india.trackercapture.domains.enroll;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
+import org.hisp.india.core.services.schedulers.RxScheduler;
+import org.hisp.india.trackercapture.services.programs.ProgramService;
+
 import javax.inject.Inject;
 
 import ru.terrakok.cicerone.NavigatorHolder;
@@ -16,11 +19,13 @@ public class EnrollPresenter extends MvpBasePresenter<EnrollView> {
 
     private NavigatorHolder navigatorHolder;
     private Router router;
+    private ProgramService programService;
 
     @Inject
-    public EnrollPresenter(Router router, NavigatorHolder navigatorHolder) {
+    public EnrollPresenter(Router router, NavigatorHolder navigatorHolder, ProgramService programService) {
         this.router = router;
         this.navigatorHolder = navigatorHolder;
+        this.programService = programService;
     }
 
     @Override
@@ -38,5 +43,16 @@ public class EnrollPresenter extends MvpBasePresenter<EnrollView> {
     public void onBackCommandClick() {
         router.exit();
     }
+
+    public void getProgramDetail(String programId) {
+        getView().showLoading();
+        programService.getProgramDetail(programId)
+                      .compose(RxScheduler.applyIoSchedulers())
+                      .doOnTerminate(() -> getView().hideLoading())
+                      .subscribe(programsResponse -> {
+                          getView().getProgramDetailSuccess(programsResponse);
+                      });
+    }
+
 
 }
