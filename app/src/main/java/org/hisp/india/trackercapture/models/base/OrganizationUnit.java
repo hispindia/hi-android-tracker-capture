@@ -17,4 +17,8 @@ public class OrganizationUnit extends BaseModel implements Serializable {
     public List<Program> getPrograms() {
         return programs;
     }
+
+    public void setPrograms(List<Program> programs) {
+        this.programs = programs;
+    }
 }

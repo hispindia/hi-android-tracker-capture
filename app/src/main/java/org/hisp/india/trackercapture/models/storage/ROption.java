@@ -9,13 +9,11 @@ import io.realm.annotations.PrimaryKey;
  * Created by nhancao on 4/24/17.
  */
 
-public class RTrackedEntityAttribute extends RealmObject implements Model {
+public class ROption extends RealmObject implements Model {
 
     @PrimaryKey
     private String id;
     private String displayName;
-    private boolean optionSetValue;
-    private ROptionSet optionSet;
 
     @Override
     public String getId() {
@@ -35,19 +33,4 @@ public class RTrackedEntityAttribute extends RealmObject implements Model {
         this.displayName = displayName;
     }
 
-    public boolean isOptionSetValue() {
-        return optionSetValue;
-    }
-
-    public void setOptionSetValue(boolean optionSetValue) {
-        this.optionSetValue = optionSetValue;
-    }
-
-    public ROptionSet getOptionSet() {
-        return optionSet;
-    }
-
-    public void setOptionSet(ROptionSet optionSet) {
-        this.optionSet = optionSet;
-    }
 }

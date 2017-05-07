@@ -15,6 +15,8 @@ public class ProgramTrackedEntityAttribute extends BaseModel implements Serializ
     private boolean mandatory;
     @SerializedName("displayInList")
     private boolean displayInList;
+    @SerializedName("allowFutureDate")
+    private boolean allowFutureDate;
     @SerializedName("valueType")
     private String valueType;
     @SerializedName("trackedEntityAttribute")
@@ -42,6 +44,10 @@ public class ProgramTrackedEntityAttribute extends BaseModel implements Serializ
 
     public void setValueType(ValueType valueType) {
         this.valueType = valueType.name();
+    }
+
+    public boolean isAllowFutureDate() {
+        return allowFutureDate;
     }
 
     public TrackedEntityAttribute getTrackedEntityAttribute() {

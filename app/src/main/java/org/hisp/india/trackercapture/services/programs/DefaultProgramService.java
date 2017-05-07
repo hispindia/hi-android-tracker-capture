@@ -1,7 +1,7 @@
 package org.hisp.india.trackercapture.services.programs;
 
 import org.hisp.india.core.services.network.NetworkProvider;
-import org.hisp.india.trackercapture.models.response.ProgramDetailResponse;
+import org.hisp.india.trackercapture.models.base.Program;
 import org.hisp.india.trackercapture.models.response.ProgramsResponse;
 
 import rx.Observable;
@@ -28,7 +28,7 @@ public class DefaultProgramService implements ProgramService {
     }
 
     @Override
-    public Observable<ProgramDetailResponse> getProgramDetail(String programId) {
+    public Observable<Program> getProgramDetail(String programId) {
         return networkProvider.transformResponse(restService.getProgramDetail(programId));
     }
 }

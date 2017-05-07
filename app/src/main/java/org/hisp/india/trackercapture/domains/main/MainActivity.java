@@ -149,7 +149,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         updateBtSearch();
 
         presenter.getOrganizations();
-        presenter.getPrograms();
     }
 
     @Override

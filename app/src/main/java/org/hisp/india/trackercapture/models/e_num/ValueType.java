@@ -21,8 +21,7 @@ public enum ValueType {
     public static ValueType getType(String valueType) {
         try {
             return ValueType.valueOf(valueType);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        } catch (IllegalArgumentException ignored) {
         }
         return ValueType.OTHER;
     }

@@ -2,7 +2,7 @@ package org.hisp.india.trackercapture.domains.enroll;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
-import org.hisp.india.trackercapture.models.response.ProgramDetailResponse;
+import org.hisp.india.trackercapture.models.storage.RProgram;
 
 import ru.terrakok.cicerone.Navigator;
 
@@ -23,5 +23,5 @@ public interface EnrollView extends MvpView {
      */
     void hideLoading();
 
-    void getProgramDetailSuccess(ProgramDetailResponse programDetailResponse);
+    void getProgramDetail(RProgram programDetail);
 }

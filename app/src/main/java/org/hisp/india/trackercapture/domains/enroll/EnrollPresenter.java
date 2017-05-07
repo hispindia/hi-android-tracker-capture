@@ -2,7 +2,7 @@ package org.hisp.india.trackercapture.domains.enroll;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
-import org.hisp.india.core.services.schedulers.RxScheduler;
+import org.hisp.india.trackercapture.models.query.ProgramQuery;
 import org.hisp.india.trackercapture.services.programs.ProgramService;
 
 import javax.inject.Inject;
@@ -45,13 +45,11 @@ public class EnrollPresenter extends MvpBasePresenter<EnrollView> {
     }
 
     public void getProgramDetail(String programId) {
-        getView().showLoading();
-        programService.getProgramDetail(programId)
-                      .compose(RxScheduler.applyIoSchedulers())
-                      .doOnTerminate(() -> getView().hideLoading())
-                      .subscribe(programsResponse -> {
-                          getView().getProgramDetailSuccess(programsResponse);
-                      });
+        if (isViewAttached()) {
+            getView().showLoading();
+            getView().getProgramDetail(ProgramQuery.getProgram(programId));
+            getView().hideLoading();
+        }
     }
 
 

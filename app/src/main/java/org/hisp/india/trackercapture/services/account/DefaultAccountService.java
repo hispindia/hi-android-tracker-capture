@@ -4,6 +4,7 @@ import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
+import org.hisp.india.trackercapture.utils.RealmHelper;
 
 import rx.Observable;
 
@@ -61,13 +62,19 @@ public class DefaultAccountService implements AccountService {
                 .transformResponse(restService.login(
                         "id,created,lastUpdated,name,displayName,firstName,surname,gender," +
                         "birthday,introduction,education,employer,interests,jobTitle,languages," +
-                        "email,phoneNumber,organisationUnits[id,displayName,programs[id,displayName]]"
+                        "email,phoneNumber,organisationUnits[id,displayName,programs[" +
+                        "id,displayName,withoutRegistration,programRuleVariables[*],programStages[*],programRules[*]," +
+                        "enrollmentDateLabel,selectEnrollmentDatesInFuture,incidentDateLabel," +
+                        "selectIncidentDatesInFuture,displayIncidentDate,programTrackedEntityAttributes[*," +
+                        "trackedEntityAttribute[id,displayName,optionSetValue," +
+                        "optionSet[id,displayName,valueType,options[id,displayName]]]]]]"
                                                     ))
                 .compose(new AuthenticationSuccessFilter(credentials).execute());
     }
 
     @Override
     public void logout() {
+        RealmHelper.transaction(realm -> realm.deleteAll());
         credentials.clear();
     }
 

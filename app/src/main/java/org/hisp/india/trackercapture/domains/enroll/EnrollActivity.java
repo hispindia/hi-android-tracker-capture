@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
@@ -22,10 +23,10 @@ import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.models.base.BaseModel;
 import org.hisp.india.trackercapture.models.base.Model;
-import org.hisp.india.trackercapture.models.base.Option;
-import org.hisp.india.trackercapture.models.base.ProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
-import org.hisp.india.trackercapture.models.response.ProgramDetailResponse;
+import org.hisp.india.trackercapture.models.storage.ROption;
+import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
 import org.hisp.india.trackercapture.widgets.NToolbar;
@@ -69,8 +70,8 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
     @Inject
     protected EnrollPresenter presenter;
 
-    private QuickAdapter<ProgramTrackedEntityAttribute> adapter;
-    private ProgramDetailResponse programDetailResponse;
+    private QuickAdapter<RProgramTrackedEntityAttribute> adapter;
+    private RProgram programDetail;
 
     private Navigator navigator = command -> {
         if (command instanceof Back) {
@@ -103,21 +104,21 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
             }
         });
 
-        presenter.getProgramDetail(programId);
-
-        adapter = new QuickAdapter<ProgramTrackedEntityAttribute>(this, R.layout.item_enroll_profile) {
+        adapter = new QuickAdapter<RProgramTrackedEntityAttribute>(this, R.layout.item_enroll_profile) {
             @Override
-            protected void convert(BaseAdapterHelper helper, ProgramTrackedEntityAttribute item) {
+            protected void convert(BaseAdapterHelper helper, RProgramTrackedEntityAttribute item) {
 
                 TextView tvLabel = helper.getView(R.id.item_enroll_profile_tv_label);
                 EditText etValue = helper.getView(R.id.item_enroll_profile_et_value);
                 TextView tvValue = helper.getView(R.id.item_enroll_profile_tv_value);
 
-                tvLabel.setText(item.getDisplayName().replaceFirst(programDetailResponse.getDisplayName(), ""));
+                tvLabel.setText(item.getDisplayName().replace(programDetail.getDisplayName() + " ", ""));
 
                 if (item.getTrackedEntityAttribute().isOptionSetValue()
                     || item.getValueType() == ValueType.YES_NO
-                    || item.getValueType() == ValueType.YES_ONLY) {
+                    || item.getValueType() == ValueType.YES_ONLY
+                    || item.getValueType() == ValueType.DATE
+                        ) {
                     tvValue.setVisibility(View.VISIBLE);
                     etValue.setVisibility(View.GONE);
                 } else {
@@ -128,7 +129,7 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
                 if (item.getTrackedEntityAttribute().isOptionSetValue()) {
                     tvValue.setOnClickListener(v -> {
                         List<Model> modelList = new ArrayList<>();
-                        for (Option option : item.getTrackedEntityAttribute().getOptionSet().getOptions()) {
+                        for (ROption option : item.getTrackedEntityAttribute().getOptionSet().getOptions()) {
                             modelList.add(new BaseModel(option.getId(), option.getDisplayName()));
                         }
 
@@ -147,6 +148,15 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
                             etValue.setInputType(InputType.TYPE_CLASS_NUMBER);
                             break;
                         case DATE:
+                            tvValue.setOnClickListener(v -> {
+                                DatePickerDialog datePicker = DatePickerDialog
+                                        .newInstance(item.isAllowFutureDate());
+                                datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
+                                    tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
+                                });
+                                datePicker.show(getSupportFragmentManager());
+                            });
+                            break;
                         case DATE_TIME:
                         case TIME:
                             etValue.setInputType(InputType.TYPE_CLASS_DATETIME);
@@ -179,6 +189,8 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
         };
         lvProfile.setAdapter(adapter);
 
+        presenter.getProgramDetail(programId);
+
     }
 
     @NonNull
@@ -203,21 +215,26 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
     }
 
     @Override
-    public void getProgramDetailSuccess(ProgramDetailResponse programDetailResponse) {
-        this.programDetailResponse = programDetailResponse;
-        //Build form
-        //Enrollment part
-        vIncidentDate.setVisibility(programDetailResponse.isDisplayIncidentDate() ? View.VISIBLE : View.GONE);
-        tvIncidentDateLabel.setText(programDetailResponse.getIncidentDateLabel());
-        tvEnrollmentDateLabel.setText(programDetailResponse.getEnrollmentDateLabel());
+    public void getProgramDetail(RProgram programDetail) {
+        if (programDetail == null) {
+            Toast.makeText(application, "Program detail is null", Toast.LENGTH_SHORT).show();
+        } else {
+            this.programDetail = programDetail;
+            //Build form
+            //Enrollment part
+            vIncidentDate.setVisibility(programDetail.isDisplayIncidentDate() ? View.VISIBLE : View.GONE);
+            tvIncidentDateLabel.setText(programDetail.getIncidentDateLabel());
+            tvEnrollmentDateLabel.setText(programDetail.getEnrollmentDateLabel());
 
-        //Profile part
-        adapter.replaceAll(programDetailResponse.getProgramTrackedEntityAttributes());
+            //Profile part
+            adapter.replaceAll(programDetail.getProgramTrackedEntityAttributes());
+
+        }
     }
 
     @Click(R.id.fragment_enroll_tv_incident_date_value)
     void tvIncidentDateValueClick() {
-        DatePickerDialog datePicker = DatePickerDialog.newInstance(false);
+        DatePickerDialog datePicker = DatePickerDialog.newInstance(programDetail.isSelectIncidentDatesInFuture());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
             tvIncidentDateValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
         });
@@ -226,7 +243,7 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
 
     @Click(R.id.fragment_enroll_tv_enrollment_date_value)
     void tvEnrollmentDateValueClick() {
-        DatePickerDialog datePicker = DatePickerDialog.newInstance(false);
+        DatePickerDialog datePicker = DatePickerDialog.newInstance(programDetail.isSelectEnrollmentDatesInFuture());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
             tvEnrollmentDateValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
         });

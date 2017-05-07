@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.models.storage;
 
 import org.hisp.india.trackercapture.models.base.Model;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -14,6 +15,8 @@ public class ROptionSet extends RealmObject implements Model {
     @PrimaryKey
     private String id;
     private String displayName;
+    private String valueType;
+    private RealmList<ROption> options;
 
     @Override
     public String getId() {
@@ -33,4 +36,19 @@ public class ROptionSet extends RealmObject implements Model {
         this.displayName = displayName;
     }
 
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
+
+    public RealmList<ROption> getOptions() {
+        return options;
+    }
+
+    public void setOptions(RealmList<ROption> options) {
+        this.options = options;
+    }
 }
