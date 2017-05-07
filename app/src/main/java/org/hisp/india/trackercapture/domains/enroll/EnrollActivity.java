@@ -109,10 +109,12 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
             protected void convert(BaseAdapterHelper helper, RProgramTrackedEntityAttribute item) {
 
                 TextView tvLabel = helper.getView(R.id.item_enroll_profile_tv_label);
+                TextView tvMandatory = helper.getView(R.id.item_enroll_profile_tv_mandatory);
                 EditText etValue = helper.getView(R.id.item_enroll_profile_et_value);
                 TextView tvValue = helper.getView(R.id.item_enroll_profile_tv_value);
 
                 tvLabel.setText(item.getDisplayName().replace(programDetail.getDisplayName() + " ", ""));
+                tvMandatory.setVisibility(item.isMandatory() ? View.VISIBLE : View.GONE);
 
                 if (item.getTrackedEntityAttribute().isOptionSetValue()
                     || item.getValueType() == ValueType.YES_NO
