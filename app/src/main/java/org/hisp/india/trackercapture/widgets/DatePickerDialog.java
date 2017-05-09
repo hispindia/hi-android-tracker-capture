@@ -39,7 +39,9 @@ public class DatePickerDialog extends DialogFragment {
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
-
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            datePickerDialog.getDatePicker().setCalendarViewShown(false);
+        }
         if (!isAllowDatesInFuture()) {
             datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         }
