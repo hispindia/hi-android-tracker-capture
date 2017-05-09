@@ -7,6 +7,7 @@ import org.hisp.india.trackercapture.models.base.Program;
 import org.hisp.india.trackercapture.models.base.ProgramRule;
 import org.hisp.india.trackercapture.models.base.ProgramRuleVariable;
 import org.hisp.india.trackercapture.models.base.ProgramTrackedEntityAttribute;
+import org.hisp.india.trackercapture.models.base.TrackedEntity;
 import org.hisp.india.trackercapture.models.base.TrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.models.response.ProgramStage;
@@ -133,6 +134,14 @@ public class RMapping {
         return model;
     }
 
+    public static RTrackedEntity from(TrackedEntity trackedEntity) {
+        if (trackedEntity == null) return null;
+        RTrackedEntity model = new RTrackedEntity();
+        model.setId(trackedEntity.getId());
+        model.setDisplayName(trackedEntity.getDisplayName());
+        return model;
+    }
+
     public static RProgram from(Program program) {
         if (program == null) return null;
         RProgram model = new RProgram();
@@ -144,7 +153,10 @@ public class RMapping {
         model.setSelectEnrollmentDatesInFuture(program.isSelectEnrollmentDatesInFuture());
         model.setSelectIncidentDatesInFuture(program.isSelectIncidentDatesInFuture());
         model.setDisplayIncidentDate(program.isDisplayIncidentDate());
-        model.setTrackedEntity(program.getTrackedEntity());
+        TrackedEntity trackedEntity = program.getTrackedEntity();
+        if (trackedEntity != null) {
+            model.setTrackedEntity(from(trackedEntity));
+        }
         model.setProgramStages(new RealmList<>());
         model.setProgramRuleVariables(new RealmList<>());
         model.setProgramRules(new RealmList<>());

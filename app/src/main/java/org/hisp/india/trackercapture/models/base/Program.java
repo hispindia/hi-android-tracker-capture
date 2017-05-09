@@ -26,7 +26,7 @@ public class Program extends BaseModel implements Serializable {
     @SerializedName("displayIncidentDate")
     private boolean displayIncidentDate;
     @SerializedName("trackedEntity")
-    private String trackedEntity;
+    private TrackedEntity trackedEntity;
     @SerializedName("programStages")
     private List<ProgramStage> programStages;
     @SerializedName("programRuleVariables")
@@ -76,7 +76,7 @@ public class Program extends BaseModel implements Serializable {
         return withoutRegistration;
     }
 
-    public String getTrackedEntity() {
+    public TrackedEntity getTrackedEntity() {
         return trackedEntity;
     }
 }

@@ -39,15 +39,32 @@
                 android:visibility="gone"
                 >
 
-                <TextView
-                    android:id="@+id/fragment_enroll_tv_incident_date_label"
-                    fontPath="fonts/Montserrat-Regular.ttf"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Date of incident"
-                    android:textColor="#6A89DF"
-                    android:textSize="16sp"
-                    />
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/fragment_enroll_tv_incident_date_label"
+                        fontPath="fonts/Montserrat-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date of incident"
+                        android:textColor="#6A89DF"
+                        android:textSize="16sp"
+                        />
+
+                    <TextView
+                        fontPath="fonts/Montserrat-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="*"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="16sp"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/fragment_enroll_tv_incident_date_value"
@@ -82,16 +99,33 @@
                 android:orientation="vertical"
                 >
 
-                <TextView
-                    android:id="@+id/fragment_enroll_tv_enrollment_date_label"
-                    fontPath="fonts/Montserrat-Regular.ttf"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:text="Date of enrollment"
-                    android:textColor="#6A89DF"
-                    android:textSize="16sp"
-                    />
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:id="@+id/fragment_enroll_tv_enrollment_date_label"
+                        fontPath="fonts/Montserrat-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Date of enrollment"
+                        android:textColor="#6A89DF"
+                        android:textSize="16sp"
+                        />
+
+                    <TextView
+                        fontPath="fonts/Montserrat-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="*"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="16sp"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/fragment_enroll_tv_enrollment_date_value"
@@ -141,7 +175,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginTop="-25dp"
             android:background="@drawable/bg_bt_login"
-            android:enabled="false"
+            android:enabled="true"
             android:text="Register"
             android:textColor="@color/white_smoke"
             android:textSize="18sp"

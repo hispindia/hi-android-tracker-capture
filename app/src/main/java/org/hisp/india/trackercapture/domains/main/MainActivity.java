@@ -148,7 +148,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
         updateBtSearch();
 
-        presenter.getOrganizations();
     }
 
     @Override
@@ -187,6 +186,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 if (isGranted) {
                     //@nhancv TODO: after get all required permission
                     application.initRealmConfig();
+
+                    presenter.getOrganizations();
+
                 } else {
                     nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
                 }
@@ -275,7 +277,10 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Click(R.id.activity_main_bt_enroll)
     void btEnrollClick() {
         if (program != null && organizationUnit != null) {
-            EnrollActivity_.intent(this).organizationUnitId(organizationUnit.getId()).programId(program.getId())
+            EnrollActivity_.intent(this)
+                           .organizationUnitId(organizationUnit.getId())
+                           .programId(program.getId())
+                           .programName(program.getDisplayName())
                            .start();
         } else {
             Toast.makeText(application, "Need select org and program first", Toast.LENGTH_SHORT).show();

@@ -62,8 +62,8 @@ public class DefaultAccountService implements AccountService {
                 .transformResponse(restService.login(
                         "id,created,lastUpdated,name,displayName,firstName,surname,gender," +
                         "birthday,introduction,education,employer,interests,jobTitle,languages," +
-                        "email,phoneNumber,organisationUnits[id,displayName,trackedEntity,programs[" +
-                        "id,displayName,withoutRegistration,programRuleVariables[*],programStages[*],programRules[*]," +
+                        "email,phoneNumber,organisationUnits[id,displayName,programs[" +
+                        "id,displayName,trackedEntity,withoutRegistration,programRuleVariables[*],programStages[*],programRules[*]," +
                         "enrollmentDateLabel,selectEnrollmentDatesInFuture,incidentDateLabel," +
                         "selectIncidentDatesInFuture,displayIncidentDate,programTrackedEntityAttributes[*," +
                         "trackedEntityAttribute[id,displayName,optionSetValue," +
