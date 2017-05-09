@@ -167,6 +167,8 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
 
     @Click(R.id.activity_login_bt_register)
     void btRegisterClick() {
+
+        boolean checkForm = true;
         List<AttributeRequest> attributeRequestList = new ArrayList<>();
         for (RProgramTrackedEntityAttribute programTrackedEntityAttribute : adapter
                 .getProgramTrackedEntityAttributeList()) {
@@ -175,24 +177,27 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
                         .add(new AttributeRequest(programTrackedEntityAttribute.getId(),
                                                   programTrackedEntityAttribute.getValue()));
                 Log.e(TAG, "btRegisterClick: " + programTrackedEntityAttribute.getValue());
+            } else if (programTrackedEntityAttribute.isMandatory()) {
+                checkForm = false;
             }
         }
-        for (int i = 0; i < adapter.getCount(); i++) {
-            RProgramTrackedEntityAttribute trackedEntityAttribute = adapter.getItem(i);
 
+        if (checkForm) {
+            TrackedEntityInstanceRequest trackedEntityInstanceRequest =
+                    new TrackedEntityInstanceRequest(programDetail.getTrackedEntity().getId(),
+                                                     organizationUnitId,
+                                                     attributeRequestList);
+
+            EnrollmentRequest enrollmentRequest = new EnrollmentRequest(programId,
+                                                                        "ACTIVE",
+                                                                        organizationUnitId,
+                                                                        tvEnrollmentDateValue.getText().toString(),
+                                                                        tvIncidentDateValue.getText().toString());
+
+            presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest);
+        } else {
+            Toast.makeText(application, "Required fields are missing.", Toast.LENGTH_SHORT).show();
         }
-        TrackedEntityInstanceRequest trackedEntityInstanceRequest =
-                new TrackedEntityInstanceRequest(programDetail.getTrackedEntity().getId(),
-                                                 organizationUnitId,
-                                                 attributeRequestList);
-
-        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(programId,
-                                                                    "ACTIVE",
-                                                                    organizationUnitId,
-                                                                    tvEnrollmentDateValue.getText().toString(),
-                                                                    tvIncidentDateValue.getText().toString());
-
-        presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest);
 
     }
 }
