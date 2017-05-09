@@ -133,15 +133,16 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/activity_login_bt_login"
+            android:id="@+id/activity_login_bt_register"
             fontPath="fonts/Montserrat-Medium.ttf"
             android:layout_width="188dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
             android:layout_marginTop="-25dp"
             android:background="@drawable/bg_bt_login"
             android:enabled="false"
-            android:text="Next"
+            android:text="Register"
             android:textColor="@color/white_smoke"
             android:textSize="18sp"
             />

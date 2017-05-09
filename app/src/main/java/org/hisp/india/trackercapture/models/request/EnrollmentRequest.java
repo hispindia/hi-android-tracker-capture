@@ -19,4 +19,17 @@ public class EnrollmentRequest {
     private String enrollmentDate;
     @SerializedName("incidentDate")
     private String incidentDate;
+
+    public EnrollmentRequest(String programId, String status, String orgUnitId, String enrollmentDate,
+                             String incidentDate) {
+        this.programId = programId;
+        this.status = status;
+        this.orgUnitId = orgUnitId;
+        this.enrollmentDate = enrollmentDate;
+        this.incidentDate = incidentDate;
+    }
+
+    public void setTrackedEntityInstanceId(String trackedEntityInstanceId) {
+        this.trackedEntityInstanceId = trackedEntityInstanceId;
+    }
 }

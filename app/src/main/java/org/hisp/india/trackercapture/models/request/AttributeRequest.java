@@ -12,4 +12,8 @@ public class AttributeRequest {
     @SerializedName("value")
     private String value;
 
+    public AttributeRequest(String attributeId, String value) {
+        this.attributeId = attributeId;
+        this.value = value;
+    }
 }

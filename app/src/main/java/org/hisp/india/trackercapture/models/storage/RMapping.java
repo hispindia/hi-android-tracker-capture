@@ -144,6 +144,7 @@ public class RMapping {
         model.setSelectEnrollmentDatesInFuture(program.isSelectEnrollmentDatesInFuture());
         model.setSelectIncidentDatesInFuture(program.isSelectIncidentDatesInFuture());
         model.setDisplayIncidentDate(program.isDisplayIncidentDate());
+        model.setTrackedEntity(program.getTrackedEntity());
         model.setProgramStages(new RealmList<>());
         model.setProgramRuleVariables(new RealmList<>());
         model.setProgramRules(new RealmList<>());

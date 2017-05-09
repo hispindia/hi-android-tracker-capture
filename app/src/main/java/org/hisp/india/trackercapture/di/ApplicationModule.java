@@ -14,6 +14,9 @@ import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.services.account.AccountApi;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.account.DefaultAccountService;
+import org.hisp.india.trackercapture.services.enrollments.DefaultEnrollmentService;
+import org.hisp.india.trackercapture.services.enrollments.EnrollmentApi;
+import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 import org.hisp.india.trackercapture.services.organization.DefaultOrganizationService;
 import org.hisp.india.trackercapture.services.organization.OrganizationApi;
@@ -21,6 +24,9 @@ import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.services.programs.DefaultProgramService;
 import org.hisp.india.trackercapture.services.programs.ProgramApi;
 import org.hisp.india.trackercapture.services.programs.ProgramService;
+import org.hisp.india.trackercapture.services.tracked_entity_instances.DefaultTrackedEntityInstanceService;
+import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceApi;
+import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.Constants;
 
 import java.io.IOException;
@@ -108,6 +114,31 @@ public class ApplicationModule {
                         .provideApi(credentials.getHost(), ProgramApi.class);
 
         return new DefaultProgramService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public TrackedEntityInstanceService provideTrackedEntityInstanceService(NetworkProvider rxNetworkProvider,
+                                                                            Credentials credentials) {
+
+        TrackedEntityInstanceApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), TrackedEntityInstanceApi.class);
+
+        return new DefaultTrackedEntityInstanceService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public EnrollmentService provideEnrollmentService(NetworkProvider rxNetworkProvider, Credentials credentials) {
+
+        EnrollmentApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), EnrollmentApi.class);
+
+        return new DefaultEnrollmentService(rxNetworkProvider, restService);
     }
 
 }

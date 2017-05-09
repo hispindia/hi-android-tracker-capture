@@ -1,7 +1,9 @@
 package org.hisp.india.trackercapture.domains.enroll;
 
 import android.support.annotation.NonNull;
+import android.text.Editable;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -24,11 +26,15 @@ import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.models.base.BaseModel;
 import org.hisp.india.trackercapture.models.base.Model;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
+import org.hisp.india.trackercapture.models.request.AttributeRequest;
+import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
+import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.storage.ROption;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
+import org.hisp.india.trackercapture.widgets.NTextChange;
 import org.hisp.india.trackercapture.widgets.NToolbar;
 import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 
@@ -107,7 +113,6 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
         adapter = new QuickAdapter<RProgramTrackedEntityAttribute>(this, R.layout.item_enroll_profile) {
             @Override
             protected void convert(BaseAdapterHelper helper, RProgramTrackedEntityAttribute item) {
-
                 TextView tvLabel = helper.getView(R.id.item_enroll_profile_tv_label);
                 TextView tvMandatory = helper.getView(R.id.item_enroll_profile_tv_mandatory);
                 EditText etValue = helper.getView(R.id.item_enroll_profile_et_value);
@@ -123,9 +128,29 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
                         ) {
                     tvValue.setVisibility(View.VISIBLE);
                     etValue.setVisibility(View.GONE);
+
+                    Log.e(TAG, "convertawertasdfsadf: item.getValue " + item.getValue());
+                    tvValue.setText(item.getValue());
+                    tvValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
+                        @Override
+                        public void after(Editable editable) {
+                            item.setValue(editable.toString());
+                            Log.e(TAG, "afterawesrsdfasdf: " + item.getValue());
+                        }
+                    }));
                 } else {
                     etValue.setVisibility(View.VISIBLE);
                     tvValue.setVisibility(View.GONE);
+
+                    Log.e(TAG, "convert: item.getValue " + item.getValue());
+                    etValue.setText(item.getValue());
+                    etValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
+                        @Override
+                        public void after(Editable editable) {
+                            item.setValue(editable.toString());
+                            Log.e(TAG, "after: " + item.getValue());
+                        }
+                    }));
                 }
 
                 if (item.getTrackedEntityAttribute().isOptionSetValue()) {
@@ -252,4 +277,27 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
         datePicker.show(getSupportFragmentManager());
     }
 
+    @Click(R.id.activity_login_bt_register)
+    void btRegisterClick() {
+        List<AttributeRequest> attributeRequestList = new ArrayList<>();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            RProgramTrackedEntityAttribute trackedEntityAttribute = adapter.getItem(i);
+            attributeRequestList
+                    .add(new AttributeRequest(trackedEntityAttribute.getId(), trackedEntityAttribute.getValue()));
+            Log.e(TAG, "btRegisterClick: " + trackedEntityAttribute.getValue());
+        }
+        TrackedEntityInstanceRequest trackedEntityInstanceRequest =
+                new TrackedEntityInstanceRequest(programDetail.getTrackedEntity(),
+                                                 organizationUnitId,
+                                                 attributeRequestList);
+
+        EnrollmentRequest enrollmentRequest = new EnrollmentRequest(programId,
+                                                                    "ACTIVE",
+                                                                    organizationUnitId,
+                                                                    tvEnrollmentDateValue.getText().toString(),
+                                                                    tvIncidentDateValue.getText().toString());
+
+        presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest);
+
+    }
 }

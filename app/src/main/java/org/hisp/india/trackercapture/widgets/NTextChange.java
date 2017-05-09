@@ -84,7 +84,7 @@ public class NTextChange implements TextWatcher {
         void before();
     }
 
-    public abstract class AbsTextListener implements TextListener {
+    public abstract static class AbsTextListener implements TextListener {
         @Override
         public void before() {
 

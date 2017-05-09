@@ -4,6 +4,7 @@ import org.hisp.india.trackercapture.models.base.Model;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -20,6 +21,9 @@ public class RProgramTrackedEntityAttribute extends RealmObject implements Model
     private boolean allowFutureDate;
     private String valueType;
     private RTrackedEntityAttribute trackedEntityAttribute;
+
+    @Ignore
+    private String value;
 
     @Override
     public String getId() {
@@ -59,12 +63,12 @@ public class RProgramTrackedEntityAttribute extends RealmObject implements Model
         return ValueType.getType(valueType);
     }
 
-    public void setValueType(String valueType) {
-        this.valueType = valueType;
-    }
-
     public void setValueType(ValueType valueType) {
         this.valueType = valueType.name();
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
     }
 
     public RTrackedEntityAttribute getTrackedEntityAttribute() {
@@ -82,5 +86,13 @@ public class RProgramTrackedEntityAttribute extends RealmObject implements Model
 
     public void setAllowFutureDate(boolean allowFutureDate) {
         this.allowFutureDate = allowFutureDate;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

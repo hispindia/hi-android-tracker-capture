@@ -20,8 +20,7 @@ public interface TrackedEntityInstanceApi {
 
     @POST("api/trackedEntityInstances")
     Observable<BaseResponse> postTrackedEntityInstances(
-            @Body
-                    TrackedEntityInstanceRequest trackedEntityInstanceRequest);
+            @Body TrackedEntityInstanceRequest trackedEntityInstanceRequest);
 
 
 }
