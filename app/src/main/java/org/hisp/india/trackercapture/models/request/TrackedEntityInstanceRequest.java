@@ -9,7 +9,6 @@ import java.util.List;
  */
 
 public class TrackedEntityInstanceRequest {
-
     @SerializedName("trackedEntity")
     private String trackedEntityId;
     @SerializedName("orgUnit")
