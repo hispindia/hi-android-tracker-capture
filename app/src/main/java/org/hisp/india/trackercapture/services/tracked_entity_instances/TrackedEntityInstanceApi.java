@@ -14,4 +14,5 @@ public interface TrackedEntityInstanceApi {
     @GET("api/trackedEntityInstances?paging=false")
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances();
 
+
 }

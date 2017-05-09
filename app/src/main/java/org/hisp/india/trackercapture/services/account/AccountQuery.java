@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.models.query;
+package org.hisp.india.trackercapture.services.account;
 
 import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.utils.RealmHelper;
@@ -7,7 +7,7 @@ import org.hisp.india.trackercapture.utils.RealmHelper;
  * Created by nhancao on 5/4/17.
  */
 
-public class UserQuery {
+public class AccountQuery {
 
     public static RUser getUser() {
         return RealmHelper.query(realm -> {

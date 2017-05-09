@@ -2,12 +2,12 @@ package org.hisp.india.trackercapture.domains.main;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
-import org.hisp.india.trackercapture.models.query.UserQuery;
+import org.hisp.india.trackercapture.services.account.AccountQuery;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.account.AccountService;
-import org.hisp.india.trackercapture.services.organization.OrganizationModel;
+import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     }
 
     public RUser getUserInfo() {
-        return UserQuery.getUser();
+        return AccountQuery.getUser();
     }
 
     public void logout() {
@@ -58,7 +58,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
     public void getOrganizations() {
         List<ROrganizationUnit> tOrganizationUnits;
-        tOrganizationUnits = OrganizationModel.getAllOrganization();
+        tOrganizationUnits = OrganizationQuery.getAllOrganization();
         getView().showOrgList(tOrganizationUnits);
         if (tOrganizationUnits.size() > 0) {
             getView().showProgramList(tOrganizationUnits.get(0).getPrograms());

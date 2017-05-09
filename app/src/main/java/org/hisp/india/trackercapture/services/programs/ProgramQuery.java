@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.models.query;
+package org.hisp.india.trackercapture.services.programs;
 
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.utils.RealmHelper;
