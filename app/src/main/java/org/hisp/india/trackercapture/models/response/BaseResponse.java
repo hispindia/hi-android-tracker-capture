@@ -58,6 +58,17 @@ public class BaseResponse {
         this.response = response;
     }
 
+    @Override
+    public String toString() {
+        return "BaseResponse{" +
+               "httpStatus='" + httpStatus + '\'' +
+               ", httpStatusCode=" + httpStatusCode +
+               ", status='" + status + '\'' +
+               ", message='" + message + '\'' +
+               ", response=" + response +
+               '}';
+    }
+
     public class Response {
         @SerializedName("responseType")
         private String responseType;
@@ -99,5 +110,4 @@ public class BaseResponse {
                    '}';
         }
     }
-
 }

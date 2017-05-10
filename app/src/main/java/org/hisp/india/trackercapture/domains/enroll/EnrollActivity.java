@@ -2,7 +2,6 @@ package org.hisp.india.trackercapture.domains.enroll;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,6 +20,7 @@ import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.models.request.AttributeRequest;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
+import org.hisp.india.trackercapture.models.response.BaseResponse;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.utils.AppUtils;
@@ -147,6 +147,11 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
         }
     }
 
+    @Override
+    public void registerProgramSuccess(BaseResponse baseResponse) {
+        Toast.makeText(application, baseResponse.toString(), Toast.LENGTH_SHORT).show();
+    }
+
     @Click(R.id.fragment_enroll_tv_incident_date_value)
     void tvIncidentDateValueClick() {
         DatePickerDialog datePicker = DatePickerDialog.newInstance(programDetail.isSelectIncidentDatesInFuture());
@@ -174,9 +179,8 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
                 .getProgramTrackedEntityAttributeList()) {
             if (!TextUtils.isEmpty(programTrackedEntityAttribute.getValue())) {
                 attributeRequestList
-                        .add(new AttributeRequest(programTrackedEntityAttribute.getId(),
+                        .add(new AttributeRequest(programTrackedEntityAttribute.getTrackedEntityAttribute().getId(),
                                                   programTrackedEntityAttribute.getValue()));
-                Log.e(TAG, "btRegisterClick: " + programTrackedEntityAttribute.getValue());
             } else if (programTrackedEntityAttribute.isMandatory()) {
                 checkForm = false;
             }

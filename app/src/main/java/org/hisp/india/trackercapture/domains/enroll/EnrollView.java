@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.domains.enroll;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
+import org.hisp.india.trackercapture.models.response.BaseResponse;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 
 import ru.terrakok.cicerone.Navigator;
@@ -13,6 +14,7 @@ import ru.terrakok.cicerone.Navigator;
 public interface EnrollView extends MvpView {
 
     Navigator getNavigator();
+
     /**
      * Display a loading view while loading data in background.
      */
@@ -24,4 +26,6 @@ public interface EnrollView extends MvpView {
     void hideLoading();
 
     void getProgramDetail(RProgram programDetail);
+
+    void registerProgramSuccess(BaseResponse baseResponse);
 }

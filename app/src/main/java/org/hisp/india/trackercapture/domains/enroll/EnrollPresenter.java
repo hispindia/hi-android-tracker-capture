@@ -1,7 +1,5 @@
 package org.hisp.india.trackercapture.domains.enroll;
 
-import android.util.Log;
-
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
@@ -83,7 +81,8 @@ public class EnrollPresenter extends MvpBasePresenter<EnrollView> {
                     }
                 })
                 .subscribe(baseResponse -> {
-                    Log.e(TAG, "registerProgram: " + baseResponse);
+                    getView().registerProgramSuccess(baseResponse);
+                    onBackCommandClick();
                 });
     }
 
