@@ -1,8 +1,10 @@
 package org.hisp.india.trackercapture.services.tracked_entity_instances;
 
 import org.hisp.india.core.services.network.NetworkProvider;
+import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.response.TrackedEntityInstancesResponse;
 
 import rx.Observable;
@@ -33,5 +35,12 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
             TrackedEntityInstanceRequest trackedEntityInstanceRequest) {
         return networkProvider
                 .transformResponse(restService.postTrackedEntityInstances(trackedEntityInstanceRequest));
+    }
+
+    @Override
+    public Observable<QueryResponse> queryTrackedEntityInstances(String orgUnitId, String programId,
+                                                                 ProgramStatus programStatus) {
+        return networkProvider
+                .transformResponse(restService.queryTrackedEntityInstances(orgUnitId, programId, programStatus.name()));
     }
 }

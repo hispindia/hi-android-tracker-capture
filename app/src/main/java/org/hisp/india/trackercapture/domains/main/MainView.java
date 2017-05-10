@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.domains.main;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
+import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 
@@ -29,4 +30,6 @@ public interface MainView extends MvpView {
     void showOrgList(List<ROrganizationUnit> organizationUnitList);
 
     void showProgramList(List<RProgram> programList);
+
+    void queryProgramSuccess(QueryResponse queryResponse);
 }

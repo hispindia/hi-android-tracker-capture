@@ -33,6 +33,8 @@ import org.hisp.india.trackercapture.domains.menu.DrawerItem;
 import org.hisp.india.trackercapture.domains.menu.MenuItem;
 import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
+import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
+import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RUser;
@@ -239,6 +241,12 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         tvProgram.setEnabled(true);
     }
 
+    @Override
+    public void queryProgramSuccess(QueryResponse queryResponse) {
+        Log.e(TAG, queryResponse.toString());
+        Toast.makeText(application, queryResponse.toString(), Toast.LENGTH_SHORT).show();
+    }
+
     @Click(R.id.activity_main_tv_organization)
     void tvOrganizationClick() {
         if (organizationUnitList != null) {
@@ -289,7 +297,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @Click(R.id.activity_main_bt_search)
     void btSearch() {
-        Log.e(TAG, "btSearch: ");
+        presenter.queryPrograms(organizationUnit.getId(), program.getId(), ProgramStatus.ACTIVE);
     }
 
     private void updateBtSearch() {

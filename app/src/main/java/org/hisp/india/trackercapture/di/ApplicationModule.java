@@ -2,6 +2,8 @@ package org.hisp.india.trackercapture.di;
 
 import android.app.Application;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.orhanobut.hawk.Hawk;
 
 import org.hisp.india.core.di.scope.ApplicationScope;
@@ -28,8 +30,10 @@ import org.hisp.india.trackercapture.services.tracked_entity_instances.DefaultTr
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceApi;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.Constants;
+import org.hisp.india.trackercapture.utils.MapDeserializer;
 
 import java.io.IOException;
+import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -74,7 +78,14 @@ public class ApplicationModule {
     @Provides
     @ApplicationScope
     public NetworkProvider provideNetworkProvider(LogService logService) {
-        NetworkProvider networkProvider = new DefaultNetworkProvider(application, BuildConfig.DEBUG);
+        NetworkProvider networkProvider = new DefaultNetworkProvider(application, BuildConfig.DEBUG) {
+            @Override
+            public GsonBuilder createBuilder() {
+                return super.createBuilder()
+                            .registerTypeAdapter(new TypeToken<Map<String, String>>() {}.getType(),
+                                                 new MapDeserializer());
+            }
+        };
         return networkProvider.addDefaultHeader()
                               .enableFilter(true)
                               .addFilter(new ApiErrorFilter(networkProvider, logService));
