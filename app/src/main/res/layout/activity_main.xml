@@ -38,171 +38,218 @@
         tools:ignore="MissingPrefix"
         >
         <!--content here-->
-        <ScrollView
-            android:id="@+id/activity_main_root_scroll"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none"
+            android:orientation="vertical"
             >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:background="@drawable/bg_dialog"
                 android:orientation="vertical"
+                android:paddingBottom="25dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:paddingTop="10dp"
+                >
+
+                <TextView
+                    fontPath="fonts/Montserrat-Regular.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Organization"
+                    android:textColor="#6A89DF"
+                    android:textSize="16sp"
+                    />
+
+                <TextView
+                    android:id="@+id/activity_main_tv_organization"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bg_item_background"
+                    android:enabled="false"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:textCursorDrawable="@null"
+                    android:textSize="14sp"
+                    android:theme="@style/EditText"
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#626262"
+                    android:textColorHint="#626262"
+                    />
+
+                <TextView
+                    fontPath="fonts/Montserrat-Regular.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="Program"
+                    android:textColor="#6A89DF"
+                    android:textSize="16sp"
+                    />
+
+                <TextView
+                    android:id="@+id/activity_main_tv_program"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@drawable/bg_item_background"
+                    android:enabled="false"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:textCursorDrawable="@null"
+                    android:textSize="14sp"
+                    android:theme="@style/EditText"
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#626262"
+                    android:textColorHint="#626262"
+                    />
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="-45dp"
+                android:gravity="center"
+                >
+
+                <FrameLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="10dp"
+                    >
+
+                    <ImageButton
+                        android:id="@+id/activity_main_bt_enroll"
+                        fontPath="fonts/Montserrat-Medium.ttf"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_bt_login"
+                        android:textColor="@color/white_smoke"
+                        android:textSize="18sp"
+                        />
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/bt_enroll"
+                        />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    >
+
+                    <ImageButton
+                        android:id="@+id/activity_main_bt_search"
+                        fontPath="fonts/Montserrat-Medium.ttf"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/bg_bt_login"
+                        android:textColor="@color/white_smoke"
+                        android:textSize="18sp"
+                        />
+
+                    <View
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/bt_search"
+                        />
+                </FrameLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_dialog"
+                android:orientation="vertical"
+                android:paddingBottom="25dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:paddingTop="10dp"
                 >
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="15dp"
-                    android:background="@drawable/bg_dialog"
-                    android:orientation="vertical"
-                    android:paddingBottom="25dp"
-                    android:paddingLeft="25dp"
-                    android:paddingRight="25dp"
-                    android:paddingTop="10dp"
+                    android:layout_height="56dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     >
 
                     <TextView
-                        fontPath="fonts/Montserrat-Regular.ttf"
-                        android:layout_width="match_parent"
+                        android:id="@+id/item_program_info_tv_header_1"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Organization"
-                        android:textColor="#6A89DF"
-                        android:textSize="16sp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_weight="1"
+                        android:text="First name"
+                        android:textColor="?android:textColorPrimary"
                         />
 
                     <TextView
-                        android:id="@+id/activity_main_tv_organization"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:background="@drawable/bg_item_background"
-                        android:enabled="false"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:textCursorDrawable="@null"
-                        android:textSize="14sp"
-                        android:theme="@style/EditText"
-                        />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#626262"
-                        android:textColorHint="#626262"
-                        />
-
-                    <TextView
-                        fontPath="fonts/Montserrat-Regular.ttf"
-                        android:layout_width="match_parent"
+                        android:id="@+id/item_program_info_tv_header_2"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="Program"
-                        android:textColor="#6A89DF"
-                        android:textSize="16sp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_weight="1"
+                        android:text="Last name"
+                        android:textColor="?android:textColorPrimary"
                         />
 
                     <TextView
-                        android:id="@+id/activity_main_tv_program"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:background="@drawable/bg_item_background"
-                        android:enabled="false"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:textCursorDrawable="@null"
-                        android:textSize="14sp"
-                        android:theme="@style/EditText"
-                        />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#626262"
-                        android:textColorHint="#626262"
-                        />
-
-                    <android.support.v4.widget.Space
-                        android:layout_width="match_parent"
-                        android:layout_height="20dp"
+                        android:id="@+id/item_program_info_tv_header_3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_weight="1"
+                        android:text="Enroll date"
+                        android:textColor="?android:textColorPrimary"
                         />
                 </LinearLayout>
 
-                <LinearLayout
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="-45dp"
-                    android:gravity="center"
-                    >
+                    android:layout_height="1px"
+                    android:background="@color/dark_grey"
+                    />
 
-                    <FrameLayout
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginRight="10dp"
-                        >
-
-                        <ImageButton
-                            android:id="@+id/activity_main_bt_enroll"
-                            fontPath="fonts/Montserrat-Medium.ttf"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/bg_bt_login"
-                            android:textColor="@color/white_smoke"
-                            android:textSize="18sp"
-                            />
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/bt_enroll"
-                            />
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginLeft="10dp"
-                        >
-
-                        <ImageButton
-                            android:id="@+id/activity_main_bt_search"
-                            fontPath="fonts/Montserrat-Medium.ttf"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/bg_bt_login"
-                            android:textColor="@color/white_smoke"
-                            android:textSize="18sp"
-                            />
-
-                        <View
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/bt_search"
-                            />
-                    </FrameLayout>
-                </LinearLayout>
-
-                <LinearLayout
+                <ListView
+                    android:id="@+id/activity_main_lv_program"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="15dp"
-                    android:background="@drawable/bg_dialog"
-                    android:orientation="vertical"
-                    android:paddingBottom="25dp"
-                    android:paddingLeft="25dp"
-                    android:paddingRight="25dp"
-                    android:paddingTop="10dp"
-                    >
-                </LinearLayout>
+                    android:scrollbars="none"
+                    />
             </LinearLayout>
-        </ScrollView>
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
 

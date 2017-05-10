@@ -4,15 +4,18 @@ import android.Manifest;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.joanzapata.android.BaseAdapterHelper;
+import com.joanzapata.android.QuickAdapter;
 import com.nhancv.npermission.NPermission;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 import com.yarolegovich.slidingrootnav.SlidingRootNavLayout;
@@ -37,13 +40,17 @@ import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -66,6 +73,14 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     protected View btSearch;
     @ViewById(R.id.activity_main_bt_enroll)
     protected View btEnroll;
+    @ViewById(R.id.activity_main_lv_program)
+    protected ListView lvProgram;
+    @ViewById(R.id.item_program_info_tv_header_1)
+    protected TextView tvHeader1;
+    @ViewById(R.id.item_program_info_tv_header_2)
+    protected TextView tvHeader2;
+    @ViewById(R.id.item_program_info_tv_header_3)
+    protected TextView tvHeader3;
 
     @App
     protected MainApplication application;
@@ -243,8 +258,80 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @Override
     public void queryProgramSuccess(QueryResponse queryResponse) {
-        Log.e(TAG, queryResponse.toString());
-        Toast.makeText(application, queryResponse.toString(), Toast.LENGTH_SHORT).show();
+        Map<String, Pair<Integer, String>> displayInList = new LinkedHashMap<>();
+        for (RProgramTrackedEntityAttribute programTrackedEntityAttribute : program
+                .getProgramTrackedEntityAttributes()) {
+            if (displayInList.size() < 3 &&
+                programTrackedEntityAttribute.isDisplayInList()) {
+                displayInList
+                        .put(programTrackedEntityAttribute.getTrackedEntityAttribute().getId(), null);
+            }
+        }
+
+        for (String key : displayInList.keySet()) {
+            for (int i = 0; i < queryResponse.getHeaders().size(); i++) {
+                if (key.equals(queryResponse.getHeaders().get(i).getName())) {
+                    displayInList.put(key, new Pair<>(i, queryResponse.getHeaders().get(i).getColumn()));
+                    break;
+                }
+            }
+        }
+
+        List<List<String>> listRows = queryResponse.getRows();
+        List<List<String>> listData = new ArrayList<>();
+
+        for (int i = 0; i < listRows.size(); i++) {
+            List<String> row = new ArrayList<>();
+            for (String key : displayInList.keySet()) {
+                row.add(listRows.get(i).get(displayInList.get(key).first));
+            }
+            listData.add(row);
+        }
+
+        //Set header
+        List<String> rowHeader = new ArrayList<>();
+        for (Pair<Integer, String> integerStringPair : displayInList.values()) {
+            rowHeader.add(integerStringPair.second);
+        }
+
+        tvHeader1.setVisibility(View.GONE);
+        tvHeader2.setVisibility(View.GONE);
+        tvHeader3.setVisibility(View.GONE);
+        if (rowHeader.size() > 0) {
+            tvHeader1.setText(rowHeader.get(0));
+            tvHeader1.setVisibility(View.VISIBLE);
+        }
+        if (rowHeader.size() > 1) {
+            tvHeader2.setText(rowHeader.get(1));
+            tvHeader2.setVisibility(View.VISIBLE);
+        }
+        if (rowHeader.size() > 2) {
+            tvHeader3.setText(rowHeader.get(2));
+            tvHeader3.setVisibility(View.VISIBLE);
+        }
+
+        //Set list view of programs
+        lvProgram.setAdapter(new QuickAdapter<List<String>>(this, R.layout.item_program_info, listData) {
+            @Override
+            protected void convert(BaseAdapterHelper helper, List<String> item) {
+                helper.setVisible(R.id.item_program_info_tv_1, false);
+                helper.setVisible(R.id.item_program_info_tv_2, false);
+                helper.setVisible(R.id.item_program_info_tv_3, false);
+                if (item.size() > 0) {
+                    helper.setText(R.id.item_program_info_tv_1, item.get(0));
+                    helper.setVisible(R.id.item_program_info_tv_1, true);
+                }
+                if (item.size() > 1) {
+                    helper.setText(R.id.item_program_info_tv_2, item.get(1));
+                    helper.setVisible(R.id.item_program_info_tv_2, true);
+                }
+                if (item.size() > 2) {
+                    helper.setText(R.id.item_program_info_tv_3, item.get(2));
+                    helper.setVisible(R.id.item_program_info_tv_3, true);
+                }
+            }
+        });
+
     }
 
     @Click(R.id.activity_main_tv_organization)
