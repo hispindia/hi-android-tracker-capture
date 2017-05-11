@@ -253,6 +253,11 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
 
     @Override
     public void loginError(Throwable throwable) {
-        Toast.makeText(application, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+        showErrorMessage(throwable.getMessage());
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        Toast.makeText(application, message, Toast.LENGTH_SHORT).show();
     }
 }

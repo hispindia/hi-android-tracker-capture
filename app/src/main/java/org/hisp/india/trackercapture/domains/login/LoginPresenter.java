@@ -50,7 +50,11 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
     }
 
     public void updateCredentialHost(String host) {
-        accountService.updateCredentialHost(host);
+        try {
+            accountService.updateCredentialHost(host);
+        } catch (Exception e) {
+            getView().showErrorMessage(e.getMessage());
+        }
     }
 
     public void updateCredentialTokenAndLogin(String username, String password) {
