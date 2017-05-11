@@ -8,8 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
+import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,6 +37,8 @@ import java.util.List;
 public class OptionDialog<T extends Model> extends DialogFragment {
     private static final String TAG = OptionDialog.class.getSimpleName();
 
+    @ViewById(R.id.dialog_option_lv_search)
+    protected LinearLayout lvSearch;
     @ViewById(R.id.dialog_option_et_search)
     protected EditText etSearch;
     @ViewById(R.id.dialog_option_lv_item)
@@ -77,6 +81,7 @@ public class OptionDialog<T extends Model> extends DialogFragment {
         lvItem.setAdapter(adapter);
         if (modelList != null) {
             adapter.replaceAll(modelList);
+            lvSearch.setVisibility((modelList.size() <= 5) ? View.GONE : View.VISIBLE);
         }
 
         etSearch.addTextChangedListener(new NTextChange(new NTextChange.TextListener() {
