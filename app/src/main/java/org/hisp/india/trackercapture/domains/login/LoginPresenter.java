@@ -58,8 +58,12 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
     }
 
     public void updateCredentialTokenAndLogin(String username, String password) {
-        accountService.updateCredentialToken(username, password);
-        login();
+        try {
+            accountService.updateCredentialToken(username, password);
+            login();
+        } catch (Exception e) {
+            getView().showErrorMessage(e.getMessage());
+        }
     }
 
     public void login() {
