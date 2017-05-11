@@ -219,7 +219,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     public void onItemSelected(MenuItem menuItem) {
         switch (menuItem) {
             case SYNC:
-
+                presenter.sync();
                 break;
             case LOGOUT:
                 presenter.logout();
@@ -332,6 +332,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             }
         });
 
+    }
+
+    @Override
+    public void syncSuccessful() {
+        Toast.makeText(application, "Sync succeed", Toast.LENGTH_SHORT).show();
     }
 
     @Click(R.id.activity_main_tv_organization)

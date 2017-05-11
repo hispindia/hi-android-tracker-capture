@@ -32,4 +32,7 @@ public interface MainView extends MvpView {
     void showProgramList(List<RProgram> programList);
 
     void queryProgramSuccess(QueryResponse queryResponse);
+
+    void syncSuccessful();
+
 }

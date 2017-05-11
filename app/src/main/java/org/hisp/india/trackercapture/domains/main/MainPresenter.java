@@ -63,6 +63,15 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         router.replaceScreen(Screens.LOGIN_SCREEN);
     }
 
+    public void sync() {
+        RxScheduler.onStop(subscription);
+        getView().showLoading();
+        subscription = accountService.login()
+                                     .compose(RxScheduler.applyIoSchedulers())
+                                     .doOnTerminate(() -> getView().hideLoading())
+                                     .subscribe(user -> getView().syncSuccessful());
+    }
+
     public void getOrganizations() {
         List<ROrganizationUnit> tOrganizationUnits;
         tOrganizationUnits = OrganizationQuery.getAllOrganization();
