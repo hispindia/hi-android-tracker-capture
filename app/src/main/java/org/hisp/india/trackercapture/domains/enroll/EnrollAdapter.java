@@ -22,9 +22,8 @@ import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hisp.india.trackercapture.models.e_num.ValueType.BOOLEAN;
 import static org.hisp.india.trackercapture.models.e_num.ValueType.DATE;
-import static org.hisp.india.trackercapture.models.e_num.ValueType.YES_NO;
-import static org.hisp.india.trackercapture.models.e_num.ValueType.YES_ONLY;
 
 /**
  * Created by nhancao on 5/10/17.
@@ -69,11 +68,11 @@ public class EnrollAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final ViewHolder holder;
+        ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(activity)
-                                        .inflate(R.layout.item_enroll_profile, null, false);
+                                        .inflate(R.layout.item_enroll_profile, parent, false);
             holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
             holder.tvMandatory = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_mandatory);
             holder.etValue = (EditText) convertView.findViewById(R.id.item_enroll_profile_et_value);
@@ -91,8 +90,7 @@ public class EnrollAdapter extends BaseAdapter {
         holder.tvMandatory.setVisibility(item.isMandatory() ? View.VISIBLE : View.GONE);
 
         if (item.getTrackedEntityAttribute().isOptionSetValue()
-            || item.getValueType() == YES_NO
-            || item.getValueType() == YES_ONLY
+            || item.getValueType() == BOOLEAN
             || item.getValueType() == DATE
                 ) {
             holder.tvValue.setVisibility(View.VISIBLE);
@@ -158,7 +156,7 @@ public class EnrollAdapter extends BaseAdapter {
                 case PHONE_NUMBER:
                     holder.etValue.setInputType(InputType.TYPE_CLASS_PHONE);
                     break;
-                case YES_NO:
+                case BOOLEAN:
                     holder.tvValue.setOnClickListener(v -> {
                         List<Model> modelList = new ArrayList<Model>() {
                             {
@@ -170,8 +168,6 @@ public class EnrollAdapter extends BaseAdapter {
                             holder.tvValue.setText(model.getDisplayName());
                         }).show(activity.getSupportFragmentManager());
                     });
-                case YES_ONLY:
-                    holder.tvValue.setText("Yes");
                     break;
                 default:
                     holder.etValue.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -184,11 +180,11 @@ public class EnrollAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView tvLabel;
-        TextView tvMandatory;
-        EditText etValue;
-        TextView tvValue;
-        int ref;
+        private TextView tvLabel;
+        private TextView tvMandatory;
+        private EditText etValue;
+        private TextView tvValue;
+        private int ref;
     }
 
 }
