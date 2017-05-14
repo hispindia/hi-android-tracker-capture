@@ -14,6 +14,7 @@ public class RProgramStage extends RealmObject implements Model {
     @PrimaryKey
     private String id;
     private String displayName;
+    private int sortOrder;
 
     @Override
     public String getId() {
@@ -33,4 +34,11 @@ public class RProgramStage extends RealmObject implements Model {
         this.displayName = displayName;
     }
 
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
 }

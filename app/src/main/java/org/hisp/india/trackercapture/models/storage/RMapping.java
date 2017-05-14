@@ -5,6 +5,7 @@ import org.hisp.india.trackercapture.models.base.OptionSet;
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
 import org.hisp.india.trackercapture.models.base.Program;
 import org.hisp.india.trackercapture.models.base.ProgramRule;
+import org.hisp.india.trackercapture.models.base.ProgramRuleAction;
 import org.hisp.india.trackercapture.models.base.ProgramRuleVariable;
 import org.hisp.india.trackercapture.models.base.ProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.base.TrackedEntity;
@@ -44,6 +45,8 @@ public class RMapping {
         ROrganizationUnit model = new ROrganizationUnit();
         model.setId(organizationUnit.getId());
         model.setDisplayName(organizationUnit.getDisplayName());
+        model.setCode(organizationUnit.getCode());
+        model.setLevel(organizationUnit.getLevel());
         model.setPrograms(new RealmList<>());
 
         for (Program program : organizationUnit.getPrograms()) {
@@ -61,6 +64,7 @@ public class RMapping {
         RProgramStage model = new RProgramStage();
         model.setId(programStage.getId());
         model.setDisplayName(programStage.getDisplayName());
+        model.setSortOrder(programStage.getSortOrder());
         return model;
     }
 
@@ -126,11 +130,33 @@ public class RMapping {
         return model;
     }
 
+    public static RProgramRuleAction from(ProgramRuleAction programRuleAction) {
+        if (programRuleAction == null) return null;
+        RProgramRuleAction model = new RProgramRuleAction();
+        model.setId(programRuleAction.getId());
+        model.setDisplayName(programRuleAction.getDisplayName());
+        model.setProgramRuleActionType(programRuleAction.getProgramRuleActionType());
+        return model;
+    }
+
     public static RProgramRule from(ProgramRule programRule) {
         if (programRule == null) return null;
         RProgramRule model = new RProgramRule();
         model.setId(programRule.getId());
         model.setDisplayName(programRule.getDisplayName());
+        model.setCondition(programRule.getCondition());
+        model.setDescription(programRule.getDescription());
+        model.setProgramRuleActions(new RealmList<>());
+
+        if (programRule.getProgramRuleActions() != null) {
+            for (ProgramRuleAction programRuleAction : programRule.getProgramRuleActions()) {
+                RProgramRuleAction item = from(programRuleAction);
+                if (item != null) {
+                    model.getProgramRuleActions().add(item);
+                }
+            }
+        }
+
         return model;
     }
 
@@ -153,41 +179,48 @@ public class RMapping {
         model.setSelectEnrollmentDatesInFuture(program.isSelectEnrollmentDatesInFuture());
         model.setSelectIncidentDatesInFuture(program.isSelectIncidentDatesInFuture());
         model.setDisplayIncidentDate(program.isDisplayIncidentDate());
-        TrackedEntity trackedEntity = program.getTrackedEntity();
-        if (trackedEntity != null) {
-            model.setTrackedEntity(from(trackedEntity));
+        if (program.getTrackedEntity() != null) {
+            model.setTrackedEntity(from(program.getTrackedEntity()));
         }
         model.setProgramStages(new RealmList<>());
         model.setProgramRuleVariables(new RealmList<>());
         model.setProgramRules(new RealmList<>());
         model.setProgramTrackedEntityAttributes(new RealmList<>());
 
-        for (ProgramStage programStage : program.getProgramStages()) {
-            RProgramStage item = from(programStage);
-            if (item != null) {
-                model.getProgramStages().add(item);
+        if (program.getProgramStages() != null) {
+            for (ProgramStage programStage : program.getProgramStages()) {
+                RProgramStage item = from(programStage);
+                if (item != null) {
+                    model.getProgramStages().add(item);
+                }
             }
         }
 
-        for (ProgramRuleVariable programRuleVariable : program.getProgramRuleVariables()) {
-            RProgramRuleVariable item = from(programRuleVariable);
-            if (item != null) {
-                model.getProgramRuleVariables().add(item);
+        if (program.getProgramRuleVariables() != null) {
+            for (ProgramRuleVariable programRuleVariable : program.getProgramRuleVariables()) {
+                RProgramRuleVariable item = from(programRuleVariable);
+                if (item != null) {
+                    model.getProgramRuleVariables().add(item);
+                }
             }
         }
 
-        for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : program
-                .getProgramTrackedEntityAttributes()) {
-            RProgramTrackedEntityAttribute item = from(programTrackedEntityAttribute);
-            if (item != null) {
-                model.getProgramTrackedEntityAttributes().add(item);
+        if (program.getProgramTrackedEntityAttributes() != null) {
+            for (ProgramTrackedEntityAttribute programTrackedEntityAttribute : program
+                    .getProgramTrackedEntityAttributes()) {
+                RProgramTrackedEntityAttribute item = from(programTrackedEntityAttribute);
+                if (item != null) {
+                    model.getProgramTrackedEntityAttributes().add(item);
+                }
             }
         }
 
-        for (ProgramRule programRule : program.getProgramRules()) {
-            RProgramRule item = from(programRule);
-            if (item != null) {
-                model.getProgramRules().add(item);
+        if (program.getProgramRules() != null) {
+            for (ProgramRule programRule : program.getProgramRules()) {
+                RProgramRule item = from(programRule);
+                if (item != null) {
+                    model.getProgramRules().add(item);
+                }
             }
         }
         return model;

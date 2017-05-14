@@ -1,5 +1,7 @@
 package org.hisp.india.trackercapture.models.response;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.hisp.india.trackercapture.models.base.BaseModel;
 
 import java.io.Serializable;
@@ -9,4 +11,10 @@ import java.io.Serializable;
  */
 
 public class ProgramStage extends BaseModel implements Serializable {
+    @SerializedName("sortOrder")
+    private int sortOrder;
+
+    public int getSortOrder() {
+        return sortOrder;
+    }
 }

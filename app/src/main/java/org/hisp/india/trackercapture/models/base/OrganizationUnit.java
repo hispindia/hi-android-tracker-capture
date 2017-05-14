@@ -13,6 +13,10 @@ public class OrganizationUnit extends BaseModel implements Serializable {
 
     @SerializedName("programs")
     private List<Program> programs;
+    @SerializedName("level")
+    private int level;
+    @SerializedName("code")
+    private String code;
 
     public List<Program> getPrograms() {
         return programs;
@@ -20,5 +24,13 @@ public class OrganizationUnit extends BaseModel implements Serializable {
 
     public void setPrograms(List<Program> programs) {
         this.programs = programs;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public String getCode() {
+        return code;
     }
 }

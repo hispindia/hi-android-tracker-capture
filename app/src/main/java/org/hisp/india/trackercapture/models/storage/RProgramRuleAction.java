@@ -14,6 +14,7 @@ public class RProgramRuleAction extends RealmObject implements Model {
     @PrimaryKey
     private String id;
     private String displayName;
+    private String programRuleActionType;
 
     @Override
     public String getId() {
@@ -33,4 +34,11 @@ public class RProgramRuleAction extends RealmObject implements Model {
         this.displayName = displayName;
     }
 
+    public String getProgramRuleActionType() {
+        return programRuleActionType;
+    }
+
+    public void setProgramRuleActionType(String programRuleActionType) {
+        this.programRuleActionType = programRuleActionType;
+    }
 }
