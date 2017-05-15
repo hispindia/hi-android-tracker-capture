@@ -48,7 +48,7 @@ public class RMapping {
         model.setCode(organizationUnit.getCode());
         model.setLevel(organizationUnit.getLevel());
         model.setPrograms(new RealmList<>());
-
+        model.setParent(organizationUnit.getParent());
         for (Program program : organizationUnit.getPrograms()) {
             RProgram item = from(program);
             if (item != null) {

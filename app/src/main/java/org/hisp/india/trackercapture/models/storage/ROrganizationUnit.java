@@ -17,6 +17,7 @@ public class ROrganizationUnit extends RealmObject implements Model {
     private String displayName;
     private int level;
     private String code;
+    private String parent;
     private RealmList<RProgram> programs;
 
     @Override
@@ -31,6 +32,14 @@ public class ROrganizationUnit extends RealmObject implements Model {
     @Override
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 
     public void setDisplayName(String displayName) {
@@ -61,3 +70,4 @@ public class ROrganizationUnit extends RealmObject implements Model {
         this.code = code;
     }
 }
+
