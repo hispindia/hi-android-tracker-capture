@@ -20,8 +20,8 @@ import rx.Subscription;
  * Created by nhancao on 5/5/17.
  */
 
-public class EnrollPresenter extends MvpBasePresenter<EnrollProgramView> {
-    private static final String TAG = EnrollPresenter.class.getSimpleName();
+public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> {
+    private static final String TAG = EnrollProgramPresenter.class.getSimpleName();
 
     private NavigatorHolder navigatorHolder;
     private Router router;
@@ -30,9 +30,9 @@ public class EnrollPresenter extends MvpBasePresenter<EnrollProgramView> {
     private Subscription subscription;
 
     @Inject
-    public EnrollPresenter(Router router, NavigatorHolder navigatorHolder,
-                           TrackedEntityInstanceService trackedEntityInstanceService,
-                           EnrollmentService enrollmentService) {
+    public EnrollProgramPresenter(Router router, NavigatorHolder navigatorHolder,
+                                  TrackedEntityInstanceService trackedEntityInstanceService,
+                                  EnrollmentService enrollmentService) {
         this.router = router;
         this.navigatorHolder = navigatorHolder;
         this.trackedEntityInstanceService = trackedEntityInstanceService;

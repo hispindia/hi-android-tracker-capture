@@ -36,7 +36,7 @@ import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Back;
 
 @EActivity(R.layout.activity_enroll)
-public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, EnrollPresenter> implements
+public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, EnrollProgramPresenter> implements
                                                                                             EnrollProgramView {
     private static final String TAG = EnrollProgramActivity.class.getSimpleName();
 
@@ -66,7 +66,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     @Extra
     protected String programName;
     @Inject
-    protected EnrollPresenter presenter;
+    protected EnrollProgramPresenter presenter;
 
     private EnrollProgramAdapter adapter;
     private RProgram programDetail;
@@ -101,7 +101,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
     @NonNull
     @Override
-    public EnrollPresenter createPresenter() {
+    public EnrollProgramPresenter createPresenter() {
         return presenter;
     }
 

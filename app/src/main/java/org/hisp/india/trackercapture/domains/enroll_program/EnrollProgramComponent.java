@@ -17,7 +17,7 @@ import dagger.Component;
                 NavigationModule.class
         })
 public interface EnrollProgramComponent {
-    EnrollPresenter presenter();
+    EnrollProgramPresenter presenter();
 
     void inject(EnrollProgramActivity enrollProgramActivity);
 }
