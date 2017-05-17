@@ -12,14 +12,14 @@
     >
 
     <android.support.design.widget.AppBarLayout
-        android:id="@+id/activity_enroll_app_bar_layout"
+        android:id="@+id/activity_enroll_program_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
         >
 
         <org.hisp.india.trackercapture.widgets.NToolbar_
-            android:id="@+id/activity_enroll_toolbar"
+            android:id="@+id/activity_enroll_program_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
@@ -29,7 +29,7 @@
         android:id="@+id/activity_enroll_ll_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/activity_enroll_app_bar_layout"
+        android:layout_below="@+id/activity_enroll_program_app_bar_layout"
         android:background="@android:color/darker_gray"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"

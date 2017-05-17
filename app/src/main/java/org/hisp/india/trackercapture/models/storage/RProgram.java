@@ -17,7 +17,9 @@ public class RProgram extends RealmObject implements Model {
     private String displayName;
     private boolean withoutRegistration;
     private String enrollmentDateLabel;
+    private String enrollmentDateValue;
     private String incidentDateLabel;
+    private String incidentDateValue;
     private boolean selectEnrollmentDatesInFuture;
     private boolean selectIncidentDatesInFuture;
     private boolean displayIncidentDate;
@@ -133,5 +135,21 @@ public class RProgram extends RealmObject implements Model {
 
     public void setTrackedEntity(RTrackedEntity trackedEntity) {
         this.trackedEntity = trackedEntity;
+    }
+
+    public String getEnrollmentDateValue() {
+        return enrollmentDateValue;
+    }
+
+    public void setEnrollmentDateValue(String enrollmentDateValue) {
+        this.enrollmentDateValue = enrollmentDateValue;
+    }
+
+    public String getIncidentDateValue() {
+        return incidentDateValue;
+    }
+
+    public void setIncidentDateValue(String incidentDateValue) {
+        this.incidentDateValue = incidentDateValue;
     }
 }

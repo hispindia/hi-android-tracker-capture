@@ -30,6 +30,7 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program.EnrollProgramActivity_;
+import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity_;
 import org.hisp.india.trackercapture.domains.login.LoginActivity_;
 import org.hisp.india.trackercapture.domains.menu.DrawerAdapter;
 import org.hisp.india.trackercapture.domains.menu.DrawerItem;
@@ -55,6 +56,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import ru.terrakok.cicerone.Navigator;
+import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.Replace;
 
 @EActivity(R.layout.activity_main)
@@ -100,6 +102,20 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             if (((Replace) command).getScreenKey().equals(Screens.LOGIN_SCREEN)) {
                 LoginActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
                               .start();
+            }
+        } else if (command instanceof Forward) {
+            if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM)) {
+                EnrollProgramActivity_.intent(this)
+                                      .organizationUnitId(organizationUnit.getId())
+                                      .programId(program.getId())
+                                      .programName(program.getDisplayName())
+                                      .start();
+            } else if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE)) {
+                EnrollProgramStageActivity_.intent(this)
+                                           .organizationUnitId(organizationUnit.getId())
+                                           .programId(program.getId())
+                                           .programName(program.getDisplayName())
+                                           .start();
             }
         }
     };
@@ -329,6 +345,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                     helper.setText(R.id.item_program_info_tv_3, item.get(2));
                     helper.setVisible(R.id.item_program_info_tv_3, true);
                 }
+                helper.getView().setOnClickListener(v -> {
+                    navigator.applyCommand(new Forward(Screens.ENROLL_PROGRAM_STAGE, null));
+                });
             }
         });
 
@@ -377,11 +396,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Click(R.id.activity_main_bt_enroll)
     void btEnrollClick() {
         if (program != null && organizationUnit != null) {
-            EnrollProgramActivity_.intent(this)
-                                  .organizationUnitId(organizationUnit.getId())
-                                  .programId(program.getId())
-                                  .programName(program.getDisplayName())
-                                  .start();
+            navigator.applyCommand(new Forward(Screens.ENROLL_PROGRAM, null));
         } else {
             Toast.makeText(application, "Need select org and program first", Toast.LENGTH_SHORT).show();
         }

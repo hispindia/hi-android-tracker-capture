@@ -17,12 +17,14 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
+import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity_;
 import org.hisp.india.trackercapture.models.request.AttributeRequest;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
+import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
 import org.hisp.india.trackercapture.widgets.NToolbar;
@@ -34,13 +36,14 @@ import javax.inject.Inject;
 
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Back;
+import ru.terrakok.cicerone.commands.Replace;
 
 @EActivity(R.layout.activity_enroll_program)
 public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, EnrollProgramPresenter> implements
-                                                                                            EnrollProgramView {
+                                                                                                   EnrollProgramView {
     private static final String TAG = EnrollProgramActivity.class.getSimpleName();
 
-    @ViewById(R.id.activity_enroll_toolbar)
+    @ViewById(R.id.activity_enroll_program_toolbar)
     protected NToolbar toolbar;
     @ViewById(R.id.fragment_enroll_incident_date)
     protected View vIncidentDate;
@@ -74,6 +77,15 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     private Navigator navigator = command -> {
         if (command instanceof Back) {
             finish();
+        } else if (command instanceof Replace) {
+            if (((Replace) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE)) {
+                finish();
+                EnrollProgramStageActivity_.intent(this)
+                                           .organizationUnitId(organizationUnitId)
+                                           .programId(programId)
+                                           .programName(programName)
+                                           .start();
+            }
         }
     };
 
@@ -140,6 +152,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
     @Override
     public void registerProgramSuccess(BaseResponse baseResponse) {
+        presenter.saveProgram(programDetail);
         Toast.makeText(application, baseResponse.toString(), Toast.LENGTH_SHORT).show();
     }
 
@@ -147,7 +160,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     void tvIncidentDateValueClick() {
         DatePickerDialog datePicker = DatePickerDialog.newInstance(programDetail.isSelectIncidentDatesInFuture());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-            tvIncidentDateValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
+            programDetail.setIncidentDateValue(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
+            tvIncidentDateValue.setText(programDetail.getIncidentDateValue());
         });
         datePicker.show(getSupportFragmentManager());
     }
@@ -156,7 +170,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     void tvEnrollmentDateValueClick() {
         DatePickerDialog datePicker = DatePickerDialog.newInstance(programDetail.isSelectEnrollmentDatesInFuture());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-            tvEnrollmentDateValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
+            programDetail.setEnrollmentDateValue(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
+            tvEnrollmentDateValue.setText(programDetail.getEnrollmentDateValue());
         });
         datePicker.show(getSupportFragmentManager());
     }

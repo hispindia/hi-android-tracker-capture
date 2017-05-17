@@ -5,6 +5,8 @@ import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
+import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
@@ -63,6 +65,10 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
         }
     }
 
+    public void saveProgram(RProgram program) {
+        ProgramQuery.saveProgram(program);
+    }
+
     public void registerProgram(TrackedEntityInstanceRequest trackedEntityInstanceRequest,
                                 EnrollmentRequest enrollmentRequest) {
         RxScheduler.onStop(subscription);
@@ -82,7 +88,7 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
                 })
                 .subscribe(baseResponse -> {
                     getView().registerProgramSuccess(baseResponse);
-                    onBackCommandClick();
+                    router.replaceScreen(Screens.ENROLL_PROGRAM_STAGE);
                 });
     }
 

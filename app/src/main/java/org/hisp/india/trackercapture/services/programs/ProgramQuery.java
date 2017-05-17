@@ -19,4 +19,10 @@ public class ProgramQuery {
         });
     }
 
+    public static void saveProgram(RProgram program) {
+        RealmHelper.transaction(realm -> {
+            realm.insertOrUpdate(program);
+        });
+    }
+
 }
