@@ -65,13 +65,25 @@ public class NToolbar extends RelativeLayout {
         tvTitle.setText(title);
         toolbarIcon.setVisibility(View.GONE);
         toolbarClose.setVisibility(View.VISIBLE);
-        toolbarSetting.setVisibility(View.VISIBLE);
+        toolbarSetting.setVisibility(View.GONE);
 
         toolbarClose.setOnClickListener(v -> {
             itemClick.toolbarCloseClick();
         });
-        toolbarSetting.setOnClickListener(v -> {
-            itemClick.toolbarSettingClick();
+
+    }
+
+    public void applyProgramStagelUi(AppCompatActivity activity, String title, ProgramStageToolbarItemClick itemClick) {
+        //Setup toolbar
+        applyCommonUi(activity);
+
+        tvTitle.setText(title);
+        toolbarIcon.setVisibility(View.GONE);
+        toolbarClose.setVisibility(View.VISIBLE);
+        toolbarSetting.setVisibility(View.GONE);
+
+        toolbarClose.setOnClickListener(v -> {
+            itemClick.toolbarCloseClick();
         });
 
     }
@@ -82,8 +94,10 @@ public class NToolbar extends RelativeLayout {
 
     public interface EnrollToolbarItemClick {
         void toolbarCloseClick();
+    }
 
-        void toolbarSettingClick();
+    public interface ProgramStageToolbarItemClick {
+        void toolbarCloseClick();
     }
 
 }

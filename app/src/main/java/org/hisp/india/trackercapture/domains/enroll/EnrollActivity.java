@@ -89,17 +89,7 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
-        toolbar.applyEnrollUi(this, "Enroll", new NToolbar.EnrollToolbarItemClick() {
-            @Override
-            public void toolbarCloseClick() {
-                presenter.onBackCommandClick();
-            }
-
-            @Override
-            public void toolbarSettingClick() {
-
-            }
-        });
+        toolbar.applyEnrollUi(this, "Enroll", () -> presenter.onBackCommandClick());
 
         adapter = new EnrollAdapter(this, programName);
         lvProfile.setAdapter(adapter);
