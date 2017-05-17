@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.enroll_program;
+package org.hisp.india.trackercapture.domains.enroll_program_stage;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -35,10 +35,11 @@ import javax.inject.Inject;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Back;
 
-@EActivity(R.layout.activity_enroll_program)
-public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, EnrollProgramPresenter> implements
-                                                                                            EnrollProgramView {
-    private static final String TAG = EnrollProgramActivity.class.getSimpleName();
+@EActivity(R.layout.activity_enroll_program_stage)
+public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageView, EnrollProgramStagePresenter>
+        implements
+        EnrollProgramStageView {
+    private static final String TAG = EnrollProgramStageActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_enroll_toolbar)
     protected NToolbar toolbar;
@@ -66,9 +67,9 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     @Extra
     protected String programName;
     @Inject
-    protected EnrollProgramPresenter presenter;
+    protected EnrollProgramStagePresenter presenter;
 
-    private EnrollProgramAdapter adapter;
+    private EnrollProgramStageAdapter adapter;
     private RProgram programDetail;
 
     private Navigator navigator = command -> {
@@ -79,10 +80,10 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
     @AfterInject
     void inject() {
-        DaggerEnrollProgramComponent.builder()
-                                    .applicationComponent(application.getApplicationComponent())
-                                    .build()
-                                    .inject(this);
+        DaggerEnrollProgramStageComponent.builder()
+                                         .applicationComponent(application.getApplicationComponent())
+                                         .build()
+                                         .inject(this);
     }
 
     @AfterViews
@@ -90,9 +91,9 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
-        toolbar.applyEnrollProgramUi(this, "Enroll", () -> presenter.onBackCommandClick());
+        toolbar.applyEnrollProgramStagelUi(this, "Program stages", () -> presenter.onBackCommandClick());
 
-        adapter = new EnrollProgramAdapter(this, programName);
+        adapter = new EnrollProgramStageAdapter(this, programName);
         lvProfile.setAdapter(adapter);
 
         presenter.getProgramDetail(programId);
@@ -101,7 +102,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
     @NonNull
     @Override
-    public EnrollProgramPresenter createPresenter() {
+    public EnrollProgramStagePresenter createPresenter() {
         return presenter;
     }
 

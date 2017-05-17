@@ -48,9 +48,7 @@ public class NToolbar extends RelativeLayout {
         applyCommonUi(activity);
 
         tvTitle.setText(title);
-        toolbarIcon.setVisibility(View.GONE);
         toolbarClose.setVisibility(View.VISIBLE);
-        toolbarSetting.setVisibility(View.GONE);
 
         toolbarClose.setOnClickListener(v -> {
             itemClick.toolbarCloseClick();
@@ -58,14 +56,13 @@ public class NToolbar extends RelativeLayout {
 
     }
 
-    public void applyEnrollUi(AppCompatActivity activity, String title, EnrollToolbarItemClick itemClick) {
+    public void applyEnrollProgramUi(AppCompatActivity activity, String title,
+                                     EnrollProgramToolbarItemClick itemClick) {
         //Setup toolbar
         applyCommonUi(activity);
 
         tvTitle.setText(title);
-        toolbarIcon.setVisibility(View.GONE);
         toolbarClose.setVisibility(View.VISIBLE);
-        toolbarSetting.setVisibility(View.GONE);
 
         toolbarClose.setOnClickListener(v -> {
             itemClick.toolbarCloseClick();
@@ -73,14 +70,13 @@ public class NToolbar extends RelativeLayout {
 
     }
 
-    public void applyProgramStagelUi(AppCompatActivity activity, String title, ProgramStageToolbarItemClick itemClick) {
+    public void applyEnrollProgramStagelUi(AppCompatActivity activity, String title,
+                                           EnrollProgramStageToolbarItemClick itemClick) {
         //Setup toolbar
         applyCommonUi(activity);
 
         tvTitle.setText(title);
-        toolbarIcon.setVisibility(View.GONE);
         toolbarClose.setVisibility(View.VISIBLE);
-        toolbarSetting.setVisibility(View.GONE);
 
         toolbarClose.setOnClickListener(v -> {
             itemClick.toolbarCloseClick();
@@ -92,11 +88,11 @@ public class NToolbar extends RelativeLayout {
         void toolbarCloseClick();
     }
 
-    public interface EnrollToolbarItemClick {
+    public interface EnrollProgramToolbarItemClick {
         void toolbarCloseClick();
     }
 
-    public interface ProgramStageToolbarItemClick {
+    public interface EnrollProgramStageToolbarItemClick {
         void toolbarCloseClick();
     }
 

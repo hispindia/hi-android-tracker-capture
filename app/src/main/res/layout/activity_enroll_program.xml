@@ -36,7 +36,7 @@
         tools:ignore="MissingPrefix"
         >
         <!--content here-->
-        <include layout="@layout/fragment_enroll" />
+        <include layout="@layout/fragment_enroll_program" />
     </LinearLayout>
 </RelativeLayout>
 
