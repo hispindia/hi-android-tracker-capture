@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.enroll;
+package org.hisp.india.trackercapture.domains.enroll_program;
 
 import org.hisp.india.core.di.module.NavigationModule;
 import org.hisp.india.core.di.scope.ActivityScope;
@@ -16,8 +16,8 @@ import dagger.Component;
         modules = {
                 NavigationModule.class
         })
-public interface EnrollComponent {
+public interface EnrollProgramComponent {
     EnrollPresenter presenter();
 
-    void inject(EnrollActivity enrollActivity);
+    void inject(EnrollProgramActivity enrollProgramActivity);
 }

@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.enroll;
+package org.hisp.india.trackercapture.domains.enroll_program;
 
 import android.text.Editable;
 import android.text.InputType;
@@ -29,13 +29,13 @@ import static org.hisp.india.trackercapture.models.e_num.ValueType.DATE;
  * Created by nhancao on 5/10/17.
  */
 
-public class EnrollAdapter extends BaseAdapter {
+public class EnrollProgramAdapter extends BaseAdapter {
 
     public String programName;
-    public EnrollActivity activity;
+    public EnrollProgramActivity activity;
     public List<RProgramTrackedEntityAttribute> programTrackedEntityAttributeList;
 
-    public EnrollAdapter(EnrollActivity activity, String programName) {
+    public EnrollProgramAdapter(EnrollProgramActivity activity, String programName) {
         this.programName = programName;
         this.activity = activity;
         this.programTrackedEntityAttributeList = new ArrayList<>();

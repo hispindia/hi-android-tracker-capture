@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.enroll;
+package org.hisp.india.trackercapture.domains.enroll_program;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
@@ -20,7 +20,7 @@ import rx.Subscription;
  * Created by nhancao on 5/5/17.
  */
 
-public class EnrollPresenter extends MvpBasePresenter<EnrollView> {
+public class EnrollPresenter extends MvpBasePresenter<EnrollProgramView> {
     private static final String TAG = EnrollPresenter.class.getSimpleName();
 
     private NavigatorHolder navigatorHolder;
@@ -40,7 +40,7 @@ public class EnrollPresenter extends MvpBasePresenter<EnrollView> {
     }
 
     @Override
-    public void attachView(EnrollView view) {
+    public void attachView(EnrollProgramView view) {
         super.attachView(view);
         navigatorHolder.setNavigator(view.getNavigator());
     }

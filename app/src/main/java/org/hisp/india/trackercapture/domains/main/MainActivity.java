@@ -29,7 +29,7 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
-import org.hisp.india.trackercapture.domains.enroll.EnrollActivity_;
+import org.hisp.india.trackercapture.domains.enroll_program.EnrollProgramActivity_;
 import org.hisp.india.trackercapture.domains.login.LoginActivity_;
 import org.hisp.india.trackercapture.domains.menu.DrawerAdapter;
 import org.hisp.india.trackercapture.domains.menu.DrawerItem;
@@ -377,11 +377,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Click(R.id.activity_main_bt_enroll)
     void btEnrollClick() {
         if (program != null && organizationUnit != null) {
-            EnrollActivity_.intent(this)
-                           .organizationUnitId(organizationUnit.getId())
-                           .programId(program.getId())
-                           .programName(program.getDisplayName())
-                           .start();
+            EnrollProgramActivity_.intent(this)
+                                  .organizationUnitId(organizationUnit.getId())
+                                  .programId(program.getId())
+                                  .programName(program.getDisplayName())
+                                  .start();
         } else {
             Toast.makeText(application, "Need select org and program first", Toast.LENGTH_SHORT).show();
         }

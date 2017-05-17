@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.enroll;
+package org.hisp.india.trackercapture.domains.enroll_program;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -36,8 +36,9 @@ import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Back;
 
 @EActivity(R.layout.activity_enroll)
-public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> implements EnrollView {
-    private static final String TAG = EnrollActivity.class.getSimpleName();
+public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, EnrollPresenter> implements
+                                                                                            EnrollProgramView {
+    private static final String TAG = EnrollProgramActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_enroll_toolbar)
     protected NToolbar toolbar;
@@ -67,7 +68,7 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
     @Inject
     protected EnrollPresenter presenter;
 
-    private EnrollAdapter adapter;
+    private EnrollProgramAdapter adapter;
     private RProgram programDetail;
 
     private Navigator navigator = command -> {
@@ -78,10 +79,10 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
 
     @AfterInject
     void inject() {
-        DaggerEnrollComponent.builder()
-                             .applicationComponent(application.getApplicationComponent())
-                             .build()
-                             .inject(this);
+        DaggerEnrollProgramComponent.builder()
+                                    .applicationComponent(application.getApplicationComponent())
+                                    .build()
+                                    .inject(this);
     }
 
     @AfterViews
@@ -91,7 +92,7 @@ public class EnrollActivity extends BaseActivity<EnrollView, EnrollPresenter> im
         //Setup toolbar
         toolbar.applyEnrollUi(this, "Enroll", () -> presenter.onBackCommandClick());
 
-        adapter = new EnrollAdapter(this, programName);
+        adapter = new EnrollProgramAdapter(this, programName);
         lvProfile.setAdapter(adapter);
 
         presenter.getProgramDetail(programId);

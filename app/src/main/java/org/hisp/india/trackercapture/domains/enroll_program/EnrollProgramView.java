@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.enroll;
+package org.hisp.india.trackercapture.domains.enroll_program;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
@@ -11,7 +11,7 @@ import ru.terrakok.cicerone.Navigator;
  * Created by nhancao on 5/5/17.
  */
 
-public interface EnrollView extends MvpView {
+public interface EnrollProgramView extends MvpView {
 
     Navigator getNavigator();
 
