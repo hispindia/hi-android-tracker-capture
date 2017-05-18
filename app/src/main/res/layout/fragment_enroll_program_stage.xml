@@ -20,6 +20,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
+            android:visibility="gone"
             tools:ignore="MissingPrefix"
             >
 

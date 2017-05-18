@@ -70,7 +70,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = View.inflate(parent.getContext(), R.layout.item_enroll_program_stage, null);
+            convertView = View.inflate(parent.getContext(), R.layout.item_enroll_profile, null);
             holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
             holder.tvMandatory = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_mandatory);
             holder.etValue = (EditText) convertView.findViewById(R.id.item_enroll_profile_et_value);

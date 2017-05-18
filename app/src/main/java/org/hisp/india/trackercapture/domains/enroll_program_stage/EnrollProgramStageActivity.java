@@ -46,6 +46,8 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     protected TextView tvEnrollmentDateValue;
     @ViewById(R.id.fragment_enroll_program_stage_lv_stage)
     protected ListView lvStage;
+    @ViewById(R.id.activity_main_root_scroll)
+    protected View vRoot;
 
     @App
     protected MainApplication application;
@@ -124,8 +126,10 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             tvEnrollmentDateValue.setText(programDetail.getEnrollmentDateValue());
 
             adapter.setProgramStageList(programDetail.getProgramStages());
-            AppUtils.refreshListViewAsNonScroll(lvStage);
 
+            lvStage.post(() -> AppUtils.refreshListViewAsNonScroll(lvStage));
+
+            vRoot.setVisibility(View.VISIBLE);
         }
     }
 

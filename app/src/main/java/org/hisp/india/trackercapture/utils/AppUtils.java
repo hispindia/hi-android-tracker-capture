@@ -221,9 +221,11 @@ public class AppUtils {
 
             // Get total height of all items.
             int totalItemsHeight = 0;
+            int listWidth = listView.getMeasuredWidth();
             for (int itemPos = 0; itemPos < numberOfItems; itemPos++) {
                 View item = listAdapter.getView(itemPos, null, listView);
-                item.measure(0, 0);
+                item.measure(View.MeasureSpec.makeMeasureSpec(listWidth, View.MeasureSpec.EXACTLY),
+                             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
                 totalItemsHeight += item.getMeasuredHeight();
             }
 
