@@ -2,14 +2,18 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
+import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
+
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
+import rx.Observable;
 import rx.Subscription;
 
 /**
@@ -53,9 +57,14 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
 
     public void getProgramDetail(String programId) {
         if (isViewAttached()) {
-            getView().showLoading();
-            getView().getProgramDetail(ProgramQuery.getProgram(programId));
-            getView().hideLoading();
+            Observable
+                    .defer(() -> Observable.just(ProgramQuery.getProgram(programId))
+                                           .delay(500, TimeUnit.MILLISECONDS)
+                                           .compose(RxScheduler.applyLogicSchedulers())
+                                           .doOnSubscribe(() -> getView().showLoading())
+                                           .doOnTerminate(() -> getView().hideLoading()))
+                    .subscribe(program -> getView().getProgramDetail(program));
+
         }
     }
 

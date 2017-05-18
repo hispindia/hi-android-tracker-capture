@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,8 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     protected TextView tvEnrollmentDateLabel;
     @ViewById(R.id.fragment_enroll_program_stage_tv_enrollment_date_value)
     protected TextView tvEnrollmentDateValue;
+    @ViewById(R.id.fragment_enroll_program_stage_lv_stage)
+    protected ListView lvStage;
 
     @App
     protected MainApplication application;
@@ -56,6 +59,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     protected EnrollProgramStagePresenter presenter;
 
     private RProgram programDetail;
+    private EnrollProgramStageAdapter adapter;
 
     private Navigator navigator = command -> {
         if (command instanceof Back) {
@@ -78,7 +82,10 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         //Setup toolbar
         toolbar.applyEnrollProgramStagelUi(this, "Program stages", () -> presenter.onBackCommandClick());
 
-        presenter.getProgramDetail(programId);
+        adapter = new EnrollProgramStageAdapter(programName);
+        lvStage.setAdapter(adapter);
+
+        lvStage.post(() -> presenter.getProgramDetail(programId));
 
     }
 
@@ -116,6 +123,8 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             tvEnrollmentDateLabel.setText(programDetail.getEnrollmentDateLabel());
             tvEnrollmentDateValue.setText(programDetail.getEnrollmentDateValue());
 
+            adapter.setProgramStageList(programDetail.getProgramStages());
+            AppUtils.refreshListViewAsNonScroll(lvStage);
 
         }
     }

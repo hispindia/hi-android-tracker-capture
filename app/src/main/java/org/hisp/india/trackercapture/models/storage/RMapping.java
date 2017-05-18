@@ -65,6 +65,7 @@ public class RMapping {
         model.setId(programStage.getId());
         model.setDisplayName(programStage.getDisplayName());
         model.setSortOrder(programStage.getSortOrder());
+        model.setMinDaysFromStart(programStage.getMinDaysFromStart());
         return model;
     }
 

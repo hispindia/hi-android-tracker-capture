@@ -13,8 +13,14 @@ import java.io.Serializable;
 public class ProgramStage extends BaseModel implements Serializable {
     @SerializedName("sortOrder")
     private int sortOrder;
+    @SerializedName("minDaysFromStart")
+    private int minDaysFromStart;
 
     public int getSortOrder() {
         return sortOrder;
+    }
+
+    public int getMinDaysFromStart() {
+        return minDaysFromStart;
     }
 }

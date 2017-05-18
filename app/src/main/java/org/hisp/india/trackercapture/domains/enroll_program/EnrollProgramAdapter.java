@@ -2,7 +2,6 @@ package org.hisp.india.trackercapture.domains.enroll_program;
 
 import android.text.Editable;
 import android.text.InputType;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -31,9 +30,9 @@ import static org.hisp.india.trackercapture.models.e_num.ValueType.DATE;
 
 public class EnrollProgramAdapter extends BaseAdapter {
     private static final String TAG = EnrollProgramAdapter.class.getSimpleName();
-    public String programName;
-    public EnrollProgramActivity activity;
-    public List<RProgramTrackedEntityAttribute> programTrackedEntityAttributeList;
+    private String programName;
+    private EnrollProgramActivity activity;
+    private List<RProgramTrackedEntityAttribute> programTrackedEntityAttributeList;
 
     public EnrollProgramAdapter(EnrollProgramActivity activity, String programName) {
         this.programName = programName;
@@ -71,8 +70,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = LayoutInflater.from(activity)
-                                        .inflate(R.layout.item_enroll_profile, parent, false);
+            convertView = View.inflate(parent.getContext(), R.layout.item_enroll_program_stage, null);
             holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
             holder.tvMandatory = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_mandatory);
             holder.etValue = (EditText) convertView.findViewById(R.id.item_enroll_profile_et_value);

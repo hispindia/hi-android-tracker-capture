@@ -15,6 +15,7 @@ public class RProgramStage extends RealmObject implements Model {
     private String id;
     private String displayName;
     private int sortOrder;
+    private int minDaysFromStart;
 
     @Override
     public String getId() {
@@ -40,5 +41,13 @@ public class RProgramStage extends RealmObject implements Model {
 
     public void setSortOrder(int sortOrder) {
         this.sortOrder = sortOrder;
+    }
+
+    public int getMinDaysFromStart() {
+        return minDaysFromStart;
+    }
+
+    public void setMinDaysFromStart(int minDaysFromStart) {
+        this.minDaysFromStart = minDaysFromStart;
     }
 }

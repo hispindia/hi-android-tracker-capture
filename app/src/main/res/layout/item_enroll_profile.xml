@@ -73,12 +73,4 @@
         android:theme="@style/EditText"
         />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:background="#626262"
-        android:textColorHint="#626262"
-        />
 </LinearLayout>
