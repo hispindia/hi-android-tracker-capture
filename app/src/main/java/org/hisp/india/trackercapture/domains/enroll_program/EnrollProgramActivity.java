@@ -1,9 +1,9 @@
 package org.hisp.india.trackercapture.domains.enroll_program;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +28,7 @@ import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
 import org.hisp.india.trackercapture.widgets.NToolbar;
+import org.hisp.india.trackercapture.widgets.NonScrollListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     @ViewById(R.id.fragment_enroll_tv_enrollment_date_value)
     protected TextView tvEnrollmentDateValue;
     @ViewById(R.id.fragment_enroll_lv_profile)
-    protected ListView lvProfile;
+    protected NonScrollListView lvProfile;
 
     @App
     protected MainApplication application;
@@ -107,7 +108,9 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         adapter = new EnrollProgramAdapter(this, programName);
         lvProfile.setAdapter(adapter);
 
-        presenter.getProgramDetail(programId);
+        new Handler().postDelayed(() -> {
+            presenter.getProgramDetail(programId);
+        }, 1000);
 
     }
 
