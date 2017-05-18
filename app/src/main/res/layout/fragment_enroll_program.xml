@@ -19,6 +19,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
+            android:visibility="gone"
             tools:ignore="MissingPrefix"
             >
 
@@ -53,6 +54,7 @@
                             fontPath="fonts/Montserrat-Regular.ttf"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
                             android:text="Date of incident"
                             android:textColor="#6A89DF"
                             android:textSize="16sp"
@@ -74,6 +76,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:background="@android:color/transparent"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
                         android:hint="Select"
                         android:inputType="text"
                         android:maxLines="1"
@@ -135,6 +139,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:background="@android:color/transparent"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
                         android:hint="Select"
                         android:inputType="text"
                         android:maxLines="1"
@@ -156,13 +162,13 @@
                         />
                 </LinearLayout>
 
-                <org.hisp.india.trackercapture.widgets.NonScrollListView
+                <ListView
                     android:id="@+id/fragment_enroll_lv_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scrollbars="none"
                     >
-                </org.hisp.india.trackercapture.widgets.NonScrollListView>
+                </ListView>
 
                 <android.support.v4.widget.Space
                     android:layout_width="match_parent"

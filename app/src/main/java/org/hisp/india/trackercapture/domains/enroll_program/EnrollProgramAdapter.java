@@ -30,7 +30,7 @@ import static org.hisp.india.trackercapture.models.e_num.ValueType.DATE;
  */
 
 public class EnrollProgramAdapter extends BaseAdapter {
-
+    private static final String TAG = EnrollProgramAdapter.class.getSimpleName();
     public String programName;
     public EnrollProgramActivity activity;
     public List<RProgramTrackedEntityAttribute> programTrackedEntityAttributeList;
@@ -119,15 +119,17 @@ public class EnrollProgramAdapter extends BaseAdapter {
         }
 
         if (item.getTrackedEntityAttribute().isOptionSetValue()) {
-            holder.tvValue.setOnClickListener(v -> {
-                List<Model> modelList = new ArrayList<>();
-                for (ROption option : item.getTrackedEntityAttribute().getOptionSet().getOptions()) {
-                    modelList.add(new BaseModel(option.getId(), option.getDisplayName()));
-                }
+            List<Model> modelList = new ArrayList<>();
+            for (ROption option : item.getTrackedEntityAttribute().getOptionSet().getOptions()) {
+                modelList.add(new BaseModel(option.getId(), option.getDisplayName()));
+            }
 
-                OptionDialog.newInstance(modelList, model -> {
-                    holder.tvValue.setText(model.getDisplayName());
-                }).show(activity.getSupportFragmentManager());
+            holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus) {
+                    v.clearFocus();
+                    AppUtils.hideKeyBoard(v);
+                    showOptionDialog(holder, modelList);
+                }
             });
         } else {
             switch (item.getValueType()) {
@@ -140,13 +142,12 @@ public class EnrollProgramAdapter extends BaseAdapter {
                     holder.etValue.setInputType(InputType.TYPE_CLASS_NUMBER);
                     break;
                 case DATE:
-                    holder.tvValue.setOnClickListener(v -> {
-                        DatePickerDialog datePicker = DatePickerDialog
-                                .newInstance(item.isAllowFutureDate());
-                        datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-                            holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-                        });
-                        datePicker.show(activity.getSupportFragmentManager());
+                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+                        if (hasFocus) {
+                            v.clearFocus();
+                            AppUtils.hideKeyBoard(v);
+                            showDatePickerDialog(holder, item);
+                        }
                     });
                     break;
                 case DATE_TIME:
@@ -157,16 +158,18 @@ public class EnrollProgramAdapter extends BaseAdapter {
                     holder.etValue.setInputType(InputType.TYPE_CLASS_PHONE);
                     break;
                 case BOOLEAN:
-                    holder.tvValue.setOnClickListener(v -> {
-                        List<Model> modelList = new ArrayList<Model>() {
-                            {
-                                add(new BaseModel("0", "Yes"));
-                                add(new BaseModel("1", "No"));
-                            }
-                        };
-                        OptionDialog.newInstance(modelList, model -> {
-                            holder.tvValue.setText(model.getDisplayName());
-                        }).show(activity.getSupportFragmentManager());
+                    List<Model> modelList = new ArrayList<Model>() {
+                        {
+                            add(new BaseModel("0", "Yes"));
+                            add(new BaseModel("1", "No"));
+                        }
+                    };
+                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+                        if (hasFocus) {
+                            v.clearFocus();
+                            AppUtils.hideKeyBoard(v);
+                            showOptionDialog(holder, modelList);
+                        }
                     });
                     break;
                 default:
@@ -177,6 +180,22 @@ public class EnrollProgramAdapter extends BaseAdapter {
 
 
         return convertView;
+    }
+
+    private void showOptionDialog(ViewHolder holder, List<Model> modelList) {
+        OptionDialog.newInstance(modelList, model -> {
+            holder.tvValue.setText(model.getDisplayName());
+        }).show(activity.getSupportFragmentManager());
+    }
+
+    private void showDatePickerDialog(ViewHolder holder, RProgramTrackedEntityAttribute item) {
+        DatePickerDialog
+                datePicker = DatePickerDialog
+                .newInstance(item.isAllowFutureDate());
+        datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
+            holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
+        });
+        datePicker.show(activity.getSupportFragmentManager());
     }
 
     private class ViewHolder {

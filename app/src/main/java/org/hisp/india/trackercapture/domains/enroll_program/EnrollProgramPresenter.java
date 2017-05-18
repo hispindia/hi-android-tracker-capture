@@ -11,6 +11,8 @@ import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import ru.terrakok.cicerone.NavigatorHolder;
@@ -59,9 +61,14 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
 
     public void getProgramDetail(String programId) {
         if (isViewAttached()) {
-            getView().showLoading();
-            getView().getProgramDetail(ProgramQuery.getProgram(programId));
-            getView().hideLoading();
+            Observable
+                    .defer(() -> Observable.just(ProgramQuery.getProgram(programId))
+                                           .delay(500, TimeUnit.MILLISECONDS)
+                                           .compose(RxScheduler.applyLogicSchedulers())
+                                           .doOnSubscribe(() -> getView().showLoading())
+                                           .doOnTerminate(() -> getView().hideLoading()))
+                    .subscribe(program -> getView().getProgramDetail(program));
+
         }
     }
 
