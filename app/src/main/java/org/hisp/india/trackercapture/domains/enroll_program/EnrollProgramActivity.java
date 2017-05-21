@@ -213,7 +213,6 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
                                                      attributeRequestList);
 
             EnrollmentRequest enrollmentRequest = new EnrollmentRequest(programId,
-                                                                        "ACTIVE",
                                                                         organizationUnitId,
                                                                         tvEnrollmentDateValue.getText().toString(),
                                                                         tvIncidentDateValue.getText().toString());

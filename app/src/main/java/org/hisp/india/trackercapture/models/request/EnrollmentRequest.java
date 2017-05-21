@@ -2,6 +2,8 @@ package org.hisp.india.trackercapture.models.request;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
+
 /**
  * Created by nhancao on 5/9/17.
  */
@@ -20,10 +22,10 @@ public class EnrollmentRequest {
     @SerializedName("incidentDate")
     private String incidentDate;
 
-    public EnrollmentRequest(String programId, String status, String orgUnitId, String enrollmentDate,
+    public EnrollmentRequest(String programId, String orgUnitId, String enrollmentDate,
                              String incidentDate) {
         this.programId = programId;
-        this.status = status;
+        this.status = ProgramStatus.ACTIVE.name();
         this.orgUnitId = orgUnitId;
         this.enrollmentDate = enrollmentDate;
         this.incidentDate = incidentDate;
