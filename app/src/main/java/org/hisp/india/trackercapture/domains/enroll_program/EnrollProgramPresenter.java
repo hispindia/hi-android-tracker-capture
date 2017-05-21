@@ -3,8 +3,6 @@ package org.hisp.india.trackercapture.domains.enroll_program;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
-import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
-import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
@@ -76,27 +74,8 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
         ProgramQuery.saveProgram(program);
     }
 
-    public void registerProgram(TrackedEntityInstanceRequest trackedEntityInstanceRequest,
-                                EnrollmentRequest enrollmentRequest) {
-        RxScheduler.onStop(subscription);
-        getView().showLoading();
-        subscription = trackedEntityInstanceService
-                .postTrackedEntityInstances(trackedEntityInstanceRequest)
-                .compose(RxScheduler.applyIoSchedulers())
-                .doOnTerminate(() -> getView().hideLoading())
-                .flatMap(baseResponse -> {
-                    if (baseResponse.getResponse().getReference() != null) {
-                        enrollmentRequest.setTrackedEntityInstanceId(baseResponse.getResponse().getReference());
-                        return enrollmentService.postEnrollments(enrollmentRequest)
-                                                .compose(RxScheduler.applyIoSchedulers());
-                    } else {
-                        return Observable.just(baseResponse);
-                    }
-                })
-                .subscribe(baseResponse -> {
-                    getView().registerProgramSuccess(baseResponse);
-                    router.replaceScreen(Screens.ENROLL_PROGRAM_STAGE);
-                });
+    public void gotoProgramStage() {
+        router.navigateTo(Screens.ENROLL_PROGRAM_STAGE);
     }
 
 

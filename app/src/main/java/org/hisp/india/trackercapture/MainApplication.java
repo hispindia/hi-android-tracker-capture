@@ -10,6 +10,8 @@ import com.orhanobut.hawk.Hawk;
 import com.orhanobut.hawk.HawkBuilder;
 import com.splunk.mint.Mint;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import org.androidannotations.annotations.EApplication;
 import org.hisp.india.trackercapture.di.ApplicationComponent;
 import org.hisp.india.trackercapture.di.ApplicationModule;
@@ -35,7 +37,7 @@ public class MainApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        JodaTimeAndroid.init(this);
         Hawk.init(this)
             .setEncryptionMethod(HawkBuilder.EncryptionMethod.MEDIUM)
             .setStorage(HawkBuilder.newSharedPrefStorage(this)).build();

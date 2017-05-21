@@ -66,13 +66,13 @@
             >
 
             <RelativeLayout
-                android:id="@+id/view_toolbar_setting"
+                android:id="@+id/view_toolbar_backup"
                 android:visibility="gone"
                 style="@style/Toolbar.ItemWrapper"
                 >
 
                 <ImageView
-                    android:src="@drawable/ic_settings_white"
+                    android:src="@drawable/ic_backup_white"
                     style="@style/Toolbar.ItemIcon"
                     />
             </RelativeLayout>

@@ -37,7 +37,7 @@ import javax.inject.Inject;
 
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Back;
-import ru.terrakok.cicerone.commands.Replace;
+import ru.terrakok.cicerone.commands.Forward;
 
 @EActivity(R.layout.activity_enroll_program)
 public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, EnrollProgramPresenter> implements
@@ -77,16 +77,22 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     private EnrollProgramAdapter adapter;
     private RProgram programDetail;
 
+    private EnrollmentRequest enrollmentRequest;
+    private TrackedEntityInstanceRequest trackedEntityInstanceRequest;
+
+
     private Navigator navigator = command -> {
         if (command instanceof Back) {
             finish();
-        } else if (command instanceof Replace) {
-            if (((Replace) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE)) {
+        } else if (command instanceof Forward) {
+            if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE)) {
                 finish();
                 EnrollProgramStageActivity_.intent(this)
                                            .organizationUnitId(organizationUnitId)
                                            .programId(programId)
                                            .programName(programName)
+                                           .enrollmentRequest(enrollmentRequest)
+                                           .trackedEntityInstanceRequest(trackedEntityInstanceRequest)
                                            .start();
             }
         }
@@ -205,18 +211,21 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         }
 
         if (checkForm) {
-            TrackedEntityInstanceRequest trackedEntityInstanceRequest =
+            trackedEntityInstanceRequest =
                     new TrackedEntityInstanceRequest(programDetail.getTrackedEntity().getId(),
                                                      organizationUnitId,
                                                      attributeRequestList);
 
-            EnrollmentRequest enrollmentRequest = new EnrollmentRequest(programId,
-                                                                        organizationUnitId,
-                                                                        tvEnrollmentDateValue.getText().toString(),
-                                                                        tvIncidentDateValue.getText().toString());
-
-            presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest);
+            enrollmentRequest = new EnrollmentRequest(programId,
+                                                      organizationUnitId,
+                                                      tvEnrollmentDateValue.getText().toString(),
+                                                      tvIncidentDateValue.getText().toString());
+            presenter.gotoProgramStage();
+//            presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest);
         } else {
+            enrollmentRequest = null;
+            trackedEntityInstanceRequest = null;
+
             Toast.makeText(application, "Required fields are missing.", Toast.LENGTH_SHORT).show();
         }
 

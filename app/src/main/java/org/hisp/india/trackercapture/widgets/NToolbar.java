@@ -28,8 +28,8 @@ public class NToolbar extends RelativeLayout {
     protected View toolbarClose;
     @ViewById(R.id.view_toolbar_tv_title)
     protected TextView tvTitle;
-    @ViewById(R.id.view_toolbar_setting)
-    protected View toolbarSetting;
+    @ViewById(R.id.view_toolbar_backup)
+    protected View toolbarBackup;
 
     public NToolbar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,9 +50,7 @@ public class NToolbar extends RelativeLayout {
         tvTitle.setText(title);
         toolbarClose.setVisibility(View.VISIBLE);
 
-        toolbarClose.setOnClickListener(v -> {
-            itemClick.toolbarCloseClick();
-        });
+        toolbarClose.setOnClickListener(v -> itemClick.toolbarCloseClick());
 
     }
 
@@ -64,9 +62,7 @@ public class NToolbar extends RelativeLayout {
         tvTitle.setText(title);
         toolbarClose.setVisibility(View.VISIBLE);
 
-        toolbarClose.setOnClickListener(v -> {
-            itemClick.toolbarCloseClick();
-        });
+        toolbarClose.setOnClickListener(v -> itemClick.toolbarCloseClick());
 
     }
 
@@ -77,10 +73,10 @@ public class NToolbar extends RelativeLayout {
 
         tvTitle.setText(title);
         toolbarClose.setVisibility(View.VISIBLE);
+        toolbarBackup.setVisibility(View.VISIBLE);
 
-        toolbarClose.setOnClickListener(v -> {
-            itemClick.toolbarCloseClick();
-        });
+        toolbarClose.setOnClickListener(v -> itemClick.toolbarCloseClick());
+        toolbarBackup.setOnClickListener(v -> itemClick.toolbarBackupClick());
 
     }
 
@@ -94,6 +90,8 @@ public class NToolbar extends RelativeLayout {
 
     public interface EnrollProgramStageToolbarItemClick {
         void toolbarCloseClick();
+
+        void toolbarBackupClick();
     }
 
 }

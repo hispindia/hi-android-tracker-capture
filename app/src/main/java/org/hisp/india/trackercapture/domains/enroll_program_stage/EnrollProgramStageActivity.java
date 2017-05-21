@@ -15,6 +15,8 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
+import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
+import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
@@ -57,6 +59,10 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     protected String programId;
     @Extra
     protected String programName;
+    @Extra
+    protected EnrollmentRequest enrollmentRequest;
+    @Extra
+    protected TrackedEntityInstanceRequest trackedEntityInstanceRequest;
     @Inject
     protected EnrollProgramStagePresenter presenter;
 
@@ -82,7 +88,18 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
-        toolbar.applyEnrollProgramStagelUi(this, "Program stages", () -> presenter.onBackCommandClick());
+        toolbar.applyEnrollProgramStagelUi(this, "Program stages", new NToolbar.EnrollProgramStageToolbarItemClick() {
+            @Override
+            public void toolbarCloseClick() {
+                presenter.onBackCommandClick();
+            }
+
+            @Override
+            public void toolbarBackupClick() {
+                //register program
+                presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest);
+            }
+        });
 
         adapter = new EnrollProgramStageAdapter(programName);
         lvStage.setAdapter(adapter);
@@ -123,10 +140,11 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             tvIncidentDateLabel.setText(programDetail.getIncidentDateLabel());
             tvEnrollmentDateLabel.setText(programDetail.getEnrollmentDateLabel());
 
+            tvIncidentDateValue.setText(enrollmentRequest.getIncidentDate());
+            tvEnrollmentDateValue.setText(enrollmentRequest.getEnrollmentDate());
+
             adapter.setProgramStageList(programDetail.getProgramStages());
-
             lvStage.post(() -> AppUtils.refreshListViewAsNonScroll(lvStage));
-
             vRoot.setVisibility(View.VISIBLE);
         }
     }

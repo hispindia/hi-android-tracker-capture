@@ -3,6 +3,8 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
+import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
+import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
@@ -68,5 +70,26 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
         }
     }
 
+    public void registerProgram(TrackedEntityInstanceRequest trackedEntityInstanceRequest,
+                                EnrollmentRequest enrollmentRequest) {
+        RxScheduler.onStop(subscription);
+        getView().showLoading();
+        subscription = trackedEntityInstanceService
+                .postTrackedEntityInstances(trackedEntityInstanceRequest)
+                .compose(RxScheduler.applyIoSchedulers())
+                .doOnTerminate(() -> getView().hideLoading())
+                .flatMap(baseResponse -> {
+                    if (baseResponse.getResponse().getReference() != null) {
+                        enrollmentRequest.setTrackedEntityInstanceId(baseResponse.getResponse().getReference());
+                        return enrollmentService.postEnrollments(enrollmentRequest)
+                                                .compose(RxScheduler.applyIoSchedulers());
+                    } else {
+                        return Observable.just(baseResponse);
+                    }
+                })
+                .subscribe(baseResponse -> {
+                    router.exit();
+                });
+    }
 
 }

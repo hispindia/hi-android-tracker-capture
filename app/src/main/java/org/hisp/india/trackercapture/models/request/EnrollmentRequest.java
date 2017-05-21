@@ -4,11 +4,13 @@ import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 
+import java.io.Serializable;
+
 /**
  * Created by nhancao on 5/9/17.
  */
 
-public class EnrollmentRequest {
+public class EnrollmentRequest implements Serializable {
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
     @SerializedName("program")
@@ -31,7 +33,31 @@ public class EnrollmentRequest {
         this.incidentDate = incidentDate;
     }
 
+    public String getTrackedEntityInstanceId() {
+        return trackedEntityInstanceId;
+    }
+
     public void setTrackedEntityInstanceId(String trackedEntityInstanceId) {
         this.trackedEntityInstanceId = trackedEntityInstanceId;
+    }
+
+    public String getProgramId() {
+        return programId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getOrgUnitId() {
+        return orgUnitId;
+    }
+
+    public String getEnrollmentDate() {
+        return enrollmentDate;
+    }
+
+    public String getIncidentDate() {
+        return incidentDate;
     }
 }
