@@ -164,8 +164,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     void tvIncidentDateValueClick() {
         DatePickerDialog datePicker = DatePickerDialog.newInstance(programDetail.isSelectIncidentDatesInFuture());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-            programDetail.setIncidentDateValue(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-            tvIncidentDateValue.setText(programDetail.getIncidentDateValue());
+            tvIncidentDateValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
         });
         datePicker.show(getSupportFragmentManager());
     }
@@ -174,8 +173,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     void tvEnrollmentDateValueClick() {
         DatePickerDialog datePicker = DatePickerDialog.newInstance(programDetail.isSelectEnrollmentDatesInFuture());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-            programDetail.setEnrollmentDateValue(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-            tvEnrollmentDateValue.setText(programDetail.getEnrollmentDateValue());
+            tvEnrollmentDateValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
         });
         datePicker.show(getSupportFragmentManager());
     }

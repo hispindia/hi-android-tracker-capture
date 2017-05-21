@@ -345,9 +345,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                     helper.setText(R.id.item_program_info_tv_3, item.get(2));
                     helper.setVisible(R.id.item_program_info_tv_3, true);
                 }
-                helper.getView().setOnClickListener(v -> {
-                    navigator.applyCommand(new Forward(Screens.ENROLL_PROGRAM_STAGE, null));
-                });
             }
         });
 

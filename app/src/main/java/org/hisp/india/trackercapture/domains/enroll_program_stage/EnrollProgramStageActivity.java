@@ -121,9 +121,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             //Enrollment part
             vIncidentDate.setVisibility(programDetail.isDisplayIncidentDate() ? View.VISIBLE : View.GONE);
             tvIncidentDateLabel.setText(programDetail.getIncidentDateLabel());
-            tvIncidentDateValue.setText(programDetail.getIncidentDateValue());
             tvEnrollmentDateLabel.setText(programDetail.getEnrollmentDateLabel());
-            tvEnrollmentDateValue.setText(programDetail.getEnrollmentDateValue());
 
             adapter.setProgramStageList(programDetail.getProgramStages());
 
