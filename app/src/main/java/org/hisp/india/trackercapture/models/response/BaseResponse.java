@@ -2,6 +2,8 @@ package org.hisp.india.trackercapture.models.response;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by nhancao on 5/9/17.
  */
@@ -17,6 +19,8 @@ public class BaseResponse {
     private String message;
     @SerializedName("response")
     private Response response;
+    @SerializedName("importCount")
+    private ImportCount importCount;
 
     public String getHttpStatus() {
         return httpStatus;
@@ -76,6 +80,8 @@ public class BaseResponse {
         private String status;
         @SerializedName("reference")
         private String reference;
+        @SerializedName("importSummaries")
+        private List<Response> importSummaries;
 
         public String getResponseType() {
             return responseType;
@@ -101,6 +107,10 @@ public class BaseResponse {
             this.reference = reference;
         }
 
+        public List<Response> getImportSummaries() {
+            return importSummaries;
+        }
+
         @Override
         public String toString() {
             return "Response{" +
@@ -110,4 +120,34 @@ public class BaseResponse {
                    '}';
         }
     }
+
+    public class ImportCount {
+
+        @SerializedName("imported")
+        private int imported;
+        @SerializedName("updated")
+        private int updated;
+        @SerializedName("ignored")
+        private int ignored;
+        @SerializedName("deleted")
+        private int deleted;
+
+        public int getImported() {
+            return imported;
+        }
+
+        public int getUpdated() {
+            return updated;
+        }
+
+        public int getIgnored() {
+            return ignored;
+        }
+
+        public int getDeleted() {
+            return deleted;
+        }
+    }
+
+
 }

@@ -14,9 +14,7 @@ import rx.Observable;
 public interface EnrollmentApi {
 
     @POST("api/enrollments")
-    Observable<BaseResponse> postEnrollments(
-            @Body
-                    EnrollmentRequest enrollmentRequest);
+    Observable<BaseResponse> postEnrollments(@Body EnrollmentRequest enrollmentRequest);
 
 
 }

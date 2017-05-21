@@ -97,11 +97,11 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             @Override
             public void toolbarBackupClick() {
                 //register program
-                presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest);
+                presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest, adapter.getEventList());
             }
         });
 
-        adapter = new EnrollProgramStageAdapter(programName);
+        adapter = new EnrollProgramStageAdapter();
         lvStage.setAdapter(adapter);
 
         lvStage.post(() -> presenter.getProgramDetail(programId));
@@ -143,10 +143,16 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             tvIncidentDateValue.setText(enrollmentRequest.getIncidentDate());
             tvEnrollmentDateValue.setText(enrollmentRequest.getEnrollmentDate());
 
+            adapter.setEnrollmentDate(enrollmentRequest.getEnrollmentDate());
             adapter.setProgramStageList(programDetail.getProgramStages());
             lvStage.post(() -> AppUtils.refreshListViewAsNonScroll(lvStage));
             vRoot.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void registerProgramSuccess() {
+        Toast.makeText(application, "Register program succeed", Toast.LENGTH_SHORT).show();
     }
 
 }

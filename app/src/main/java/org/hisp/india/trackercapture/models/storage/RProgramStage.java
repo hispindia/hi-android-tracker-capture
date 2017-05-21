@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture.models.storage;
 import org.hisp.india.trackercapture.models.base.Model;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -16,6 +17,9 @@ public class RProgramStage extends RealmObject implements Model {
     private String displayName;
     private int sortOrder;
     private int minDaysFromStart;
+
+    @Ignore
+    private String dueDate;
 
     @Override
     public String getId() {
@@ -49,5 +53,13 @@ public class RProgramStage extends RealmObject implements Model {
 
     public void setMinDaysFromStart(int minDaysFromStart) {
         this.minDaysFromStart = minDaysFromStart;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
     }
 }

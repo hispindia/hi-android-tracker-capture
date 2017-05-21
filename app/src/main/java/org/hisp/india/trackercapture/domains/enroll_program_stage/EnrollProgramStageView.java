@@ -26,4 +26,6 @@ public interface EnrollProgramStageView extends MvpView {
 
     void getProgramDetail(RProgram programDetail);
 
+    void registerProgramSuccess();
+
 }

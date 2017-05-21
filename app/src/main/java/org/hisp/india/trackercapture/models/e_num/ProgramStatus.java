@@ -7,5 +7,6 @@ package org.hisp.india.trackercapture.models.e_num;
 public enum ProgramStatus {
     ACTIVE,
     COMPLETED,
-    CANCELLED
+    CANCELLED,
+    SCHEDULE
 }

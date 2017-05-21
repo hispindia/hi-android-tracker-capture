@@ -3,12 +3,17 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
+import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
+import org.hisp.india.trackercapture.models.request.EventRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
+import org.hisp.india.trackercapture.models.response.BaseResponse;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
+import org.hisp.india.trackercapture.services.events.EventService;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -27,6 +32,7 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
 
     private NavigatorHolder navigatorHolder;
     private Router router;
+    private EventService eventService;
     private EnrollmentService enrollmentService;
     private TrackedEntityInstanceService trackedEntityInstanceService;
     private Subscription subscription;
@@ -34,11 +40,13 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
     @Inject
     public EnrollProgramStagePresenter(Router router, NavigatorHolder navigatorHolder,
                                        TrackedEntityInstanceService trackedEntityInstanceService,
-                                       EnrollmentService enrollmentService) {
+                                       EnrollmentService enrollmentService,
+                                       EventService eventService) {
         this.router = router;
         this.navigatorHolder = navigatorHolder;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.enrollmentService = enrollmentService;
+        this.eventService = eventService;
     }
 
     @Override
@@ -71,7 +79,7 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
     }
 
     public void registerProgram(TrackedEntityInstanceRequest trackedEntityInstanceRequest,
-                                EnrollmentRequest enrollmentRequest) {
+                                EnrollmentRequest enrollmentRequest, List<Event> eventList) {
         RxScheduler.onStop(subscription);
         getView().showLoading();
         subscription = trackedEntityInstanceService
@@ -79,15 +87,42 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
                 .compose(RxScheduler.applyIoSchedulers())
                 .doOnTerminate(() -> getView().hideLoading())
                 .flatMap(baseResponse -> {
-                    if (baseResponse.getResponse().getReference() != null) {
-                        enrollmentRequest.setTrackedEntityInstanceId(baseResponse.getResponse().getReference());
+                    String trackedEntityInstanceId = baseResponse.getResponse().getReference();
+                    if (trackedEntityInstanceId != null) {
+                        enrollmentRequest.setTrackedEntityInstanceId(trackedEntityInstanceId);
                         return enrollmentService.postEnrollments(enrollmentRequest)
                                                 .compose(RxScheduler.applyIoSchedulers());
                     } else {
                         return Observable.just(baseResponse);
                     }
                 })
+                .flatMap(enrollmentResponse -> {
+                    List<BaseResponse.Response> importSummaries = enrollmentResponse
+                            .getResponse().getImportSummaries();
+
+                    if (importSummaries != null && importSummaries.size() > 0) {
+
+                        for (Event event : eventList) {
+                            event.setEnrollmentId(
+                                    importSummaries.get(0).getReference());
+                            event.setOrgUnitId(enrollmentRequest.getOrgUnitId());
+                            event.setProgramId(enrollmentRequest.getProgramId());
+                            event.setTrackedEntityInstanceId(
+                                    enrollmentRequest.getTrackedEntityInstanceId());
+                        }
+
+                        EventRequest eventRequest = new EventRequest(eventList);
+                        return eventService.postEvents(eventRequest)
+                                           .compose(RxScheduler.applyIoSchedulers());
+
+                    } else {
+                        return Observable.just(enrollmentResponse);
+                    }
+                })
                 .subscribe(baseResponse -> {
+                    if (isViewAttached()) {
+                        getView().registerProgramSuccess();
+                    }
                     router.exit();
                 });
     }

@@ -19,6 +19,9 @@ import org.hisp.india.trackercapture.services.account.DefaultAccountService;
 import org.hisp.india.trackercapture.services.enrollments.DefaultEnrollmentService;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentApi;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
+import org.hisp.india.trackercapture.services.events.DefaultEventService;
+import org.hisp.india.trackercapture.services.events.EventApi;
+import org.hisp.india.trackercapture.services.events.EventService;
 import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 import org.hisp.india.trackercapture.services.organization.DefaultOrganizationService;
 import org.hisp.india.trackercapture.services.organization.OrganizationApi;
@@ -150,6 +153,18 @@ public class ApplicationModule {
                         .provideApi(credentials.getHost(), EnrollmentApi.class);
 
         return new DefaultEnrollmentService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public EventService provideEventService(NetworkProvider rxNetworkProvider, Credentials credentials) {
+
+        EventApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), EventApi.class);
+
+        return new DefaultEventService(rxNetworkProvider, restService);
     }
 
 }

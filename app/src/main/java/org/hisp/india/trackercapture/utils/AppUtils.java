@@ -192,8 +192,18 @@ public class AppUtils {
         return formatter.parseDateTime(date);
     }
 
+    public static DateTime parseDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
+        return formatter.parseDateTime(date);
+    }
+
     public static String formatDate(String pattern, DateTime date) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
+        return formatter.print(date);
+    }
+
+    public static String formatDate(DateTime date) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
         return formatter.print(date);
     }
 

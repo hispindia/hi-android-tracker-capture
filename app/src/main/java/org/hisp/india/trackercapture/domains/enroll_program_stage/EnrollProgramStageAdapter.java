@@ -6,7 +6,10 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
+import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
+import org.hisp.india.trackercapture.utils.AppUtils;
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +20,19 @@ import java.util.List;
 
 public class EnrollProgramStageAdapter extends BaseAdapter {
 
-    private String programName;
     private List<RProgramStage> programStageList;
+    private String enrollmentDate;
 
-    public EnrollProgramStageAdapter(String programName) {
-        this.programName = programName;
+    public EnrollProgramStageAdapter() {
         this.programStageList = new ArrayList<>();
+    }
+
+    public String getEnrollmentDate() {
+        return enrollmentDate;
+    }
+
+    public void setEnrollmentDate(String enrollmentDate) {
+        this.enrollmentDate = enrollmentDate;
     }
 
     public List<RProgramStage> getProgramStageList() {
@@ -31,7 +41,24 @@ public class EnrollProgramStageAdapter extends BaseAdapter {
 
     public void setProgramStageList(List<RProgramStage> programStageList) {
         this.programStageList = programStageList;
+        calculateDueDate();
         notifyDataSetChanged();
+    }
+
+    public void calculateDueDate() {
+        DateTime dateTime = AppUtils.parseDate(enrollmentDate);
+        for (int i = 0; i < programStageList.size(); i++) {
+            programStageList.get(i).setDueDate(
+                    AppUtils.formatDate(dateTime.plusDays(programStageList.get(i).getMinDaysFromStart())));
+        }
+    }
+
+    public List<Event> getEventList() {
+        List<Event> eventList = new ArrayList<>();
+        for (RProgramStage rProgramStage : programStageList) {
+            eventList.add(new Event(rProgramStage.getDueDate(), rProgramStage.getId()));
+        }
+        return eventList;
     }
 
     @Override
