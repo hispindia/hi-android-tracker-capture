@@ -9,6 +9,7 @@
     >
 
     <LinearLayout
+        android:id="@+id/item_enroll_program_stage_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_dialog"

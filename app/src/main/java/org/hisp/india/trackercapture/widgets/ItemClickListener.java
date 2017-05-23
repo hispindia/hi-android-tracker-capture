@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.widgets.autocomplete;
+package org.hisp.india.trackercapture.widgets;
 
 import org.hisp.india.trackercapture.models.base.Model;
 

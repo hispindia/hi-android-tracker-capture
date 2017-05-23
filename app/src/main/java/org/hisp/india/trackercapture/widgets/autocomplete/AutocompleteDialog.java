@@ -16,6 +16,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.Model;
+import org.hisp.india.trackercapture.widgets.ItemClickListener;
 
 import java.util.List;
 

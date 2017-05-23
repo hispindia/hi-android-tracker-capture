@@ -66,8 +66,8 @@ public class NToolbar extends RelativeLayout {
 
     }
 
-    public void applyEnrollProgramStagelUi(AppCompatActivity activity, String title,
-                                           EnrollProgramStageToolbarItemClick itemClick) {
+    public void applyEnrollProgramStageUi(AppCompatActivity activity, String title,
+                                          EnrollProgramStageToolbarItemClick itemClick) {
         //Setup toolbar
         applyCommonUi(activity);
 
@@ -77,6 +77,18 @@ public class NToolbar extends RelativeLayout {
 
         toolbarClose.setOnClickListener(v -> itemClick.toolbarCloseClick());
         toolbarBackup.setOnClickListener(v -> itemClick.toolbarBackupClick());
+
+    }
+
+    public void applyEnrollProgramStageDetailUi(AppCompatActivity activity, String title,
+                                                EnrollProgramStageDetailToolbarItemClick itemClick) {
+        //Setup toolbar
+        applyCommonUi(activity);
+
+        tvTitle.setText(title);
+        toolbarClose.setVisibility(View.VISIBLE);
+
+        toolbarClose.setOnClickListener(v -> itemClick.toolbarCloseClick());
 
     }
 
@@ -92,6 +104,10 @@ public class NToolbar extends RelativeLayout {
         void toolbarCloseClick();
 
         void toolbarBackupClick();
+    }
+
+    public interface EnrollProgramStageDetailToolbarItemClick {
+        void toolbarCloseClick();
     }
 
 }

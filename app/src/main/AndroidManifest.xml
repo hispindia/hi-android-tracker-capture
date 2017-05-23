@@ -48,6 +48,12 @@
             >
         </activity>
         <activity
+            android:name=".domains.enroll_program_stage_detail.EnrollProgramStageDetailActivity_"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
+            >
+        </activity>
+        <activity
             android:name=".domains.login.LoginActivity_"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             >

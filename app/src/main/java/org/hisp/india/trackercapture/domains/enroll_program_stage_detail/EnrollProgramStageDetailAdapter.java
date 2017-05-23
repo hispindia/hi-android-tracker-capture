@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.enroll_program_stage;
+package org.hisp.india.trackercapture.domains.enroll_program_stage_detail;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,13 +19,13 @@ import java.util.List;
  * Created by nhancao on 5/10/17.
  */
 
-public class EnrollProgramStageAdapter extends BaseAdapter {
+public class EnrollProgramStageDetailAdapter extends BaseAdapter {
 
     private List<RProgramStage> programStageList;
     private String enrollmentDate;
     private ItemClickListener<RProgramStage> itemClickListener;
 
-    public EnrollProgramStageAdapter() {
+    public EnrollProgramStageDetailAdapter() {
         this.programStageList = new ArrayList<>();
     }
 

@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.navigator;
 
 import org.hisp.india.trackercapture.domains.enroll_program.EnrollProgramActivity;
 import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity;
+import org.hisp.india.trackercapture.domains.enroll_program_stage_detail.EnrollProgramStageDetailActivity;
 import org.hisp.india.trackercapture.domains.login.LoginActivity;
 import org.hisp.india.trackercapture.domains.main.MainActivity;
 
@@ -14,5 +15,6 @@ public class Screens {
     public static final String LOGIN_SCREEN = LoginActivity.class.getSimpleName();
     public static final String ENROLL_PROGRAM = EnrollProgramActivity.class.getSimpleName();
     public static final String ENROLL_PROGRAM_STAGE = EnrollProgramStageActivity.class.getSimpleName();
+    public static final String ENROLL_PROGRAM_STAGE_DETAIL = EnrollProgramStageDetailActivity.class.getSimpleName();
 
 }

@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.domains.enroll_program_stage;
+package org.hisp.india.trackercapture.domains.enroll_program_stage_detail;
 
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -15,11 +15,9 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
-import org.hisp.india.trackercapture.domains.enroll_program_stage_detail.EnrollProgramStageDetailActivity_;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.storage.RProgram;
-import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
 
@@ -27,13 +25,13 @@ import javax.inject.Inject;
 
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Back;
-import ru.terrakok.cicerone.commands.Forward;
 
-@EActivity(R.layout.activity_enroll_program_stage)
-public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageView, EnrollProgramStagePresenter>
+@EActivity(R.layout.activity_enroll_program_stage_detail)
+public class EnrollProgramStageDetailActivity
+        extends BaseActivity<EnrollProgramStageDetailView, EnrollProgramStageDetailPresenter>
         implements
-        EnrollProgramStageView {
-    private static final String TAG = EnrollProgramStageActivity.class.getSimpleName();
+        EnrollProgramStageDetailView {
+    private static final String TAG = EnrollProgramStageDetailActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_enroll_program_stage_toolbar)
     protected NToolbar toolbar;
@@ -67,33 +65,23 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @Extra
     protected TrackedEntityInstanceRequest trackedEntityInstanceRequest;
     @Inject
-    protected EnrollProgramStagePresenter presenter;
+    protected EnrollProgramStageDetailPresenter presenter;
 
     private RProgram programDetail;
-    private EnrollProgramStageAdapter adapter;
+    private EnrollProgramStageDetailAdapter adapter;
 
     private Navigator navigator = command -> {
         if (command instanceof Back) {
             finish();
-        } else if (command instanceof Forward) {
-            if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE_DETAIL)) {
-                EnrollProgramStageDetailActivity_.intent(this)
-                                                 .organizationUnitId(organizationUnitId)
-                                                 .programId(programId)
-                                                 .programName(programName)
-                                                 .enrollmentRequest(enrollmentRequest)
-                                                 .trackedEntityInstanceRequest(trackedEntityInstanceRequest)
-                                                 .start();
-            }
         }
     };
 
     @AfterInject
     void inject() {
-        DaggerEnrollProgramStageComponent.builder()
-                                         .applicationComponent(application.getApplicationComponent())
-                                         .build()
-                                         .inject(this);
+        DaggerEnrollProgramStageDetailComponent.builder()
+                                               .applicationComponent(application.getApplicationComponent())
+                                               .build()
+                                               .inject(this);
     }
 
     @AfterViews
@@ -101,24 +89,15 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
-        toolbar.applyEnrollProgramStageUi(this, "Program stages", new NToolbar.EnrollProgramStageToolbarItemClick() {
-            @Override
-            public void toolbarCloseClick() {
-                presenter.onBackCommandClick();
-            }
+        toolbar.applyEnrollProgramStageDetailUi(this, "Program stages",
+                                                new NToolbar.EnrollProgramStageDetailToolbarItemClick() {
+                                                    @Override
+                                                    public void toolbarCloseClick() {
+                                                        presenter.onBackCommandClick();
+                                                    }
+                                                });
 
-            @Override
-            public void toolbarBackupClick() {
-                //register program
-                presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest, adapter.getEventList());
-            }
-        });
-
-        adapter = new EnrollProgramStageAdapter();
-        adapter.setItemClickListener(model -> {
-            Toast.makeText(application, model.toString(), Toast.LENGTH_SHORT).show();
-
-        });
+        adapter = new EnrollProgramStageDetailAdapter();
 
         lvStage.setAdapter(adapter);
 
@@ -128,7 +107,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
 
     @NonNull
     @Override
-    public EnrollProgramStagePresenter createPresenter() {
+    public EnrollProgramStageDetailPresenter createPresenter() {
         return presenter;
     }
 

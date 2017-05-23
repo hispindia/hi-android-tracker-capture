@@ -4,6 +4,7 @@ import android.widget.AutoCompleteTextView;
 
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.Model;
+import org.hisp.india.trackercapture.widgets.ItemClickListener;
 
 import java.util.List;
 
