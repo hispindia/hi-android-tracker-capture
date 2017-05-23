@@ -93,7 +93,7 @@ public class EnrollProgramStageAdapter extends BaseAdapter {
         RProgramStage item = getItem(position);
 
         holder.tvTitle.setText(item.getDisplayName());
-        holder.tvValue.setText(item.getDisplayName());
+        holder.tvValue.setText(item.getDueDate());
 
         return convertView;
     }
