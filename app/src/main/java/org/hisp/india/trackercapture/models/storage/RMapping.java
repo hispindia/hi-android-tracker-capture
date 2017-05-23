@@ -65,6 +65,11 @@ public class RMapping {
         RProgramStageDataElement model = new RProgramStageDataElement();
         model.setId(programStageDataElement.getId());
         model.setDisplayName(programStageDataElement.getDisplayName());
+        model.setDisplayInReports(programStageDataElement.isDisplayInReports());
+        model.setCompulsory(programStageDataElement.isCompulsory());
+        model.setAllowProvidedElsewhere(programStageDataElement.isAllowProvidedElsewhere());
+        model.setSortOrder(programStageDataElement.getSortOrder());
+        model.setAllowFutureDate(programStageDataElement.isAllowFutureDate());
         return model;
     }
 

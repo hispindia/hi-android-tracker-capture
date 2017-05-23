@@ -15,6 +15,11 @@ public class RProgramStageDataElement extends RealmObject implements Model {
     @PrimaryKey
     private String id;
     private String displayName;
+    private boolean displayInReports;
+    private boolean compulsory;
+    private boolean allowProvidedElsewhere;
+    private int sortOrder;
+    private boolean allowFutureDate;
 
     @Ignore
     private String dueDate;
@@ -43,5 +48,45 @@ public class RProgramStageDataElement extends RealmObject implements Model {
 
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public boolean isDisplayInReports() {
+        return displayInReports;
+    }
+
+    public void setDisplayInReports(boolean displayInReports) {
+        this.displayInReports = displayInReports;
+    }
+
+    public boolean isCompulsory() {
+        return compulsory;
+    }
+
+    public void setCompulsory(boolean compulsory) {
+        this.compulsory = compulsory;
+    }
+
+    public boolean isAllowProvidedElsewhere() {
+        return allowProvidedElsewhere;
+    }
+
+    public void setAllowProvidedElsewhere(boolean allowProvidedElsewhere) {
+        this.allowProvidedElsewhere = allowProvidedElsewhere;
+    }
+
+    public int getSortOrder() {
+        return sortOrder;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
+    public boolean isAllowFutureDate() {
+        return allowFutureDate;
+    }
+
+    public void setAllowFutureDate(boolean allowFutureDate) {
+        this.allowFutureDate = allowFutureDate;
     }
 }
