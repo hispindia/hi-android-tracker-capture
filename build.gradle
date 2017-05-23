@@ -37,7 +37,7 @@ buildscript {
         navigatorVersion = '1.0.2'
         toastyVersion = '1.1.5'
         realmBrowserVersion = '1.2.2'
-        ciceroneVersion = '1.2.1'
+        ntaskVersion = '2.1'
 
         //Configuration.
         config = [
@@ -84,17 +84,17 @@ buildscript {
                 retrofitConverterGson    : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
                 retrofitAdapterRxjava    : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
                 urlconnection            : "com.squareup.okhttp:okhttp-urlconnection:${urlconnectionVersion}",
-                okhttp                   : "com.squareup.okhttp3:okhttp:${okhttpVersion}",
+                okhttp      : "com.squareup.okhttp3:okhttp:${okhttpVersion}",
 
                 //EventBus
-                eventBus                 : "org.greenrobot:eventbus:${eventBusVersion}",
+                eventBus    : "org.greenrobot:eventbus:${eventBusVersion}",
 
                 //Async
-                rxAndroid                : "io.reactivex:rxandroid:${rxAndroidVersion}",
-                rxJava                   : "io.reactivex:rxjava:${rxJavaVersion}",
+                rxAndroid   : "io.reactivex:rxandroid:${rxAndroidVersion}",
+                rxJava      : "io.reactivex:rxjava:${rxJavaVersion}",
 
                 //Adapters
-                baseAdapter              : "com.joanzapata.android:base-adapter-helper:${baseAdapterVersion}",
+                baseAdapter : "com.joanzapata.android:base-adapter-helper:${baseAdapterVersion}",
 
                 //UI Validations
                 saripaar    : "com.mobsandgeeks:android-saripaar:${saripaarVersion}",
@@ -120,7 +120,8 @@ buildscript {
                 //Toasty
                 toasty      : "com.github.GrenderG:Toasty:${toastyVersion}",
                 //Realm browser
-                realmBrowser: "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}"
+                realmBrowser: "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}",
+                ntask       : "com.github.nhancv:nc-android-ntask:${ntaskVersion}"
         ]
     }
 

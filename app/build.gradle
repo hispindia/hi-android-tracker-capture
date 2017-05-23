@@ -180,4 +180,5 @@ dependencies {
     compile dependency.toasty
     //Realm browser
     compile dependency.realmBrowser
+    compile dependency.ntask
 }

@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
+import com.nhancv.ntask.NTaskManager;
 import com.nhancv.realmbowser.NRealmDiscovery;
 import com.nhancv.realmbowser.NRealmServer;
 import com.orhanobut.hawk.Hawk;
@@ -17,6 +18,7 @@ import org.hisp.india.trackercapture.di.ApplicationComponent;
 import org.hisp.india.trackercapture.di.ApplicationModule;
 import org.hisp.india.trackercapture.di.DaggerApplicationComponent;
 import org.hisp.india.trackercapture.models.RMigration;
+import org.hisp.india.trackercapture.services.task.TaskService;
 
 import java.io.File;
 
@@ -53,7 +55,7 @@ public class MainApplication extends MultiDexApplication {
 
         //The Realm file will be located in Context.getFilesDir() with name "default.realm"
         initRealmConfig();
-
+        NTaskManager.init(this, TaskService.class);
     }
 
     @Override
