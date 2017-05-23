@@ -20,6 +20,7 @@ public class RProgramStageDataElement extends RealmObject implements Model {
     private boolean allowProvidedElsewhere;
     private int sortOrder;
     private boolean allowFutureDate;
+    private RDataElement dataElement;
 
     @Ignore
     private String dueDate;
@@ -88,5 +89,13 @@ public class RProgramStageDataElement extends RealmObject implements Model {
 
     public void setAllowFutureDate(boolean allowFutureDate) {
         this.allowFutureDate = allowFutureDate;
+    }
+
+    public RDataElement getDataElement() {
+        return dataElement;
+    }
+
+    public void setDataElement(RDataElement dataElement) {
+        this.dataElement = dataElement;
     }
 }

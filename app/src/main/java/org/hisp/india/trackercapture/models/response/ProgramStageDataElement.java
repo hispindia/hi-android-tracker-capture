@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture.models.response;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.base.BaseModel;
+import org.hisp.india.trackercapture.models.base.DataElement;
 
 import java.io.Serializable;
 
@@ -21,6 +22,8 @@ public class ProgramStageDataElement extends BaseModel implements Serializable {
     private int sortOrder;
     @SerializedName("allowFutureDate")
     private boolean allowFutureDate;
+    @SerializedName("dataElement")
+    private DataElement dataElement;
 
     public boolean isDisplayInReports() {
         return displayInReports;
@@ -40,5 +43,9 @@ public class ProgramStageDataElement extends BaseModel implements Serializable {
 
     public boolean isAllowFutureDate() {
         return allowFutureDate;
+    }
+
+    public DataElement getDataElement() {
+        return dataElement;
     }
 }

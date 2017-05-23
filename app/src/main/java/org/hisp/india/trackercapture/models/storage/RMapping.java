@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.storage;
 
+import org.hisp.india.trackercapture.models.base.DataElement;
 import org.hisp.india.trackercapture.models.base.Option;
 import org.hisp.india.trackercapture.models.base.OptionSet;
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
@@ -60,6 +61,17 @@ public class RMapping {
         return model;
     }
 
+    public static RDataElement from(DataElement dataElement) {
+        if (dataElement == null) return null;
+        RDataElement model = new RDataElement();
+        model.setId(dataElement.getId());
+        model.setDisplayName(dataElement.getDisplayName());
+        model.setValueType(dataElement.getValueType());
+        model.setOptionSetValue(dataElement.isOptionSetValue());
+        model.setOptionSet(from(dataElement.getOptionSet()));
+        return model;
+    }
+
     public static RProgramStageDataElement from(ProgramStageDataElement programStageDataElement) {
         if (programStageDataElement == null) return null;
         RProgramStageDataElement model = new RProgramStageDataElement();
@@ -70,6 +82,7 @@ public class RMapping {
         model.setAllowProvidedElsewhere(programStageDataElement.isAllowProvidedElsewhere());
         model.setSortOrder(programStageDataElement.getSortOrder());
         model.setAllowFutureDate(programStageDataElement.isAllowFutureDate());
+        model.setDataElement(from(programStageDataElement.getDataElement()));
         return model;
     }
 

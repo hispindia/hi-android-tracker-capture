@@ -6,11 +6,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
-import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.ItemClickListener;
-import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,24 +40,7 @@ public class EnrollProgramStageDetailAdapter extends BaseAdapter {
 
     public void setProgramStageList(List<RProgramStage> programStageList) {
         this.programStageList = programStageList;
-        calculateDueDate();
         notifyDataSetChanged();
-    }
-
-    public void calculateDueDate() {
-        DateTime dateTime = AppUtils.parseDate(enrollmentDate);
-        for (int i = 0; i < programStageList.size(); i++) {
-            programStageList.get(i).setDueDate(
-                    AppUtils.formatDate(dateTime.plusDays(programStageList.get(i).getMinDaysFromStart())));
-        }
-    }
-
-    public List<Event> getEventList() {
-        List<Event> eventList = new ArrayList<>();
-        for (RProgramStage rProgramStage : programStageList) {
-            eventList.add(new Event(rProgramStage.getDueDate(), rProgramStage.getId()));
-        }
-        return eventList;
     }
 
     @Override

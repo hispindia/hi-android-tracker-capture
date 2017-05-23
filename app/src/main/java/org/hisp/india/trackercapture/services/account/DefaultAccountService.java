@@ -64,7 +64,8 @@ public class DefaultAccountService implements AccountService {
                         "birthday,introduction,education,employer,interests,jobTitle,languages," +
                         "email,phoneNumber,organisationUnits[code,level,id,displayName,programs[" +
                         "id,displayName,trackedEntity,withoutRegistration,programRuleVariables[*]," +
-                        "programStages[*,programStageDataElements[*,dataElement[id,displayName]]," +
+                        "programStages[*,programStageDataElements[*,dataElement[*," +
+                        "optionSet[id,displayName,valueType,options[id,displayName]]]]," +
                         "programRules[*,programRuleActions[id,programRuleActionType]]," +
                         "enrollmentDateLabel,selectEnrollmentDatesInFuture,incidentDateLabel," +
                         "selectIncidentDatesInFuture,displayIncidentDate,programTrackedEntityAttributes[*," +
