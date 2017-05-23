@@ -12,6 +12,7 @@ import org.hisp.india.trackercapture.models.base.TrackedEntity;
 import org.hisp.india.trackercapture.models.base.TrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.models.response.ProgramStage;
+import org.hisp.india.trackercapture.models.response.ProgramStageDataElement;
 
 import io.realm.RealmList;
 
@@ -59,6 +60,14 @@ public class RMapping {
         return model;
     }
 
+    public static RProgramStageDataElement from(ProgramStageDataElement programStageDataElement) {
+        if (programStageDataElement == null) return null;
+        RProgramStageDataElement model = new RProgramStageDataElement();
+        model.setId(programStageDataElement.getId());
+        model.setDisplayName(programStageDataElement.getDisplayName());
+        return model;
+    }
+
     public static RProgramStage from(ProgramStage programStage) {
         if (programStage == null) return null;
         RProgramStage model = new RProgramStage();
@@ -66,6 +75,17 @@ public class RMapping {
         model.setDisplayName(programStage.getDisplayName());
         model.setSortOrder(programStage.getSortOrder());
         model.setMinDaysFromStart(programStage.getMinDaysFromStart());
+        model.setProgramStageDataElements(new RealmList<>());
+
+        if (programStage.getProgramStageDataElements() != null) {
+            for (ProgramStageDataElement programStageDataElement : programStage.getProgramStageDataElements()) {
+                RProgramStageDataElement item = from(programStageDataElement);
+                if (item != null) {
+                    model.getProgramStageDataElements().add(item);
+                }
+            }
+        }
+
         return model;
     }
 
