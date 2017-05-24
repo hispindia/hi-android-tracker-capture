@@ -15,9 +15,7 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
-import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
-import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
-import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RProgramStage;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
 
@@ -35,19 +33,19 @@ public class EnrollProgramStageDetailActivity
 
     @ViewById(R.id.activity_enroll_program_stage_toolbar)
     protected NToolbar toolbar;
-    @ViewById(R.id.fragment_enroll_program_stage_incident_date)
-    protected View vIncidentDate;
-    @ViewById(R.id.fragment_enroll_program_stage_enrollment_date)
-    protected View vEnrollmentDate;
-    @ViewById(R.id.fragment_enroll_program_stage_tv_incident_date_label)
-    protected TextView tvIncidentDateLabel;
-    @ViewById(R.id.fragment_enroll_program_stage_tv_incident_date_value)
-    protected TextView tvIncidentDateValue;
-    @ViewById(R.id.fragment_enroll_program_stage_tv_enrollment_date_label)
-    protected TextView tvEnrollmentDateLabel;
-    @ViewById(R.id.fragment_enroll_program_stage_tv_enrollment_date_value)
-    protected TextView tvEnrollmentDateValue;
-    @ViewById(R.id.fragment_enroll_program_stage_lv_stage)
+    @ViewById(R.id.fragment_enroll_program_stage_detail_due_date)
+    protected View vDueDate;
+    @ViewById(R.id.fragment_enroll_program_stage_detail_report_date)
+    protected View vReportDate;
+    @ViewById(R.id.fragment_enroll_program_stage_detail_tv_due_date_label)
+    protected TextView tvDueDateLabel;
+    @ViewById(R.id.fragment_enroll_program_stage_detail_tv_due_date_value)
+    protected TextView tvDueDateValue;
+    @ViewById(R.id.fragment_enroll_program_stage_detail_tv_report_date_label)
+    protected TextView tvReportDateLabel;
+    @ViewById(R.id.fragment_enroll_program_stage_detail_tv_report_date_value)
+    protected TextView tvReportDateValue;
+    @ViewById(R.id.fragment_enroll_program_stage_detail_lv_stage)
     protected ListView lvStage;
     @ViewById(R.id.activity_main_root_scroll)
     protected View vRoot;
@@ -55,19 +53,11 @@ public class EnrollProgramStageDetailActivity
     @App
     protected MainApplication application;
     @Extra
-    protected String organizationUnitId;
-    @Extra
-    protected String programId;
-    @Extra
-    protected String programName;
-    @Extra
-    protected EnrollmentRequest enrollmentRequest;
-    @Extra
-    protected TrackedEntityInstanceRequest trackedEntityInstanceRequest;
+    protected String programStageId;
+
     @Inject
     protected EnrollProgramStageDetailPresenter presenter;
 
-    private RProgram programDetail;
     private EnrollProgramStageDetailAdapter adapter;
 
     private Navigator navigator = command -> {
@@ -90,18 +80,13 @@ public class EnrollProgramStageDetailActivity
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
         toolbar.applyEnrollProgramStageDetailUi(this, "Program stages",
-                                                new NToolbar.EnrollProgramStageDetailToolbarItemClick() {
-                                                    @Override
-                                                    public void toolbarCloseClick() {
-                                                        presenter.onBackCommandClick();
-                                                    }
-                                                });
+                                                () -> presenter.onBackCommandClick());
 
-        adapter = new EnrollProgramStageDetailAdapter();
+        adapter = new EnrollProgramStageDetailAdapter(this);
 
         lvStage.setAdapter(adapter);
 
-        lvStage.post(() -> presenter.getProgramDetail(programId));
+        lvStage.post(() -> presenter.getProgramStageDetail(programStageId));
 
     }
 
@@ -127,29 +112,19 @@ public class EnrollProgramStageDetailActivity
     }
 
     @Override
-    public void getProgramDetail(RProgram programDetail) {
-        if (programDetail == null) {
-            Toast.makeText(application, "Program detail is null", Toast.LENGTH_SHORT).show();
+    public void getProgramStageDetail(RProgramStage programStageDetail) {
+        if (programStageDetail == null) {
+            Toast.makeText(application, "Program stage detail is null", Toast.LENGTH_SHORT).show();
         } else {
-            this.programDetail = programDetail;
-            //Enrollment part
-            vIncidentDate.setVisibility(programDetail.isDisplayIncidentDate() ? View.VISIBLE : View.GONE);
-            tvIncidentDateLabel.setText(programDetail.getIncidentDateLabel());
-            tvEnrollmentDateLabel.setText(programDetail.getEnrollmentDateLabel());
+            //Report part
+            tvDueDateValue.setText(programStageDetail.getDueDate());
+            tvReportDateValue.setText(programStageDetail.getEventDate());
 
-            tvIncidentDateValue.setText(enrollmentRequest.getIncidentDate());
-            tvEnrollmentDateValue.setText(enrollmentRequest.getEnrollmentDate());
+            adapter.setProgramStageDataElementList(programStageDetail.getProgramStageDataElements());
 
-            adapter.setEnrollmentDate(enrollmentRequest.getEnrollmentDate());
-            adapter.setProgramStageList(programDetail.getProgramStages());
             lvStage.post(() -> AppUtils.refreshListViewAsNonScroll(lvStage));
             vRoot.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void registerProgramSuccess() {
-        Toast.makeText(application, "Register program succeed", Toast.LENGTH_SHORT).show();
     }
 
 }

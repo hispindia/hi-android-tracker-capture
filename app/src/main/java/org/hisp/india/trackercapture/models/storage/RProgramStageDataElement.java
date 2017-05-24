@@ -98,4 +98,5 @@ public class RProgramStageDataElement extends RealmObject implements Model {
     public void setDataElement(RDataElement dataElement) {
         this.dataElement = dataElement;
     }
+
 }

@@ -1,8 +1,10 @@
 package org.hisp.india.trackercapture.models.storage;
 
 import org.hisp.india.trackercapture.models.base.Model;
+import org.hisp.india.trackercapture.models.e_num.ValueType;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -17,6 +19,9 @@ public class RDataElement extends RealmObject implements Model {
     private String valueType;
     private boolean optionSetValue;
     private ROptionSet optionSet;
+
+    @Ignore
+    private String value;
 
     @Override
     public String getId() {
@@ -36,12 +41,12 @@ public class RDataElement extends RealmObject implements Model {
         this.displayName = displayName;
     }
 
-    public String getValueType() {
-        return valueType;
+    public ValueType getValueType() {
+        return ValueType.getType(valueType);
     }
 
-    public void setValueType(String valueType) {
-        this.valueType = valueType;
+    public void setValueType(ValueType valueType) {
+        this.valueType = valueType.name();
     }
 
     public boolean isOptionSetValue() {
@@ -58,5 +63,13 @@ public class RDataElement extends RealmObject implements Model {
 
     public void setOptionSet(ROptionSet optionSet) {
         this.optionSet = optionSet;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

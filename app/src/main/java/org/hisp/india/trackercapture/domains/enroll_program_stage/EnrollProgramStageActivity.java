@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.domains.enroll_program_stage;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ListView;
@@ -11,6 +12,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
@@ -33,8 +35,8 @@ import ru.terrakok.cicerone.commands.Forward;
 public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageView, EnrollProgramStagePresenter>
         implements
         EnrollProgramStageView {
+    public static final int ENROLL_REQUEST_CODE = 1;
     private static final String TAG = EnrollProgramStageActivity.class.getSimpleName();
-
     @ViewById(R.id.activity_enroll_program_stage_toolbar)
     protected NToolbar toolbar;
     @ViewById(R.id.fragment_enroll_program_stage_incident_date)
@@ -69,7 +71,6 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @Inject
     protected EnrollProgramStagePresenter presenter;
 
-    private RProgram programDetail;
     private EnrollProgramStageAdapter adapter;
 
     private Navigator navigator = command -> {
@@ -78,12 +79,8 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         } else if (command instanceof Forward) {
             if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE_DETAIL)) {
                 EnrollProgramStageDetailActivity_.intent(this)
-                                                 .organizationUnitId(organizationUnitId)
-                                                 .programId(programId)
-                                                 .programName(programName)
-                                                 .enrollmentRequest(enrollmentRequest)
-                                                 .trackedEntityInstanceRequest(trackedEntityInstanceRequest)
-                                                 .start();
+                                                 .programStageId((String) ((Forward) command).getTransitionData())
+                                                 .startForResult(ENROLL_REQUEST_CODE);
             }
         }
     };
@@ -117,7 +114,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         adapter = new EnrollProgramStageAdapter();
         adapter.setItemClickListener(model -> {
             Toast.makeText(application, model.toString(), Toast.LENGTH_SHORT).show();
-
+            presenter.openProgramStage(model);
         });
 
         lvStage.setAdapter(adapter);
@@ -152,7 +149,6 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         if (programDetail == null) {
             Toast.makeText(application, "Program detail is null", Toast.LENGTH_SHORT).show();
         } else {
-            this.programDetail = programDetail;
             //Enrollment part
             vIncidentDate.setVisibility(programDetail.isDisplayIncidentDate() ? View.VISIBLE : View.GONE);
             tvIncidentDateLabel.setText(programDetail.getIncidentDateLabel());
@@ -171,6 +167,13 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @Override
     public void registerProgramSuccess() {
         Toast.makeText(application, "Register program succeed", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnActivityResult(ENROLL_REQUEST_CODE)
+    void onResult(int resultCode, Intent data) {
+
+
+
     }
 
 }

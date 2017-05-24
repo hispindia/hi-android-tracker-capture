@@ -2,6 +2,8 @@ package org.hisp.india.trackercapture.models.base;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.hisp.india.trackercapture.models.e_num.ValueType;
+
 import java.io.Serializable;
 
 /**
@@ -16,8 +18,8 @@ public class DataElement extends BaseModel implements Serializable {
     @SerializedName("optionSet")
     private OptionSet optionSet;
 
-    public String getValueType() {
-        return valueType;
+    public ValueType getValueType() {
+        return ValueType.getType(valueType);
     }
 
     public boolean isOptionSetValue() {

@@ -13,9 +13,11 @@ import java.util.List;
 
 public class Event extends BaseModel implements Serializable {
     @SerializedName("dataValues")
-    private List<String> dataValues;
+    private List<DataValue> dataValues;
     @SerializedName("dueDate")
     private String dueDate;
+    @SerializedName("eventDate")
+    private String eventDate;
     @SerializedName("enrollment")
     private String enrollmentId;
     @SerializedName("orgUnit")
@@ -46,7 +48,7 @@ public class Event extends BaseModel implements Serializable {
         this.status = ProgramStatus.SCHEDULE.name();
     }
 
-    public void setDataValues(List<String> dataValues) {
+    public void setDataValues(List<DataValue> dataValues) {
         this.dataValues = dataValues;
     }
 

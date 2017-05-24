@@ -11,6 +11,7 @@ import android.widget.TextView;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.BaseModel;
 import org.hisp.india.trackercapture.models.base.Model;
+import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.utils.AppUtils;
@@ -20,9 +21,6 @@ import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.hisp.india.trackercapture.models.e_num.ValueType.BOOLEAN;
-import static org.hisp.india.trackercapture.models.e_num.ValueType.DATE;
 
 /**
  * Created by nhancao on 5/10/17.
@@ -88,8 +86,8 @@ public class EnrollProgramAdapter extends BaseAdapter {
         holder.tvMandatory.setVisibility(item.isMandatory() ? View.VISIBLE : View.GONE);
 
         if (item.getTrackedEntityAttribute().isOptionSetValue()
-            || item.getValueType() == BOOLEAN
-            || item.getValueType() == DATE
+            || item.getValueType() == ValueType.BOOLEAN
+            || item.getValueType() == ValueType.DATE
                 ) {
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);

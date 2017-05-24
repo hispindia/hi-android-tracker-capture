@@ -4,7 +4,6 @@ import org.hisp.india.trackercapture.models.base.Model;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -20,8 +19,8 @@ public class RProgramStage extends RealmObject implements Model {
     private int minDaysFromStart;
     private RealmList<RProgramStageDataElement> programStageDataElements;
 
-    @Ignore
     private String dueDate;
+    private String eventDate;
 
     @Override
     public String getId() {
@@ -63,6 +62,14 @@ public class RProgramStage extends RealmObject implements Model {
 
     public void setDueDate(String dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public String getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
     }
 
     public RealmList<RProgramStageDataElement> getProgramStageDataElements() {

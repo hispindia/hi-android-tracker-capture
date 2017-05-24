@@ -2,7 +2,7 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage_detail;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
-import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RProgramStage;
 
 import ru.terrakok.cicerone.Navigator;
 
@@ -24,8 +24,6 @@ public interface EnrollProgramStageDetailView extends MvpView {
      */
     void hideLoading();
 
-    void getProgramDetail(RProgram programDetail);
-
-    void registerProgramSuccess();
+    void getProgramStageDetail(RProgramStage programDetail);
 
 }

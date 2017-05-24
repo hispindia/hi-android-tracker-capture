@@ -10,6 +10,8 @@ import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TaskRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
+import org.hisp.india.trackercapture.models.storage.RProgramStage;
+import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.task.BusProgress;
 import org.hisp.india.trackercapture.services.task.TaskService;
@@ -97,6 +99,11 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
                                                                                          enrollmentRequest,
                                                                                          eventList).toString()));
 
+    }
+
+    public void openProgramStage(RProgramStage programStage) {
+        ProgramQuery.saveProgramStage(programStage);
+        router.navigateTo(Screens.ENROLL_PROGRAM_STAGE_DETAIL, programStage.getId());
     }
 
 }

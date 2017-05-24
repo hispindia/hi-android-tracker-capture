@@ -1,6 +1,7 @@
 package org.hisp.india.trackercapture.services.programs;
 
 import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RProgramStage;
 import org.hisp.india.trackercapture.utils.RealmHelper;
 
 /**
@@ -16,6 +17,22 @@ public class ProgramQuery {
                 return realm.copyFromRealm(program);
             }
             return null;
+        });
+    }
+
+    public static RProgramStage getProgramStage(String programStageId) {
+        return RealmHelper.query(realm -> {
+            RProgramStage program = realm.where(RProgramStage.class).equalTo("id", programStageId).findFirst();
+            if (program != null) {
+                return realm.copyFromRealm(program);
+            }
+            return null;
+        });
+    }
+
+    public static void saveProgramStage(RProgramStage programStage) {
+        RealmHelper.transaction(realm -> {
+            realm.insertOrUpdate(programStage);
         });
     }
 
