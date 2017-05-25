@@ -30,12 +30,6 @@ public class ProgramQuery {
         });
     }
 
-    public static void saveProgramStage(RProgramStage programStage) {
-        RealmHelper.transaction(realm -> {
-            realm.insertOrUpdate(programStage);
-        });
-    }
-
     public static void saveProgram(RProgram program) {
         RealmHelper.transaction(realm -> {
             realm.insertOrUpdate(program);

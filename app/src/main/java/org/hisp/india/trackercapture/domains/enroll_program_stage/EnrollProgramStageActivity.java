@@ -18,12 +18,18 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program_stage_detail.EnrollProgramStageDetailActivity_;
+import org.hisp.india.trackercapture.models.base.Event;
+import org.hisp.india.trackercapture.models.base.StageDetail;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RProgramStage;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,6 +42,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         implements
         EnrollProgramStageView {
     public static final int ENROLL_REQUEST_CODE = 1;
+    public static final String ENROLL_REQUEST_DATA = "BundleData";
     private static final String TAG = EnrollProgramStageActivity.class.getSimpleName();
     @ViewById(R.id.activity_enroll_program_stage_toolbar)
     protected NToolbar toolbar;
@@ -78,8 +85,11 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             finish();
         } else if (command instanceof Forward) {
             if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE_DETAIL)) {
+
+                RProgramStage programStage = (RProgramStage) ((Forward) command).getTransitionData();
+
                 EnrollProgramStageDetailActivity_.intent(this)
-                                                 .programStageId((String) ((Forward) command).getTransitionData())
+                                                 .programStageStr(programStage.toString())
                                                  .startForResult(ENROLL_REQUEST_CODE);
             }
         }
@@ -107,18 +117,15 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             @Override
             public void toolbarBackupClick() {
                 //register program
-                presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest, adapter.getEventList());
+                presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest,
+                                          getEventList(adapter.getProgramStageList()));
             }
         });
 
         adapter = new EnrollProgramStageAdapter();
-        adapter.setItemClickListener(model -> {
-            Toast.makeText(application, model.toString(), Toast.LENGTH_SHORT).show();
-            presenter.openProgramStage(model);
-        });
+        adapter.setItemClickListener(model -> presenter.openProgramStage(model));
 
         lvStage.setAdapter(adapter);
-
         lvStage.post(() -> presenter.getProgramDetail(programId));
 
     }
@@ -172,8 +179,20 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @OnActivityResult(ENROLL_REQUEST_CODE)
     void onResult(int resultCode, Intent data) {
 
-
-
+        String stageDetailStr = data.getStringExtra(ENROLL_REQUEST_DATA);
+        if (stageDetailStr != null) {
+            StageDetail stageDetail = StageDetail.fromJson(stageDetailStr);
+            adapter.updateProgramStageDataElement(stageDetail);
+        }
     }
+
+    public List<Event> getEventList(List<RProgramStage> programStageList) {
+        List<Event> eventList = new ArrayList<>();
+        for (RProgramStage rProgramStage : programStageList) {
+            eventList.add(new Event(rProgramStage));
+        }
+        return eventList;
+    }
+
 
 }

@@ -221,7 +221,6 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
                                                       tvEnrollmentDateValue.getText().toString(),
                                                       tvIncidentDateValue.getText().toString());
             presenter.gotoProgramStage();
-//            presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest);
         } else {
             enrollmentRequest = null;
             trackedEntityInstanceRequest = null;

@@ -37,6 +37,10 @@ public class EnrollProgramStageDetailAdapter extends BaseAdapter {
         this.programStageDataElementList = new ArrayList<>();
     }
 
+    public List<RProgramStageDataElement> getProgramStageDataElementList() {
+        return programStageDataElementList;
+    }
+
     public void setProgramStageDataElementList(
             List<RProgramStageDataElement> programStageDataElementList) {
         this.programStageDataElementList = programStageDataElementList;
@@ -89,24 +93,24 @@ public class EnrollProgramStageDetailAdapter extends BaseAdapter {
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);
 
-            holder.etValue.setText(item.getValue());
-            holder.tvValue.setText(item.getValue());
+            holder.etValue.setText(programStageDataElement.getValue());
+            holder.tvValue.setText(programStageDataElement.getValue());
             holder.tvValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
                 @Override
                 public void after(Editable editable) {
-                    getItem(holder.ref).getDataElement().setValue(editable.toString());
+                    getItem(holder.ref).setValue(editable.toString());
                 }
             }));
         } else {
             holder.etValue.setVisibility(View.VISIBLE);
             holder.tvValue.setVisibility(View.GONE);
 
-            holder.etValue.setText(item.getValue());
-            holder.tvValue.setText(item.getValue());
+            holder.etValue.setText(programStageDataElement.getValue());
+            holder.tvValue.setText(programStageDataElement.getValue());
             holder.etValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
                 @Override
                 public void after(Editable editable) {
-                    getItem(holder.ref).getDataElement().setValue(editable.toString());
+                    getItem(holder.ref).setValue(editable.toString());
                 }
             }));
         }

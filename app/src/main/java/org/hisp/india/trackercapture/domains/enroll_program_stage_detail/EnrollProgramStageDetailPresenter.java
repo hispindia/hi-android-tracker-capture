@@ -3,8 +3,9 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage_detail;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
-import org.hisp.india.trackercapture.services.programs.ProgramQuery;
+import org.hisp.india.trackercapture.models.storage.RProgramStageDataElement;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -45,15 +46,16 @@ public class EnrollProgramStageDetailPresenter extends MvpBasePresenter<EnrollPr
         router.exit();
     }
 
-    public void getProgramStageDetail(String programStageId) {
+    public void getProgramStageDetail(List<RProgramStageDataElement> programStageDataElements) {
         if (isViewAttached()) {
             Observable
-                    .defer(() -> Observable.just(ProgramQuery.getProgramStage(programStageId))
+                    .defer(() -> Observable.just(programStageDataElements)
                                            .delay(500, TimeUnit.MILLISECONDS)
                                            .compose(RxScheduler.applyLogicSchedulers())
                                            .doOnSubscribe(() -> getView().showLoading())
                                            .doOnTerminate(() -> getView().hideLoading()))
-                    .subscribe(programStage -> getView().getProgramStageDetail(programStage));
+                    .subscribe(programStageDataElementList -> getView()
+                            .getProgramStageDetail(programStageDataElementList));
 
         }
     }

@@ -1,10 +1,15 @@
 package org.hisp.india.trackercapture.models.base;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
+import org.hisp.india.trackercapture.models.storage.RProgramStage;
+import org.hisp.india.trackercapture.models.storage.RProgramStageDataElement;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +36,14 @@ public class Event extends BaseModel implements Serializable {
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
 
+    public Event(RProgramStage programStage) {
+        this.dueDate = programStage.getDueDate();
+        this.programStageId = programStage.getId();
+        this.status = TextUtils.isEmpty(programStage.getStatus()) ? ProgramStatus.SCHEDULE.name() :
+                      programStage.getStatus();
+        this.setDataValues(getDataValueList(programStage.getProgramStageDataElements()));
+    }
+
     public Event(String dueDate, String programStageId) {
         this.dueDate = dueDate;
         this.programStageId = programStageId;
@@ -46,6 +59,17 @@ public class Event extends BaseModel implements Serializable {
         this.programStageId = programStageId;
         this.trackedEntityInstanceId = trackedEntityInstanceId;
         this.status = ProgramStatus.SCHEDULE.name();
+    }
+
+    public ArrayList<DataValue> getDataValueList(List<RProgramStageDataElement> programStageDataElementList) {
+        ArrayList<DataValue> res = new ArrayList<>();
+        for (RProgramStageDataElement programStageDataElement : programStageDataElementList) {
+            DataValue dataValue = new DataValue(programStageDataElement.getValue(),
+                                                programStageDataElement.getId(),
+                                                programStageDataElement.isAllowProvidedElsewhere());
+            res.add(dataValue);
+        }
+        return res;
     }
 
     public void setDataValues(List<DataValue> dataValues) {

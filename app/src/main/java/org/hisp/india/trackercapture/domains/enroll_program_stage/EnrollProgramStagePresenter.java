@@ -102,8 +102,7 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
     }
 
     public void openProgramStage(RProgramStage programStage) {
-        ProgramQuery.saveProgramStage(programStage);
-        router.navigateTo(Screens.ENROLL_PROGRAM_STAGE_DETAIL, programStage.getId());
+        router.navigateTo(Screens.ENROLL_PROGRAM_STAGE_DETAIL, programStage);
     }
 
 }

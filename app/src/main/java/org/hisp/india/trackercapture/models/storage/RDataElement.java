@@ -20,9 +20,6 @@ public class RDataElement extends RealmObject implements Model {
     private boolean optionSetValue;
     private ROptionSet optionSet;
 
-    @Ignore
-    private String value;
-
     @Override
     public String getId() {
         return id;
@@ -65,11 +62,4 @@ public class RDataElement extends RealmObject implements Model {
         this.optionSet = optionSet;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }

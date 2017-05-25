@@ -181,6 +181,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
     private void showOptionDialog(ViewHolder holder, List<Model> modelList) {
         OptionDialog.newInstance(modelList, model -> {
             holder.tvValue.setText(model.getDisplayName());
+            getItem(holder.ref).setValue(holder.tvValue.getText().toString());
         }).show(activity.getSupportFragmentManager());
     }
 
@@ -190,6 +191,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
                 .newInstance(item.isAllowFutureDate());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
             holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
+            getItem(holder.ref).setValue(holder.tvValue.getText().toString());
         });
         datePicker.show(activity.getSupportFragmentManager());
     }

@@ -1,9 +1,12 @@
 package org.hisp.india.trackercapture.models.storage;
 
+import com.google.gson.Gson;
+
 import org.hisp.india.trackercapture.models.base.Model;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -19,8 +22,16 @@ public class RProgramStage extends RealmObject implements Model {
     private int minDaysFromStart;
     private RealmList<RProgramStageDataElement> programStageDataElements;
 
+    @Ignore
     private String dueDate;
+    @Ignore
     private String eventDate;
+    @Ignore
+    private String status;
+
+    public static RProgramStage fromJson(String programStage) {
+        return new Gson().fromJson(programStage, RProgramStage.class);
+    }
 
     @Override
     public String getId() {
@@ -79,5 +90,18 @@ public class RProgramStage extends RealmObject implements Model {
     public void setProgramStageDataElements(
             RealmList<RProgramStageDataElement> programStageDataElements) {
         this.programStageDataElements = programStageDataElements;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return new Gson().toJson(this);
     }
 }

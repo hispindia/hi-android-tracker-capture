@@ -63,6 +63,7 @@
                             >
 
                             <CheckBox
+                                android:id="@+id/fragment_enroll_program_stage_detail_cb_status"
                                 android:button="@drawable/bg_checkbox"
                                 style="@style/Toolbar.ItemIcon"
                                 />
@@ -108,7 +109,8 @@
                             android:layout_width="150dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
-                            android:text="*"
+                            android:hint="select date"
+                            android:text=""
                             android:textSize="16sp"
                             />
                     </LinearLayout>
@@ -138,7 +140,8 @@
                             android:layout_width="150dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
-                            android:text="*"
+                            android:hint="select date"
+                            android:text=""
                             android:textSize="16sp"
                             />
                     </LinearLayout>

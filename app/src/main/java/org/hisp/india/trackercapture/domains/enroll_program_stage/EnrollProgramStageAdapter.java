@@ -6,14 +6,17 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.models.base.Event;
+import org.hisp.india.trackercapture.models.base.StageDetail;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
+import org.hisp.india.trackercapture.models.storage.RProgramStageDataElement;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.ItemClickListener;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.realm.RealmList;
 
 /**
  * Created by nhancao on 5/10/17.
@@ -55,12 +58,18 @@ public class EnrollProgramStageAdapter extends BaseAdapter {
         }
     }
 
-    public List<Event> getEventList() {
-        List<Event> eventList = new ArrayList<>();
+    public void updateProgramStageDataElement(StageDetail stageDetail) {
         for (RProgramStage rProgramStage : programStageList) {
-            eventList.add(new Event(rProgramStage.getDueDate(), rProgramStage.getId()));
+            if (rProgramStage.getId().equals(stageDetail.getProgramStageId())) {
+                RealmList<RProgramStageDataElement> realmList = new RealmList<>();
+                realmList.addAll(stageDetail.getProgramStageDataElement());
+                rProgramStage.setProgramStageDataElements(realmList);
+                rProgramStage.setDueDate(stageDetail.getDueDateValue());
+                rProgramStage.setEventDate(stageDetail.getReportDateValue());
+                break;
+            }
         }
-        return eventList;
+        notifyDataSetChanged();
     }
 
     @Override
