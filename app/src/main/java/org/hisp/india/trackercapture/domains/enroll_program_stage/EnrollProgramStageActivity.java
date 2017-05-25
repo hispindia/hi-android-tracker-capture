@@ -10,6 +10,7 @@ import android.widget.Toast;
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
+import org.androidannotations.annotations.CheckedChange;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
@@ -20,6 +21,7 @@ import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program_stage_detail.EnrollProgramStageDetailActivity_;
 import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.base.StageDetail;
+import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.storage.RProgram;
@@ -174,6 +176,15 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @Override
     public void registerProgramSuccess() {
         Toast.makeText(application, "Register program succeed", Toast.LENGTH_SHORT).show();
+    }
+
+    @CheckedChange({R.id.fragment_enroll_program_stage_cb_status})
+    void cbStastusChecked(boolean isChecked) {
+        if (isChecked) {
+            enrollmentRequest.setStatus(ProgramStatus.COMPLETED.name());
+        } else {
+            enrollmentRequest.setStatus(ProgramStatus.ACTIVE.name());
+        }
     }
 
     @OnActivityResult(ENROLL_REQUEST_CODE)

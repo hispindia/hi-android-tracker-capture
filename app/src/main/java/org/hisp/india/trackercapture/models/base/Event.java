@@ -32,12 +32,13 @@ public class Event extends BaseModel implements Serializable {
     @SerializedName("programStage")
     private String programStageId;
     @SerializedName("status")
-    private String status;
+    private String status = ProgramStatus.SCHEDULE.name();
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
 
     public Event(RProgramStage programStage) {
         this.dueDate = programStage.getDueDate();
+        this.eventDate = programStage.getEventDate();
         this.programStageId = programStage.getId();
         this.status = TextUtils.isEmpty(programStage.getStatus()) ? ProgramStatus.SCHEDULE.name() :
                       programStage.getStatus();
@@ -47,7 +48,6 @@ public class Event extends BaseModel implements Serializable {
     public Event(String dueDate, String programStageId) {
         this.dueDate = dueDate;
         this.programStageId = programStageId;
-        this.status = ProgramStatus.SCHEDULE.name();
     }
 
     public Event(String dueDate, String enrollmentId, String orgUnitId, String programId,
@@ -58,14 +58,13 @@ public class Event extends BaseModel implements Serializable {
         this.programId = programId;
         this.programStageId = programStageId;
         this.trackedEntityInstanceId = trackedEntityInstanceId;
-        this.status = ProgramStatus.SCHEDULE.name();
     }
 
     public ArrayList<DataValue> getDataValueList(List<RProgramStageDataElement> programStageDataElementList) {
         ArrayList<DataValue> res = new ArrayList<>();
         for (RProgramStageDataElement programStageDataElement : programStageDataElementList) {
             DataValue dataValue = new DataValue(programStageDataElement.getValue(),
-                                                programStageDataElement.getId(),
+                                                programStageDataElement.getDataElement().getId(),
                                                 programStageDataElement.isAllowProvidedElsewhere());
             res.add(dataValue);
         }

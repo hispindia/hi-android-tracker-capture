@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture.models.storage;
 import com.google.gson.Gson;
 
 import org.hisp.india.trackercapture.models.base.Model;
+import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -27,7 +28,7 @@ public class RProgramStage extends RealmObject implements Model {
     @Ignore
     private String eventDate;
     @Ignore
-    private String status;
+    private String status = ProgramStatus.SCHEDULE.name();
 
     public static RProgramStage fromJson(String programStage) {
         return new Gson().fromJson(programStage, RProgramStage.class);

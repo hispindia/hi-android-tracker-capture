@@ -16,7 +16,7 @@ public class EnrollmentRequest implements Serializable {
     @SerializedName("program")
     private String programId;
     @SerializedName("status")
-    private String status;
+    private String status = ProgramStatus.ACTIVE.name();
     @SerializedName("orgUnit")
     private String orgUnitId;
     @SerializedName("enrollmentDate")
@@ -27,7 +27,6 @@ public class EnrollmentRequest implements Serializable {
     public EnrollmentRequest(String programId, String orgUnitId, String enrollmentDate,
                              String incidentDate) {
         this.programId = programId;
-        this.status = ProgramStatus.ACTIVE.name();
         this.orgUnitId = orgUnitId;
         this.enrollmentDate = enrollmentDate;
         this.incidentDate = incidentDate;
@@ -47,6 +46,10 @@ public class EnrollmentRequest implements Serializable {
 
     public String getStatus() {
         return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getOrgUnitId() {

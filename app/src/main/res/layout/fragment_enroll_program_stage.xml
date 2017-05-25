@@ -62,21 +62,13 @@
                             style="@style/Toolbar.ItemWrapper"
                             >
 
-                            <ImageView
-                                android:src="@drawable/ic_check_circle"
+                            <CheckBox
+                                android:id="@+id/fragment_enroll_program_stage_cb_status"
+                                android:button="@drawable/bg_checkbox"
                                 style="@style/Toolbar.ItemIcon"
                                 />
                         </RelativeLayout>
 
-                        <RelativeLayout
-                            style="@style/Toolbar.ItemWrapper"
-                            >
-
-                            <ImageView
-                                android:src="@drawable/ic_cancel_circle"
-                                style="@style/Toolbar.ItemIcon"
-                                />
-                        </RelativeLayout>
                     </LinearLayout>
                 </RelativeLayout>
 

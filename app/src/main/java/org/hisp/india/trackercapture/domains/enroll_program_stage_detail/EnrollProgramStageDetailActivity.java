@@ -165,7 +165,7 @@ public class EnrollProgramStageDetailActivity
     protected void tvReportDateValueClick() {
         DatePickerDialog
                 datePicker = DatePickerDialog
-                .newInstance(true);
+                .newInstance(false);
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
             tvReportDateValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
         });
