@@ -2,13 +2,14 @@ package org.hisp.india.trackercapture.models.response;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
  * Created by nhancao on 5/10/17.
  */
 
-public class MetaDataResponse {
+public class MetaDataResponse implements Serializable {
     @SerializedName("names")
     private Map<String, String> names;
     @SerializedName("pager")

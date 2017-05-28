@@ -54,6 +54,12 @@
             >
         </activity>
         <activity
+            android:name=".domains.tracked_entity.TrackedEntityActivity_"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
+            >
+        </activity>
+        <activity
             android:name=".domains.login.LoginActivity_"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             >

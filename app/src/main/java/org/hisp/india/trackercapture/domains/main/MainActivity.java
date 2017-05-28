@@ -37,6 +37,7 @@ import org.hisp.india.trackercapture.domains.menu.DrawerItem;
 import org.hisp.india.trackercapture.domains.menu.MenuItem;
 import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
+import org.hisp.india.trackercapture.domains.tracked_entity.TrackedEntityActivity_;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
@@ -96,6 +97,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     private List<RProgram> programList;
     private List<ROrganizationUnit> organizationUnitList;
     private NPermission nPermission;
+    private QueryResponse queryResponse;
 
     private Navigator navigator = command -> {
         if (command instanceof Replace) {
@@ -116,6 +118,10 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                                            .programId(program.getId())
                                            .programName(program.getDisplayName())
                                            .start();
+            } else if (((Forward) command).getScreenKey().equals(Screens.TRACKED_ENTITY)) {
+                TrackedEntityActivity_.intent(this)
+                                      .queryResponse((QueryResponse) ((Forward) command).getTransitionData())
+                                      .start();
             }
         }
     };
@@ -274,6 +280,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @Override
     public void queryProgramSuccess(QueryResponse queryResponse) {
+        this.queryResponse = queryResponse;
         Map<String, Pair<Integer, String>> displayInList = new LinkedHashMap<>();
         for (RProgramTrackedEntityAttribute programTrackedEntityAttribute : program
                 .getProgramTrackedEntityAttributes()) {
@@ -345,6 +352,10 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                     helper.setText(R.id.item_program_info_tv_3, item.get(2));
                     helper.setVisible(R.id.item_program_info_tv_3, true);
                 }
+                helper.getView().setOnClickListener(v -> {
+                    queryResponse.setPosition(helper.getPosition());
+                    navigator.applyCommand(new Forward(Screens.TRACKED_ENTITY, queryResponse));
+                });
             }
         });
 

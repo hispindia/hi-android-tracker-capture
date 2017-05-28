@@ -2,11 +2,13 @@ package org.hisp.india.trackercapture.models.response;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by nhancao on 5/10/17.
  */
 
-public class HeaderResponse {
+public class HeaderResponse implements Serializable {
     @SerializedName("name")
     private String name;
     @SerializedName("column")
