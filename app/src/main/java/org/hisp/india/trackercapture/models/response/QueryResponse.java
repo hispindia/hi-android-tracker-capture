@@ -1,6 +1,5 @@
 package org.hisp.india.trackercapture.models.response;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -18,9 +17,6 @@ public class QueryResponse implements Serializable {
     @SerializedName("rows")
     private List<List<String>> rows;
 
-    @Expose
-    private int position;
-
     public List<HeaderResponse> getHeaders() {
         return headers;
     }
@@ -31,14 +27,6 @@ public class QueryResponse implements Serializable {
 
     public List<List<String>> getRows() {
         return rows;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
     }
 
     @Override

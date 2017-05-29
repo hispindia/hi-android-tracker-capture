@@ -38,6 +38,7 @@ import org.hisp.india.trackercapture.domains.menu.MenuItem;
 import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
 import org.hisp.india.trackercapture.domains.tracked_entity.TrackedEntityActivity_;
+import org.hisp.india.trackercapture.models.base.RowModel;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
@@ -120,7 +121,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                                            .start();
             } else if (((Forward) command).getScreenKey().equals(Screens.TRACKED_ENTITY)) {
                 TrackedEntityActivity_.intent(this)
-                                      .queryResponse((QueryResponse) ((Forward) command).getTransitionData())
+                                      .rowModel((RowModel) ((Forward) command).getTransitionData())
                                       .start();
             }
         }
@@ -353,8 +354,10 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                     helper.setVisible(R.id.item_program_info_tv_3, true);
                 }
                 helper.getView().setOnClickListener(v -> {
-                    queryResponse.setPosition(helper.getPosition());
-                    navigator.applyCommand(new Forward(Screens.TRACKED_ENTITY, queryResponse));
+                    navigator.applyCommand(new Forward(Screens.TRACKED_ENTITY,
+                                                       new RowModel(queryResponse.getHeaders(),
+                                                                    queryResponse.getRows()
+                                                                                 .get(helper.getPosition()))));
                 });
             }
         });

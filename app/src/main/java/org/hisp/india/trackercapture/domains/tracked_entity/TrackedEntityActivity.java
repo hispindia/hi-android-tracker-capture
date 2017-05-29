@@ -12,7 +12,7 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
-import org.hisp.india.trackercapture.models.response.QueryResponse;
+import org.hisp.india.trackercapture.models.base.RowModel;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
 
@@ -34,7 +34,7 @@ public class TrackedEntityActivity extends BaseActivity<TrackedEntityView, Track
     @App
     protected MainApplication application;
     @Extra
-    protected QueryResponse queryResponse;
+    protected RowModel rowModel;
     @Inject
     protected TrackedEntityPresenter presenter;
 
@@ -66,7 +66,7 @@ public class TrackedEntityActivity extends BaseActivity<TrackedEntityView, Track
         lvItem.setAdapter(adapter);
 
         lvItem.post(() -> {
-            adapter.setQueryResponse(queryResponse);
+            adapter.setQueryResponse(rowModel);
         });
 
     }

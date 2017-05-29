@@ -6,7 +6,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.models.response.QueryResponse;
+import org.hisp.india.trackercapture.models.base.RowModel;
 
 /**
  * Created by nhancao on 5/10/17.
@@ -15,19 +15,16 @@ import org.hisp.india.trackercapture.models.response.QueryResponse;
 public class TrackedEntityAdapter extends BaseAdapter {
     private static final String TAG = TrackedEntityAdapter.class.getSimpleName();
 
-    private QueryResponse queryResponse;
+    private RowModel rowModel;
 
-    public TrackedEntityAdapter() {
-    }
-
-    public void setQueryResponse(QueryResponse queryResponse) {
-        this.queryResponse = queryResponse;
+    public void setQueryResponse(RowModel rowModel) {
+        this.rowModel = rowModel;
     }
 
     @Override
     public int getCount() {
         try {
-            return queryResponse.getRows().get(queryResponse.getPosition()).size();
+            return rowModel.getRows().size();
         } catch (Exception e) {
             return 0;
         }
@@ -35,11 +32,19 @@ public class TrackedEntityAdapter extends BaseAdapter {
 
     @Override
     public String getItem(int position) {
-        return queryResponse.getRows().get(queryResponse.getPosition()).get(position);
+        try {
+            return rowModel.getRows().get(position);
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public String getLabelItem(int position) {
-        return queryResponse.getHeaders().get(position).getColumn();
+        try {
+            return rowModel.getHeaders().get(position).getColumn();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     @Override
@@ -61,10 +66,8 @@ public class TrackedEntityAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        String item = getItem(position);
-
         holder.tvLabel.setText(getLabelItem(position));
-        holder.tvValue.setText(item);
+        holder.tvValue.setText(getItem(position));
 
         return convertView;
     }
