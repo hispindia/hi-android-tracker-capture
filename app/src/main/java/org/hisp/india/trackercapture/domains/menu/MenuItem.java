@@ -10,6 +10,7 @@ import org.hisp.india.trackercapture.R;
 
 public enum MenuItem {
     SYNC("Sync", R.drawable.ic_sync),
+    QUEUE("Sync queue", R.drawable.ic_cloud_queue),
     SETTINGS("Settings", R.drawable.ic_settings),
     INFO("Information", R.drawable.ic_info),
     SPACE("", 0),

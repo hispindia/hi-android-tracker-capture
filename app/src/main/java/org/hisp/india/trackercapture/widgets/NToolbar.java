@@ -55,7 +55,31 @@ public class NToolbar extends RelativeLayout {
     }
 
     public void applyEnrollProgramUi(AppCompatActivity activity, String title,
-                                     EnrollProgramToolbarItemClick itemClick) {
+                                     DefaultToolbarItemClick itemClick) {
+        //Setup toolbar
+        applyCommonUi(activity);
+
+        tvTitle.setText(title);
+        toolbarClose.setVisibility(View.VISIBLE);
+
+        toolbarClose.setOnClickListener(v -> itemClick.toolbarCloseClick());
+
+    }
+
+    public void applyTrackedEntityUi(AppCompatActivity activity, String title,
+                                     DefaultToolbarItemClick itemClick) {
+        //Setup toolbar
+        applyCommonUi(activity);
+
+        tvTitle.setText(title);
+        toolbarClose.setVisibility(View.VISIBLE);
+
+        toolbarClose.setOnClickListener(v -> itemClick.toolbarCloseClick());
+
+    }
+
+    public void applySyncQueueUi(AppCompatActivity activity, String title,
+                                 DefaultToolbarItemClick itemClick) {
         //Setup toolbar
         applyCommonUi(activity);
 
@@ -81,7 +105,7 @@ public class NToolbar extends RelativeLayout {
     }
 
     public void applyEnrollProgramStageDetailUi(AppCompatActivity activity, String title,
-                                                EnrollProgramStageDetailToolbarItemClick itemClick) {
+                                                DefaultToolbarItemClick itemClick) {
         //Setup toolbar
         applyCommonUi(activity);
 
@@ -92,22 +116,15 @@ public class NToolbar extends RelativeLayout {
 
     }
 
-    public interface TemplateToolbarItemClick {
+    public interface DefaultToolbarItemClick {
         void toolbarCloseClick();
     }
 
-    public interface EnrollProgramToolbarItemClick {
-        void toolbarCloseClick();
-    }
-
-    public interface EnrollProgramStageToolbarItemClick {
-        void toolbarCloseClick();
-
+    public interface EnrollProgramStageToolbarItemClick extends DefaultToolbarItemClick {
         void toolbarBackupClick();
     }
 
-    public interface EnrollProgramStageDetailToolbarItemClick {
-        void toolbarCloseClick();
+    public interface TemplateToolbarItemClick extends DefaultToolbarItemClick {
     }
 
 }

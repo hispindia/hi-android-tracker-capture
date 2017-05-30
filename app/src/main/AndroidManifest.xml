@@ -15,7 +15,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="${appName}"
-        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         android:windowSoftInputMode="stateHidden|adjustResize"
@@ -23,6 +22,7 @@
         >
         <activity
             android:name=".domains.splash.SplashActivity_"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             >
             <intent-filter>
@@ -32,40 +32,54 @@
         </activity>
         <activity
             android:name=".domains.main.MainActivity_"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             >
         </activity>
         <activity
             android:name=".domains.enroll_program.EnrollProgramActivity_"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"
             >
         </activity>
         <activity
             android:name=".domains.enroll_program_stage.EnrollProgramStageActivity_"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"
             >
         </activity>
         <activity
             android:name=".domains.enroll_program_stage_detail.EnrollProgramStageDetailActivity_"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"
             >
         </activity>
         <activity
             android:name=".domains.tracked_entity.TrackedEntityActivity_"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"
             >
         </activity>
         <activity
             android:name=".domains.login.LoginActivity_"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             >
         </activity>
         <activity
+            android:name=".domains.sync_queue.SyncQueueActivity_"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
+            >
+        </activity>
+        <activity
             android:name=".domains.template.TemplateActivity_"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             >
         </activity>

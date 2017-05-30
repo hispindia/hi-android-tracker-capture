@@ -89,7 +89,9 @@ public class TaskService extends AbstractTaskService {
                                 return Observable.just(enrollmentResponse);
                             }
                         })
-                        .subscribe(baseResponse -> postBus(BusProgress.SUCCESS),
+                        .subscribe(baseResponse -> {
+                                       postBus(BusProgress.SUCCESS);
+                                   },
                                    throwable -> postBus(BusProgress.ERROR));
 
                 //Set complete if do succeed

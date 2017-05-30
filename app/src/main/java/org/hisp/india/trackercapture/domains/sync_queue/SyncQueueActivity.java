@@ -1,7 +1,9 @@
-package org.hisp.india.trackercapture.domains.tracked_entity;
+package org.hisp.india.trackercapture.domains.sync_queue;
 
 import android.support.annotation.NonNull;
 import android.widget.ListView;
+
+import com.nhancv.ntask.NTaskManager;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -21,14 +23,14 @@ import javax.inject.Inject;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Back;
 
-@EActivity(R.layout.activity_tracked_entity)
-public class TrackedEntityActivity extends BaseActivity<TrackedEntityView, TrackedEntityPresenter> implements
-                                                                                                   TrackedEntityView {
-    private static final String TAG = TrackedEntityActivity.class.getSimpleName();
+@EActivity(R.layout.activity_sync_queue)
+public class SyncQueueActivity extends BaseActivity<SyncQueueView, SyncQueuePresenter> implements
+                                                                                       SyncQueueView {
+    private static final String TAG = SyncQueueActivity.class.getSimpleName();
 
-    @ViewById(R.id.activity_tracked_entity_toolbar)
+    @ViewById(R.id.activity_sync_queue_toolbar)
     protected NToolbar toolbar;
-    @ViewById(R.id.fragment_tracked_entity_lv_profile)
+    @ViewById(R.id.activity_sync_queue_lv_profile)
     protected ListView lvItem;
 
     @App
@@ -36,9 +38,9 @@ public class TrackedEntityActivity extends BaseActivity<TrackedEntityView, Track
     @Extra
     protected RowModel rowModel;
     @Inject
-    protected TrackedEntityPresenter presenter;
+    protected SyncQueuePresenter presenter;
 
-    private TrackedEntityAdapter adapter;
+    private SyncQueueAdapter adapter;
 
 
     private Navigator navigator = command -> {
@@ -49,10 +51,10 @@ public class TrackedEntityActivity extends BaseActivity<TrackedEntityView, Track
 
     @AfterInject
     void inject() {
-        DaggerTrackedEntityComponent.builder()
-                                    .applicationComponent(application.getApplicationComponent())
-                                    .build()
-                                    .inject(this);
+        DaggerSyncQueueComponent.builder()
+                                .applicationComponent(application.getApplicationComponent())
+                                .build()
+                                .inject(this);
     }
 
     @AfterViews
@@ -60,18 +62,18 @@ public class TrackedEntityActivity extends BaseActivity<TrackedEntityView, Track
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
-        toolbar.applyTrackedEntityUi(this, "Tracked entity", () -> presenter.onBackCommandClick());
+        toolbar.applySyncQueueUi(this, "Sync Queue", () -> presenter.onBackCommandClick());
 
-        adapter = new TrackedEntityAdapter();
+        adapter = new SyncQueueAdapter();
         lvItem.setAdapter(adapter);
 
-        lvItem.post(() -> adapter.setQueryResponse(rowModel));
+        lvItem.post(() -> adapter.setTaskList(NTaskManager.getInstance().getTaskList()));
 
     }
 
     @NonNull
     @Override
-    public TrackedEntityPresenter createPresenter() {
+    public SyncQueuePresenter createPresenter() {
         return presenter;
     }
 
