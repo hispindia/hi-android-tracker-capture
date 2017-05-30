@@ -46,8 +46,9 @@ public abstract class BaseActivity<V extends MvpView, P extends MvpPresenter<V>>
         if (window != null) {
             window.setBackgroundDrawableResource(R.drawable.bg_layout_loading);
         }
-
-        progressDialogLoading.show();
+        if (!isFinishing()) {
+            progressDialogLoading.show();
+        }
     }
 
     public void hideProgressLoading() {
