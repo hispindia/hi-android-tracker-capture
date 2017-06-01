@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Rect;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
 import java.util.HashMap;
@@ -25,18 +24,24 @@ public class NKeyboard implements ViewTreeObserver.OnGlobalLayoutListener {
     private NKeyboard(Activity activity, NKeyboardListener listener) {
         callback = listener;
 
-        rootView = ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
+        rootView = activity.findViewById(android.R.id.content);
         rootView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         keyBoardVisibleThreshold = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100,
                                                                    activity.getResources().getDisplayMetrics());
     }
 
+    /**
+     * Add listener keyboard
+     */
     public static void addListener(Activity act, NKeyboardListener listener) {
         removeListener(listener);
         listenerMap.put(listener, new NKeyboard(act, listener));
     }
 
+    /**
+     * Remove keyboard listener
+     */
     public static void removeListener(NKeyboardListener listener) {
         if (listenerMap.containsKey(listener)) {
             NKeyboard k = listenerMap.get(listener);
@@ -45,9 +50,12 @@ public class NKeyboard implements ViewTreeObserver.OnGlobalLayoutListener {
         }
     }
 
+    /**
+     * Remove all keyboard listener
+     */
     public static void removeAllListeners() {
-        for (Map.Entry<NKeyboardListener, NKeyboard> nKeyboardListenerNKeyboardEntry : listenerMap.entrySet()) {
-            nKeyboardListenerNKeyboardEntry.getValue().removeListener();
+        for (Map.Entry<NKeyboardListener, NKeyboard> nKeyboardListenerKeyboardEntry : listenerMap.entrySet()) {
+            nKeyboardListenerKeyboardEntry.getValue().removeListener();
         }
         listenerMap.clear();
     }
@@ -61,25 +69,25 @@ public class NKeyboard implements ViewTreeObserver.OnGlobalLayoutListener {
     public static boolean isKeyboardVisible(Activity activity) {
         Rect r = new Rect();
 
-        View activityRoot = ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
+        View activityRoot = activity.findViewById(android.R.id.content);
         int visibleThreshold = Math
                 .round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100,
                                                  activity.getResources().getDisplayMetrics()));
 
         activityRoot.getWindowVisibleDisplayFrame(r);
 
-        int heightDiff = activityRoot.getRootView().getHeight() - r.height();
+        int heightDiff = activityRoot.getHeight() - r.height();
 
         return heightDiff > visibleThreshold;
     }
 
     @Override
     public void onGlobalLayout() {
-        Rect rect = new Rect();
-        rootView.getWindowVisibleDisplayFrame(rect);
+        Rect r = new Rect();
+        rootView.getWindowVisibleDisplayFrame(r);
 
         int screenHeight = rootView.getHeight();
-        int keyboardHeight = screenHeight - (rect.bottom - rect.top);
+        int keyboardHeight = screenHeight - r.height();
 
         boolean isOpen = keyboardHeight > keyBoardVisibleThreshold;
         if (isOpen == wasOpened) {
@@ -94,6 +102,9 @@ public class NKeyboard implements ViewTreeObserver.OnGlobalLayoutListener {
 
     }
 
+    /**
+     * Remove current listener
+     */
     private void removeListener() {
         callback = null;
         rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);

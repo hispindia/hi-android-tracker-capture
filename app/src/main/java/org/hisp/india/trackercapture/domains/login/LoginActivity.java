@@ -52,6 +52,8 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
         implements LoginView, Validator.ValidationListener {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
+    @ViewById(R.id.activity_login_root)
+    protected View vRoot;
     @ViewById(R.id.activity_login_ll_host)
     protected LinearLayout llHost;
     @ViewById(R.id.activity_login_et_host)
@@ -111,6 +113,7 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
         validator = new Validator(this);
         validator.setValidationListener(this);
 
+        AppUtils.setupHideKeyboardWhenTouchOutside(vRoot);
         NKeyboard.addListener(this, (isVisible, screenHeight, keyboardHeight) -> {
             if (isVisible && keyboardHeight > 0) {
 

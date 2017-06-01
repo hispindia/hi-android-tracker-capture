@@ -1,46 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="true"
     android:fitsSystemWindows="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:ignore="MissingPrefix">
+    tools:ignore="MissingPrefix"
+    >
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_bottom_my_sessions" />
+                android:background="@drawable/bg_bottom_my_sessions"
+                />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@color/light_grey" />
-
+                android:background="@color/light_grey"
+                />
         </LinearLayout>
 
-        <ScrollView
+        <org.hisp.india.trackercapture.widgets.NonFocusScrollView
             android:id="@+id/activity_login_root_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="25dp"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical"
+                >
 
                 <FrameLayout
                     android:id="@+id/activity_login_fl_icon"
@@ -48,14 +62,15 @@
                     android:layout_height="92dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="30dp"
-                    android:background="@drawable/bg_circle_white">
+                    android:background="@drawable/bg_circle_white"
+                    >
 
                     <ImageView
                         android:layout_width="70dp"
                         android:layout_height="70dp"
                         android:layout_gravity="center"
-                        android:src="@mipmap/ic_launcher" />
-
+                        android:src="@mipmap/ic_launcher"
+                        />
                 </FrameLayout>
 
                 <LinearLayout
@@ -67,7 +82,8 @@
                     android:paddingBottom="25dp"
                     android:paddingLeft="25dp"
                     android:paddingRight="25dp"
-                    android:paddingTop="10dp">
+                    android:paddingTop="10dp"
+                    >
 
                     <TextView
                         fontPath="fonts/Montserrat-Bold.ttf"
@@ -77,14 +93,16 @@
                         android:gravity="center_horizontal"
                         android:text="LOGIN"
                         android:textColor="#626262"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        />
 
                     <LinearLayout
                         android:id="@+id/activity_login_ll_host"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="gone">
+                        android:visibility="gone"
+                        >
 
                         <TextView
                             fontPath="fonts/Montserrat-Regular.ttf"
@@ -92,7 +110,8 @@
                             android:layout_height="wrap_content"
                             android:text="HOST"
                             android:textColor="#6A89DF"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            />
 
                         <EditText
                             android:id="@+id/activity_login_et_host"
@@ -106,8 +125,8 @@
                             android:paddingRight="5dp"
                             android:textCursorDrawable="@null"
                             android:textSize="14sp"
-                            android:theme="@style/EditText" />
-
+                            android:theme="@style/EditText"
+                            />
                     </LinearLayout>
 
                     <TextView
@@ -116,7 +135,8 @@
                         android:layout_height="wrap_content"
                         android:text="USERNAME"
                         android:textColor="#6A89DF"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        />
 
                     <EditText
                         android:id="@+id/activity_login_et_username"
@@ -129,7 +149,8 @@
                         android:paddingRight="5dp"
                         android:textCursorDrawable="@null"
                         android:textSize="14sp"
-                        android:theme="@style/EditText" />
+                        android:theme="@style/EditText"
+                        />
 
                     <View
                         android:id="@+id/activity_login_v_username_underline"
@@ -138,7 +159,8 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:background="#626262"
-                        android:textColorHint="#626262" />
+                        android:textColorHint="#626262"
+                        />
 
                     <TextView
                         fontPath="fonts/Montserrat-Regular.ttf"
@@ -147,7 +169,8 @@
                         android:layout_marginTop="15dp"
                         android:text="PASSWORD"
                         android:textColor="#6A89DF"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        />
 
                     <EditText
                         android:id="@+id/activity_login_et_password"
@@ -160,7 +183,8 @@
                         android:paddingRight="5dp"
                         android:textCursorDrawable="@null"
                         android:textSize="14sp"
-                        android:theme="@style/EditText" />
+                        android:theme="@style/EditText"
+                        />
 
                     <View
                         android:id="@+id/activity_login_v_password_underline"
@@ -169,12 +193,13 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:background="#626262"
-                        android:textColorHint="#626262" />
+                        android:textColorHint="#626262"
+                        />
 
                     <android.support.v4.widget.Space
                         android:layout_width="match_parent"
-                        android:layout_height="20dp" />
-
+                        android:layout_height="20dp"
+                        />
                 </LinearLayout>
 
                 <Button
@@ -188,19 +213,17 @@
                     android:enabled="false"
                     android:text="LOGIN"
                     android:textColor="@color/white_smoke"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    />
 
                 <android.support.v4.widget.Space
                     android:id="@+id/activity_login_v_bottom_space"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp" />
-
+                    android:layout_height="0dp"
+                    />
             </LinearLayout>
-
-        </ScrollView>
-
+        </org.hisp.india.trackercapture.widgets.NonFocusScrollView>
     </FrameLayout>
-
 </RelativeLayout>
 
 
