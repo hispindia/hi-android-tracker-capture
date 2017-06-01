@@ -1,6 +1,7 @@
 package org.hisp.india.trackercapture.services.task;
 
 import android.content.Intent;
+import android.os.SystemClock;
 
 import com.google.gson.Gson;
 import com.nhancv.ntask.AbstractTaskService;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by nhancao on 5/23/17.
@@ -31,71 +33,108 @@ import rx.Subscription;
 public class TaskService extends AbstractTaskService {
 
     public static EventBus bus = new EventBus();
+    private final int MAX_RETRY = 5;
     private Gson gson;
     private EventService eventService;
     private EnrollmentService enrollmentService;
     private TrackedEntityInstanceService trackedEntityInstanceService;
     private Subscription subscription;
-
     private ApplicationComponent applicationComponent;
 
     @Override
     protected void doing(Intent intent) {
         initComponent();
 
-        while (NTaskManager.hasNext()) {
+        doingLoop();
+
+        checkErrorTask();
+    }
+
+    private void checkErrorTask() {
+        if (NTaskManager.hasNext()) {
+            doingLoop();
+        } else {
+            int errorCount = (int) NTaskManager.getInstance().getCountByErrorStatus();
+            if (errorCount > 0) {
+                System.out.println("Failed tasks: " + errorCount);
+                NTaskManager.getInstance().resetStatusQueue();
+                System.out.println("Wait....");
+                SystemClock.sleep(5000);
+                doingLoop();
+            } else {
+                postBus(BusProgress.UP_QUEUE);
+                System.out.println("Done");
+            }
+        }
+    }
+
+    private void doingLoop() {
+        postBus(BusProgress.UP_QUEUE);
+        if (NTaskManager.hasNext()) {
             RTask rTask = NTaskManager.next();
             if (rTask != null) {
-                //Do something
-                System.out.println("Process: " + rTask.getId());
+                if (rTask.getRetryTime() > MAX_RETRY) {
+                    NTaskManager.completeTask(rTask);
+                    postBus(BusProgress.UP_QUEUE);
+                    System.out.println("Max retry limit -> remove task: " + rTask.getId());
+                } else {
+                    //Do something
+                    System.out.println("Process: " + rTask.getId());
 
-                TaskRequest taskRequest = gson.fromJson(rTask.getItemContent(), TaskRequest.class);
-                postBus(BusProgress.LOADING);
-                RxScheduler.onStop(subscription);
-                subscription = trackedEntityInstanceService
-                        .postTrackedEntityInstances(taskRequest.getTrackedEntityInstanceRequest())
-                        .compose(RxScheduler.applyIoSchedulers())
-                        .doOnTerminate(() -> postBus(BusProgress.FINISH))
-                        .flatMap(baseResponse -> {
-                            String trackedEntityInstanceId = baseResponse.getResponse().getReference();
-                            if (trackedEntityInstanceId != null) {
-                                taskRequest.getEnrollmentRequest().setTrackedEntityInstanceId(trackedEntityInstanceId);
-                                return enrollmentService.postEnrollments(taskRequest.getEnrollmentRequest())
-                                                        .compose(RxScheduler.applyIoSchedulers());
-                            } else {
-                                return Observable.just(baseResponse);
-                            }
-                        })
-                        .flatMap(enrollmentResponse -> {
-                            List<BaseResponse.Response> importSummaries = enrollmentResponse
-                                    .getResponse().getImportSummaries();
-
-                            if (importSummaries != null && importSummaries.size() > 0) {
-
-                                for (Event event : taskRequest.getEventList()) {
-                                    event.setEnrollmentId(
-                                            importSummaries.get(0).getReference());
-                                    event.setOrgUnitId(taskRequest.getEnrollmentRequest().getOrgUnitId());
-                                    event.setProgramId(taskRequest.getEnrollmentRequest().getProgramId());
-                                    event.setTrackedEntityInstanceId(
-                                            taskRequest.getEnrollmentRequest().getTrackedEntityInstanceId());
+                    TaskRequest taskRequest = gson.fromJson(rTask.getItemContent(), TaskRequest.class);
+                    postBus(BusProgress.LOADING);
+                    RxScheduler.onStop(subscription);
+                    subscription = trackedEntityInstanceService
+                            .postTrackedEntityInstances(taskRequest.getTrackedEntityInstanceRequest())
+                            .observeOn(Schedulers.computation())
+                            .flatMap(baseResponse -> {
+                                String trackedEntityInstanceId = baseResponse.getResponse().getReference();
+                                if (trackedEntityInstanceId != null) {
+                                    taskRequest.getEnrollmentRequest()
+                                               .setTrackedEntityInstanceId(trackedEntityInstanceId);
+                                    return enrollmentService.postEnrollments(taskRequest.getEnrollmentRequest())
+                                                            .compose(RxScheduler.applyIoSchedulers());
+                                } else {
+                                    return Observable.just(baseResponse);
                                 }
+                            })
+                            .flatMap(enrollmentResponse -> {
+                                List<BaseResponse.Response> importSummaries = enrollmentResponse
+                                        .getResponse().getImportSummaries();
 
-                                EventRequest eventRequest = new EventRequest(taskRequest.getEventList());
-                                return eventService.postEvents(eventRequest)
-                                                   .compose(RxScheduler.applyIoSchedulers());
+                                if (importSummaries != null && importSummaries.size() > 0) {
 
-                            } else {
-                                return Observable.just(enrollmentResponse);
-                            }
-                        })
-                        .subscribe(baseResponse -> {
-                                       postBus(BusProgress.SUCCESS);
-                                   },
-                                   throwable -> postBus(BusProgress.ERROR));
+                                    for (Event event : taskRequest.getEventList()) {
+                                        event.setEnrollmentId(
+                                                importSummaries.get(0).getReference());
+                                        event.setOrgUnitId(taskRequest.getEnrollmentRequest().getOrgUnitId());
+                                        event.setProgramId(taskRequest.getEnrollmentRequest().getProgramId());
+                                        event.setTrackedEntityInstanceId(
+                                                taskRequest.getEnrollmentRequest().getTrackedEntityInstanceId());
+                                    }
 
-                //Set complete if do succeed
-                NTaskManager.completeTask(rTask);
+                                    EventRequest eventRequest = new EventRequest(taskRequest.getEventList());
+                                    return eventService.postEvents(eventRequest)
+                                                       .compose(RxScheduler.applyIoSchedulers());
+
+                                } else {
+                                    return Observable.just(enrollmentResponse);
+                                }
+                            })
+                            .doOnCompleted(() -> {
+                                NTaskManager.completeTask(rTask);
+                                checkErrorTask();
+                            })
+                            .doOnError(throwable -> {
+                                NTaskManager.markTaskFailed(rTask);
+                                checkErrorTask();
+                            })
+                            .doOnTerminate(() -> postBus(BusProgress.FINISH))
+                            .compose(RxScheduler.applyIoSchedulers())
+                            .subscribe(baseResponse -> postBus(BusProgress.SUCCESS),
+                                       throwable -> postBus(BusProgress.ERROR));
+
+                }
             }
         }
     }

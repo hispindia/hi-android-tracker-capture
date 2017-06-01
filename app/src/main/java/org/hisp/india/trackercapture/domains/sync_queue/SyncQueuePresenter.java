@@ -2,6 +2,10 @@ package org.hisp.india.trackercapture.domains.sync_queue;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.hisp.india.trackercapture.services.task.BusProgress;
+import org.hisp.india.trackercapture.services.task.TaskService;
+
 import javax.inject.Inject;
 
 import ru.terrakok.cicerone.NavigatorHolder;
@@ -27,12 +31,27 @@ public class SyncQueuePresenter extends MvpBasePresenter<SyncQueueView> {
     public void attachView(SyncQueueView view) {
         super.attachView(view);
         navigatorHolder.setNavigator(view.getNavigator());
+        TaskService.bus.register(this);
     }
 
     @Override
     public void detachView(boolean retainInstance) {
         navigatorHolder.removeNavigator();
+        TaskService.bus.unregister(this);
         super.detachView(retainInstance);
+    }
+
+    @Subscribe
+    public void taskBusSubscribe(BusProgress busProgress) {
+        if (isViewAttached()) {
+            switch (busProgress) {
+                case UP_QUEUE:
+                    if (isViewAttached()) {
+                        getView().updateSyncQueue();
+                    }
+                    break;
+            }
+        }
     }
 
     public void onBackCommandClick() {

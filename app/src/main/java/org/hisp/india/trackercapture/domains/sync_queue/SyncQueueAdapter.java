@@ -5,12 +5,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.nhancv.ntask.RTask;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.models.request.TaskRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +33,10 @@ public class SyncQueueAdapter extends BaseAdapter {
         RxScheduler.onStop(subscription);
         subscription = Observable.unsafeCreate((Observable.OnSubscribe<List<QueueItem>>) subscriber -> {
             List<QueueItem> res = new ArrayList<>();
-            Gson gson = new Gson();
             for (RTask task : _taskList) {
                 String id = task.getId().substring(task.getId().length() / 4);
-                TaskRequest taskRequest = gson.fromJson(task.getItemContent(), TaskRequest.class);
-
                 QueueItem queueItem = new QueueItem(id,
-                                                    taskRequest.getEnrollmentRequest().getTrackedEntityInstanceId());
+                                                    "Status: " + task.getStatus() + " - Retry: " + task.getRetryTime());
                 res.add(queueItem);
             }
 
@@ -84,7 +79,9 @@ public class SyncQueueAdapter extends BaseAdapter {
 
         QueueItem task = getItem(position);
 
-        holder.tvLabel.setText(String.format("Task: %s", task.getId().substring(task.getId().length() / 3)));
+        String hashId = task.getId().substring(
+                task.getId().length() - ((task.getId().length() > 12) ? 12 : task.getId().length()));
+        holder.tvLabel.setText(String.format("Task: %s", hashId));
         holder.tvValue.setText(task.getValue());
 
         return convertView;

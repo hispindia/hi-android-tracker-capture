@@ -67,7 +67,7 @@ public class SyncQueueActivity extends BaseActivity<SyncQueueView, SyncQueuePres
         adapter = new SyncQueueAdapter();
         lvItem.setAdapter(adapter);
 
-        lvItem.post(() -> adapter.setTaskList(NTaskManager.getInstance().getTaskList()));
+        updateSyncQueue();
 
     }
 
@@ -80,6 +80,11 @@ public class SyncQueueActivity extends BaseActivity<SyncQueueView, SyncQueuePres
     @Override
     public Navigator getNavigator() {
         return navigator;
+    }
+
+    @Override
+    public void updateSyncQueue() {
+        lvItem.post(() -> adapter.setTaskList(NTaskManager.getInstance().getTaskList()));
     }
 
 

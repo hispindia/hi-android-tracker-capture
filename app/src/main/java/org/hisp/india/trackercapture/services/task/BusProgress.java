@@ -8,5 +8,6 @@ public enum BusProgress {
     LOADING,
     SUCCESS,
     ERROR,
-    FINISH
+    FINISH,
+    UP_QUEUE
 }
