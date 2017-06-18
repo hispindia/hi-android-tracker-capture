@@ -18,6 +18,8 @@ public interface LoginView extends MvpView {
      */
     void showLoading();
 
+    void showLoading(String msg);
+
     /**
      * Display a loading view while loading data in background.
      */

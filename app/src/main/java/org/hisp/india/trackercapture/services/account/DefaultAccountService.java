@@ -59,19 +59,7 @@ public class DefaultAccountService implements AccountService {
     @Override
     public Observable<User> login() {
         return networkProvider
-                .transformResponse(restService.login(
-                        "id,created,lastUpdated,name,displayName,firstName,surname,gender," +
-                        "birthday,introduction,education,employer,interests,jobTitle,languages," +
-                        "email,phoneNumber,organisationUnits[code,level,id,displayName,programs[" +
-                        "id,displayName,trackedEntity,withoutRegistration,programRuleVariables[*]," +
-                        "programStages[*,programStageDataElements[*,dataElement[*," +
-                        "optionSet[id,displayName,valueType,options[id,displayName]]]]]," +
-                        "programRules[*,programRuleActions[id,programRuleActionType]]," +
-                        "enrollmentDateLabel,selectEnrollmentDatesInFuture,incidentDateLabel," +
-                        "selectIncidentDatesInFuture,displayIncidentDate,programTrackedEntityAttributes[*," +
-                        "trackedEntityAttribute[id,displayName,optionSetValue," +
-                        "optionSet[id,displayName,valueType,options[id,displayName]]]]]]"
-                                                    ))
+                .transformResponse(restService.login())
                 .compose(new AuthenticationSuccessFilter(credentials).execute());
     }
 

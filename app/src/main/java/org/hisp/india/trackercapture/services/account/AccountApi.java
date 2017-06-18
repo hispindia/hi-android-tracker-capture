@@ -3,7 +3,6 @@ package org.hisp.india.trackercapture.services.account;
 import org.hisp.india.trackercapture.models.base.User;
 
 import retrofit2.http.GET;
-import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -12,8 +11,17 @@ import rx.Observable;
 
 public interface AccountApi {
 
-    @GET("api/me")
-    Observable<User> login(
-            @Query("fields")
-                    String fields);
+
+    @GET("api/me?fields=id,created,lastUpdated,name,displayName,firstName,surname,gender," +
+         "birthday,introduction,education,employer,interests,jobTitle,languages," +
+         "email,phoneNumber,organisationUnits[code,level,id,displayName,parent,programs[" +
+         "id,displayName,trackedEntity,withoutRegistration,programRuleVariables[*]," +
+         "programStages[*,programStageDataElements[*,dataElement[*," +
+         "optionSet[id,displayName,valueType,options[id,displayName]]]]]," +
+         "programRules[*,programRuleActions[id,programRuleActionType]]," +
+         "enrollmentDateLabel,selectEnrollmentDatesInFuture,incidentDateLabel," +
+         "selectIncidentDatesInFuture,displayIncidentDate,programTrackedEntityAttributes[*," +
+         "trackedEntityAttribute[id,displayName,optionSetValue," +
+         "optionSet[id,displayName,valueType,options[id,displayName]]]]]]")
+    Observable<User> login();
 }

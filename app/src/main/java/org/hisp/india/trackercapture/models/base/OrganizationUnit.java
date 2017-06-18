@@ -19,7 +19,7 @@ public class OrganizationUnit extends BaseModel implements Serializable {
     private String code;
 
     @SerializedName("parent")
-    private String parent;
+    private BaseModel parent;
 
     public List<Program> getPrograms() {
         return programs;
@@ -33,7 +33,7 @@ public class OrganizationUnit extends BaseModel implements Serializable {
         return level;
     }
 
-    public String getParent() {
+    public BaseModel getParent() {
         return parent;
     }
 

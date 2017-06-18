@@ -52,7 +52,8 @@
 
     <Space
         android:layout_width="wrap_content"
-        android:layout_height="56dp" />
+        android:layout_height="40dp"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/menu_drawer_rv_list"

@@ -50,11 +50,15 @@ public class RMapping {
         model.setCode(organizationUnit.getCode());
         model.setLevel(organizationUnit.getLevel());
         model.setPrograms(new RealmList<>());
-        model.setParent(organizationUnit.getParent());
-        for (Program program : organizationUnit.getPrograms()) {
-            RProgram item = from(program);
-            if (item != null) {
-                model.getPrograms().add(item);
+        if (organizationUnit.getParent() != null) {
+            model.setParent(organizationUnit.getParent().getId());
+        }
+        if (organizationUnit.getPrograms() != null) {
+            for (Program program : organizationUnit.getPrograms()) {
+                RProgram item = from(program);
+                if (item != null) {
+                    model.getPrograms().add(item);
+                }
             }
         }
 

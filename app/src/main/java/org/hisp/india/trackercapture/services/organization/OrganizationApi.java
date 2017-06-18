@@ -11,7 +11,7 @@ import rx.Observable;
 
 public interface OrganizationApi {
 
-    @GET("api/organisationUnits?paging=false")
+    @GET("api/organisationUnits?fields=id,displayName,code,level,parent&paging=false")
     Observable<OrganizationUnitsResponse> getOrganizationUnits();
 
 }

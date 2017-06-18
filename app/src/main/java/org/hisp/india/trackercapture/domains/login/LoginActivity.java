@@ -244,6 +244,11 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     }
 
     @Override
+    public void showLoading(String msg) {
+        showProgressLoading(msg);
+    }
+
+    @Override
     public void hideLoading() {
         hideProgressLoading();
     }
