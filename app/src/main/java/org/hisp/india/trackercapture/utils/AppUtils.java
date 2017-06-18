@@ -61,7 +61,7 @@ public class AppUtils {
      * Making notification bar transparent
      */
     public static void changeStatusBarColor(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= 19) {
             activity.getWindow()
                     .getDecorView()
                     .setSystemUiVisibility(
