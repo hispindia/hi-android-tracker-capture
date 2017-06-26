@@ -39,6 +39,9 @@ public class OrganizationQuery {
         });
     }
 
+    /**
+     * Insert or update org
+     */
     public static void insertOrUpdate(List<ROrganizationUnit> organizationUnitList) {
         RealmHelper.transaction(realm -> realm.insertOrUpdate(organizationUnitList));
     }
@@ -164,7 +167,7 @@ public class OrganizationQuery {
     /**
      * Get organization from local by id
      */
-    public static List<ROrganizationUnit> getOrganisationUnitID(final String id) {
+    public static List<ROrganizationUnit> getOrganisationUnitId(final String id) {
         return query(realm -> {
             RealmResults<ROrganizationUnit> realmResults = realm.where(ROrganizationUnit.class)
                                                                 .equalTo("displayName", id)
