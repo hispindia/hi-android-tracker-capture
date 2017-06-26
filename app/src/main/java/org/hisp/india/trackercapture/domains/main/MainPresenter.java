@@ -73,8 +73,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     }
 
     public void getOrganizations() {
-        List<ROrganizationUnit> tOrganizationUnits;
-        tOrganizationUnits = OrganizationQuery.getAllOrganization();
+        List<ROrganizationUnit> tOrganizationUnits = OrganizationQuery.getUserOrganizations();
         getView().showOrgList(tOrganizationUnits);
         if (tOrganizationUnits.size() > 0) {
             getView().showProgramList(tOrganizationUnits.get(0).getPrograms());
