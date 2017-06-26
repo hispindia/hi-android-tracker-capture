@@ -48,6 +48,20 @@ public class OptionDialog<T extends Model> extends DialogFragment {
     private OptionAdapter<T> adapter;
     private List<T> modelList;
 
+    public static Model createModel(final String id, final String displayName) {
+        return new Model() {
+            @Override
+            public String getId() {
+                return id;
+            }
+
+            @Override
+            public String getDisplayName() {
+                return displayName;
+            }
+        };
+    }
+
     public static <T extends Model> OptionDialog newInstance(List<T> modelList,
                                                              ItemClickListener<T> onItemClickListener) {
         OptionDialog<T> optionDialog = OptionDialog_.<T>builder().build();

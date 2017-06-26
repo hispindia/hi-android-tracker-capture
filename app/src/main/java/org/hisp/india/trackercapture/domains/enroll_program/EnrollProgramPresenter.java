@@ -3,12 +3,15 @@ package org.hisp.india.trackercapture.domains.enroll_program;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
+import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
+import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -78,5 +81,8 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
         router.navigateTo(Screens.ENROLL_PROGRAM_STAGE);
     }
 
+    public List<ROrganizationUnit> getAllOrganizations() {
+        return OrganizationQuery.getAllOrganization();
+    }
 
 }

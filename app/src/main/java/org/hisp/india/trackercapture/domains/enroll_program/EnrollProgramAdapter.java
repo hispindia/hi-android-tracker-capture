@@ -13,6 +13,7 @@ import org.hisp.india.trackercapture.models.base.BaseModel;
 import org.hisp.india.trackercapture.models.base.Model;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
+import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
@@ -31,11 +32,24 @@ public class EnrollProgramAdapter extends BaseAdapter {
     private String programName;
     private EnrollProgramActivity activity;
     private List<RProgramTrackedEntityAttribute> programTrackedEntityAttributeList;
+    private List<Model> organizationUnitList;
 
     public EnrollProgramAdapter(EnrollProgramActivity activity, String programName) {
         this.programName = programName;
         this.activity = activity;
         this.programTrackedEntityAttributeList = new ArrayList<>();
+        this.organizationUnitList = new ArrayList<>();
+    }
+
+    public EnrollProgramAdapter(EnrollProgramActivity activity, String programName,
+                                List<ROrganizationUnit> organizationUnitList) {
+        this(activity, programName);
+        if (organizationUnitList != null) {
+            for (ROrganizationUnit rOrganizationUnit : organizationUnitList) {
+                this.organizationUnitList
+                        .add(OptionDialog.createModel(rOrganizationUnit.getId(), rOrganizationUnit.getDisplayName()));
+            }
+        }
     }
 
     public List<RProgramTrackedEntityAttribute> getProgramTrackedEntityAttributeList() {
@@ -88,6 +102,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
         if (item.getTrackedEntityAttribute().isOptionSetValue()
             || item.getValueType() == ValueType.BOOLEAN
             || item.getValueType() == ValueType.DATE
+            || item.getValueType() == ValueType.ORGANISATION_UNIT
                 ) {
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);
@@ -165,6 +180,15 @@ public class EnrollProgramAdapter extends BaseAdapter {
                             v.clearFocus();
                             AppUtils.hideKeyBoard(v);
                             showOptionDialog(holder, modelList);
+                        }
+                    });
+                    break;
+                case ORGANISATION_UNIT:
+                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+                        if (hasFocus) {
+                            v.clearFocus();
+                            AppUtils.hideKeyBoard(v);
+                            showOptionDialog(holder, organizationUnitList);
                         }
                     });
                     break;
