@@ -23,6 +23,8 @@ import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hisp.india.trackercapture.models.e_num.ValueType.ORGANISATION_UNIT;
+
 /**
  * Created by nhancao on 5/10/17.
  */
@@ -46,8 +48,11 @@ public class EnrollProgramAdapter extends BaseAdapter {
         this(activity, programName);
         if (organizationUnitList != null) {
             for (ROrganizationUnit rOrganizationUnit : organizationUnitList) {
-                this.organizationUnitList
-                        .add(OptionDialog.createModel(rOrganizationUnit.getId(), rOrganizationUnit.getDisplayName()));
+                if (this.organizationUnitList.size() < 100) {
+                    this.organizationUnitList
+                            .add(OptionDialog
+                                         .createModel(rOrganizationUnit.getId(), rOrganizationUnit.getDisplayName()));
+                }
             }
         }
     }
@@ -102,7 +107,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
         if (item.getTrackedEntityAttribute().isOptionSetValue()
             || item.getValueType() == ValueType.BOOLEAN
             || item.getValueType() == ValueType.DATE
-            || item.getValueType() == ValueType.ORGANISATION_UNIT
+            || item.getValueType() == ORGANISATION_UNIT
                 ) {
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);

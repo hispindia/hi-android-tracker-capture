@@ -5,12 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        >
+    <!--<ScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:scrollbars="none"-->
+    <!--&gt;-->
 
         <LinearLayout
             android:id="@+id/activity_main_root_scroll"
@@ -165,7 +164,8 @@
                 <ListView
                     android:id="@+id/fragment_enroll_lv_profile"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:scrollbars="none"
                     >
                 </ListView>
@@ -191,5 +191,5 @@
                 android:textSize="18sp"
                 />
         </LinearLayout>
-    </ScrollView>
+    <!--</ScrollView>-->
 </RelativeLayout>

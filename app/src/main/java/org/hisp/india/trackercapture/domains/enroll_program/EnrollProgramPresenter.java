@@ -81,8 +81,8 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
         router.navigateTo(Screens.ENROLL_PROGRAM_STAGE);
     }
 
-    public List<ROrganizationUnit> getAllOrganizations() {
-        return OrganizationQuery.getAllOrganization();
+    public List<ROrganizationUnit> getTop100Organization() {
+        return OrganizationQuery.getTop100Organization();
     }
 
 }

@@ -40,6 +40,16 @@ public class OrganizationQuery {
     }
 
     /**
+     * Get top 100 row of org
+     */
+    public static List<ROrganizationUnit> getTop100Organization() {
+        return query(realm -> {
+            RealmResults<ROrganizationUnit> tOrganizationUnits = realm.where(ROrganizationUnit.class).findAll();
+            return realm.copyFromRealm(tOrganizationUnits.subList(0, Math.min(100, tOrganizationUnits.size())));
+        });
+    }
+
+    /**
      * Insert or update org
      */
     public static void insertOrUpdate(List<ROrganizationUnit> organizationUnitList) {

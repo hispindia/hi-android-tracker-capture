@@ -113,7 +113,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         //Setup toolbar
         toolbar.applyEnrollProgramUi(this, "Enroll", () -> presenter.onBackCommandClick());
 
-        adapter = new EnrollProgramAdapter(this, programName, presenter.getAllOrganizations());
+        adapter = new EnrollProgramAdapter(this, programName, presenter.getTop100Organization());
         lvProfile.setAdapter(adapter);
 
         lvProfile.post(() -> presenter.getProgramDetail(programId));
@@ -155,7 +155,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
             //Profile part
             adapter.setProgramTrackedEntityAttributeList(programDetail.getProgramTrackedEntityAttributes());
-            AppUtils.refreshListViewAsNonScroll(lvProfile);
+//            AppUtils.refreshListViewAsNonScroll(lvProfile);
             vRoot.setVisibility(View.VISIBLE);
         }
     }
