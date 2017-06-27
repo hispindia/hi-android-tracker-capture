@@ -1,10 +1,13 @@
 package org.hisp.india.trackercapture.domains.enroll_program;
 
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -15,6 +18,8 @@ import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
+import org.hisp.india.trackercapture.models.tmp.HeaderDateModel;
+import org.hisp.india.trackercapture.models.tmp.ItemModel;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
 import org.hisp.india.trackercapture.widgets.NTextChange;
@@ -23,7 +28,10 @@ import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.india.trackercapture.models.e_num.ValueType.ORGANISATION_UNIT;
+import static org.hisp.india.trackercapture.models.tmp.ItemModel.ENROLLMENT_DATE;
+import static org.hisp.india.trackercapture.models.tmp.ItemModel.FIELD_LIST;
+import static org.hisp.india.trackercapture.models.tmp.ItemModel.INCIDENT_DATE;
+import static org.hisp.india.trackercapture.models.tmp.ItemModel.REGISTER_BUTTON;
 
 /**
  * Created by nhancao on 5/10/17.
@@ -33,19 +41,38 @@ public class EnrollProgramAdapter extends BaseAdapter {
     private static final String TAG = EnrollProgramAdapter.class.getSimpleName();
     private String programName;
     private EnrollProgramActivity activity;
-    private List<RProgramTrackedEntityAttribute> programTrackedEntityAttributeList;
+    private List<ItemModel> modelList;
     private List<Model> organizationUnitList;
-
-    public EnrollProgramAdapter(EnrollProgramActivity activity, String programName) {
-        this.programName = programName;
-        this.activity = activity;
-        this.programTrackedEntityAttributeList = new ArrayList<>();
-        this.organizationUnitList = new ArrayList<>();
-    }
+    private EnrollProgramCallBack enrollProgramCallBack;
 
     public EnrollProgramAdapter(EnrollProgramActivity activity, String programName,
-                                List<ROrganizationUnit> organizationUnitList) {
-        this(activity, programName);
+                                EnrollProgramCallBack enrollProgramCallBack) {
+        this.programName = programName;
+        this.activity = activity;
+        this.modelList = new ArrayList<>();
+        this.organizationUnitList = new ArrayList<>();
+        this.enrollProgramCallBack = enrollProgramCallBack;
+    }
+
+    public String getIncidentDateValue() {
+        for (ItemModel itemModel : modelList) {
+            if (itemModel.getType() == INCIDENT_DATE) {
+                return itemModel.getHeaderDateModel().getValue();
+            }
+        }
+        return null;
+    }
+
+    public String getEnrollmentDateValue() {
+        for (ItemModel itemModel : modelList) {
+            if (itemModel.getType() == ENROLLMENT_DATE) {
+                return itemModel.getHeaderDateModel().getValue();
+            }
+        }
+        return null;
+    }
+
+    public void setOrganizationUnitList(List<ROrganizationUnit> organizationUnitList) {
         if (organizationUnitList != null) {
             for (ROrganizationUnit rOrganizationUnit : organizationUnitList) {
                 if (this.organizationUnitList.size() < 100) {
@@ -57,24 +84,39 @@ public class EnrollProgramAdapter extends BaseAdapter {
         }
     }
 
-    public List<RProgramTrackedEntityAttribute> getProgramTrackedEntityAttributeList() {
-        return programTrackedEntityAttributeList;
+    public void setModelList(List<ItemModel> modelList) {
+        this.modelList = modelList;
+        notifyDataSetChanged();
     }
 
-    public void setProgramTrackedEntityAttributeList(
-            List<RProgramTrackedEntityAttribute> programTrackedEntityAttributeList) {
-        this.programTrackedEntityAttributeList = programTrackedEntityAttributeList;
-        notifyDataSetChanged();
+    public List<RProgramTrackedEntityAttribute> getProgramTrackedEntityAttributeList() {
+        List<RProgramTrackedEntityAttribute> res = new ArrayList<>();
+        for (ItemModel itemModel : modelList) {
+            if (itemModel.getType() == FIELD_LIST) {
+                res.add(itemModel.getProgramTrackedEntityAttribute());
+            }
+        }
+        return res;
     }
 
     @Override
     public int getCount() {
-        return programTrackedEntityAttributeList.size();
+        return modelList.size();
     }
 
     @Override
-    public RProgramTrackedEntityAttribute getItem(int position) {
-        return programTrackedEntityAttributeList.get(position);
+    public int getItemViewType(int position) {
+        return getItem(position).getType();
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 4;
+    }
+
+    @Override
+    public ItemModel getItem(int position) {
+        return modelList.get(position);
     }
 
     @Override
@@ -84,9 +126,55 @@ public class EnrollProgramAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+
+        ItemModel itemModel = getItem(position);
+        switch (itemModel.getType()) {
+            case INCIDENT_DATE:
+                convertView = handleHeaderDateViewHolder(position, convertView, parent);
+                break;
+            case ENROLLMENT_DATE:
+                convertView = handleHeaderDateViewHolder(position, convertView, parent);
+                break;
+            case FIELD_LIST:
+                convertView = handleFieldListViewHolder(position, convertView, parent);
+                break;
+            case REGISTER_BUTTON:
+                convertView = handleButtonViewHolder(position, convertView, parent);
+                break;
+        }
+
+
+        return convertView;
+    }
+
+
+    @NonNull
+    private View handleButtonViewHolder(int position, View convertView, ViewGroup parent) {
+        ButtonViewHolder holder;
         if (convertView == null) {
-            holder = new ViewHolder();
+            holder = new ButtonViewHolder();
+            convertView = View.inflate(parent.getContext(), R.layout.item_enroll_profile_button, null);
+            holder.btRegister = (Button) convertView.findViewById(R.id.item_enroll_profile_btn_register);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ButtonViewHolder) convertView.getTag();
+        }
+        holder.btRegister.setOnClickListener(v -> {
+            Log.e(TAG, "handleButtonViewHolder: btRegister");
+            if (enrollProgramCallBack != null) {
+                enrollProgramCallBack.registerClick();
+            }
+        });
+
+        return convertView;
+    }
+
+    @NonNull
+    private View handleHeaderDateViewHolder(int position, View convertView, ViewGroup parent) {
+        FieldListViewHolder holder;
+        if (convertView == null) {
+            holder = new FieldListViewHolder();
             convertView = View.inflate(parent.getContext(), R.layout.item_enroll_profile, null);
             holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
             holder.tvMandatory = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_mandatory);
@@ -95,11 +183,56 @@ public class EnrollProgramAdapter extends BaseAdapter {
 
             convertView.setTag(holder);
         } else {
-            holder = (ViewHolder) convertView.getTag();
+            holder = (FieldListViewHolder) convertView.getTag();
+        }
+        holder.ref = position;
+        holder.tvValue.setVisibility(View.VISIBLE);
+        holder.etValue.setVisibility(View.GONE);
+
+        HeaderDateModel model = getItem(holder.ref).getHeaderDateModel();
+
+        holder.tvLabel.setText(model.getLabel());
+        holder.tvMandatory.setVisibility(View.VISIBLE);
+        holder.tvValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
+            @Override
+            public void after(Editable editable) {
+                getItem(holder.ref).getHeaderDateModel().setValue(editable.toString());
+            }
+        }));
+        holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.clearFocus();
+                AppUtils.hideKeyBoard(v);
+                //Show date picker
+                DatePickerDialog datePicker = DatePickerDialog.newInstance(model.isAllowFutureDate());
+                datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
+                    holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
+                    getItem(holder.ref).getHeaderDateModel().setValue(holder.tvValue.getText().toString());
+                });
+                datePicker.show(activity.getSupportFragmentManager());
+            }
+        });
+        return convertView;
+    }
+
+    @NonNull
+    private View handleFieldListViewHolder(int position, View convertView, ViewGroup parent) {
+        FieldListViewHolder holder;
+        if (convertView == null) {
+            holder = new FieldListViewHolder();
+            convertView = View.inflate(parent.getContext(), R.layout.item_enroll_profile, null);
+            holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
+            holder.tvMandatory = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_mandatory);
+            holder.etValue = (EditText) convertView.findViewById(R.id.item_enroll_profile_et_value);
+            holder.tvValue = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_value);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (FieldListViewHolder) convertView.getTag();
         }
         holder.ref = position;
 
-        RProgramTrackedEntityAttribute item = getItem(holder.ref);
+        RProgramTrackedEntityAttribute item = getItem(holder.ref).getProgramTrackedEntityAttribute();
 
         holder.tvLabel.setText(item.getDisplayName().replace(programName + " ", ""));
         holder.tvMandatory.setVisibility(item.isMandatory() ? View.VISIBLE : View.GONE);
@@ -107,7 +240,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
         if (item.getTrackedEntityAttribute().isOptionSetValue()
             || item.getValueType() == ValueType.BOOLEAN
             || item.getValueType() == ValueType.DATE
-            || item.getValueType() == ORGANISATION_UNIT
+            || item.getValueType() == ValueType.ORGANISATION_UNIT
                 ) {
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);
@@ -117,7 +250,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
             holder.tvValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
                 @Override
                 public void after(Editable editable) {
-                    getItem(holder.ref).setValue(editable.toString());
+                    getItem(holder.ref).getProgramTrackedEntityAttribute().setValue(editable.toString());
                 }
             }));
         } else {
@@ -129,7 +262,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
             holder.etValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
                 @Override
                 public void after(Editable editable) {
-                    getItem(holder.ref).setValue(editable.toString());
+                    getItem(holder.ref).getProgramTrackedEntityAttribute().setValue(editable.toString());
                 }
             }));
         }
@@ -202,35 +335,41 @@ public class EnrollProgramAdapter extends BaseAdapter {
                     break;
             }
         }
-
-
         return convertView;
     }
 
-    private void showOptionDialog(ViewHolder holder, List<Model> modelList) {
+    private void showOptionDialog(FieldListViewHolder holder, List<Model> modelList) {
         OptionDialog.newInstance(modelList, model -> {
             holder.tvValue.setText(model.getDisplayName());
-            getItem(holder.ref).setValue(holder.tvValue.getText().toString());
+            getItem(holder.ref).getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());
         }).show(activity.getSupportFragmentManager());
     }
 
-    private void showDatePickerDialog(ViewHolder holder, RProgramTrackedEntityAttribute item) {
+    private void showDatePickerDialog(FieldListViewHolder holder, RProgramTrackedEntityAttribute item) {
         DatePickerDialog
                 datePicker = DatePickerDialog
                 .newInstance(item.isAllowFutureDate());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
             holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-            getItem(holder.ref).setValue(holder.tvValue.getText().toString());
+            getItem(holder.ref).getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());
         });
         datePicker.show(activity.getSupportFragmentManager());
     }
 
-    private class ViewHolder {
+    public interface EnrollProgramCallBack {
+        void registerClick();
+    }
+
+    private class FieldListViewHolder {
         private TextView tvLabel;
         private TextView tvMandatory;
         private EditText etValue;
         private TextView tvValue;
         private int ref;
+    }
+
+    private class ButtonViewHolder {
+        private Button btRegister;
     }
 
 }

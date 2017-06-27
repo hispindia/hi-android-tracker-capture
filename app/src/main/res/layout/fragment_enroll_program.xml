@@ -5,191 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-    <!--<ScrollView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:scrollbars="none"-->
-    <!--&gt;-->
+
+    <LinearLayout
+        android:id="@+id/activity_main_root_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        tools:ignore="MissingPrefix"
+        >
 
         <LinearLayout
-            android:id="@+id/activity_main_root_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_dialog"
             android:orientation="vertical"
-            android:visibility="invisible"
-            tools:ignore="MissingPrefix"
             >
 
-            <LinearLayout
+            <ListView
+                android:id="@+id/fragment_enroll_lv_profile"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/bg_dialog"
-                android:orientation="vertical"
-                android:paddingBottom="25dp"
+                android:layout_height="match_parent"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
-                android:paddingTop="10dp"
+                android:scrollbars="none"
                 >
-
-                <LinearLayout
-                    android:id="@+id/fragment_enroll_incident_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
-                    >
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        >
-
-                        <TextView
-                            android:id="@+id/fragment_enroll_tv_incident_date_label"
-                            fontPath="fonts/Montserrat-Regular.ttf"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:text="Date of incident"
-                            android:textColor="#6A89DF"
-                            android:textSize="16sp"
-                            />
-
-                        <TextView
-                            fontPath="fonts/Montserrat-Regular.ttf"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:text="*"
-                            android:textColor="@android:color/holo_red_dark"
-                            android:textSize="16sp"
-                            />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/fragment_enroll_tv_incident_date_value"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:background="@android:color/transparent"
-                        android:focusable="true"
-                        android:gravity="center_vertical"
-                        android:hint="Select"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:textColor="@android:color/black"
-                        android:textCursorDrawable="@null"
-                        android:textSize="14sp"
-                        android:theme="@style/EditText"
-                        />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:background="#626262"
-                        android:textColorHint="#626262"
-                        />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/fragment_enroll_enrollment_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    >
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        >
-
-                        <TextView
-                            android:id="@+id/fragment_enroll_tv_enrollment_date_label"
-                            fontPath="fonts/Montserrat-Regular.ttf"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:text="Date of enrollment"
-                            android:textColor="#6A89DF"
-                            android:textSize="16sp"
-                            />
-
-                        <TextView
-                            fontPath="fonts/Montserrat-Regular.ttf"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:text="*"
-                            android:textColor="@android:color/holo_red_dark"
-                            android:textSize="16sp"
-                            />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/fragment_enroll_tv_enrollment_date_value"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:background="@android:color/transparent"
-                        android:focusable="true"
-                        android:gravity="center_vertical"
-                        android:hint="Select"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:textColor="@android:color/black"
-                        android:textCursorDrawable="@null"
-                        android:textSize="14sp"
-                        android:theme="@style/EditText"
-                        />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
-                        android:background="#626262"
-                        android:textColorHint="#626262"
-                        />
-                </LinearLayout>
-
-                <ListView
-                    android:id="@+id/fragment_enroll_lv_profile"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:scrollbars="none"
-                    >
-                </ListView>
-
-                <android.support.v4.widget.Space
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/activity_login_bt_register"
-                fontPath="fonts/Montserrat-Medium.ttf"
-                android:layout_width="188dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="-25dp"
-                android:background="@drawable/bg_bt_login"
-                android:enabled="true"
-                android:text="Register"
-                android:textColor="@color/white_smoke"
-                android:textSize="18sp"
-                />
+            </ListView>
         </LinearLayout>
-    <!--</ScrollView>-->
+    </LinearLayout>
 </RelativeLayout>

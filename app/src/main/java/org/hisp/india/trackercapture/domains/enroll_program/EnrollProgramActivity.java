@@ -4,30 +4,29 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
-import org.androidannotations.annotations.FocusChange;
 import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity_;
+import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.request.AttributeRequest;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
+import org.hisp.india.trackercapture.models.tmp.ItemModel;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
-import org.hisp.india.trackercapture.widgets.DatePickerDialog;
 import org.hisp.india.trackercapture.widgets.NToolbar;
 
 import java.util.ArrayList;
@@ -46,18 +45,6 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
     @ViewById(R.id.activity_enroll_program_toolbar)
     protected NToolbar toolbar;
-    @ViewById(R.id.fragment_enroll_incident_date)
-    protected View vIncidentDate;
-    @ViewById(R.id.fragment_enroll_enrollment_date)
-    protected View vEnrollmentDate;
-    @ViewById(R.id.fragment_enroll_tv_incident_date_label)
-    protected TextView tvIncidentDateLabel;
-    @ViewById(R.id.fragment_enroll_tv_incident_date_value)
-    protected TextView tvIncidentDateValue;
-    @ViewById(R.id.fragment_enroll_tv_enrollment_date_label)
-    protected TextView tvEnrollmentDateLabel;
-    @ViewById(R.id.fragment_enroll_tv_enrollment_date_value)
-    protected TextView tvEnrollmentDateValue;
     @ViewById(R.id.fragment_enroll_lv_profile)
     protected ListView lvProfile;
     @ViewById(R.id.activity_main_root_scroll)
@@ -79,7 +66,6 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
     private EnrollmentRequest enrollmentRequest;
     private TrackedEntityInstanceRequest trackedEntityInstanceRequest;
-
 
     private Navigator navigator = command -> {
         if (command instanceof Back) {
@@ -113,7 +99,9 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         //Setup toolbar
         toolbar.applyEnrollProgramUi(this, "Enroll", () -> presenter.onBackCommandClick());
 
-        adapter = new EnrollProgramAdapter(this, programName, presenter.getTop100Organization());
+        adapter = new EnrollProgramAdapter(this, programName, () -> {
+            btRegisterClick();
+        });
         lvProfile.setAdapter(adapter);
 
         lvProfile.post(() -> presenter.getProgramDetail(programId));
@@ -147,17 +135,37 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             Toast.makeText(application, "Program detail is null", Toast.LENGTH_SHORT).show();
         } else {
             this.programDetail = programDetail;
-            //Build form
-            //Enrollment part
-            vIncidentDate.setVisibility(programDetail.isDisplayIncidentDate() ? View.VISIBLE : View.GONE);
-            tvIncidentDateLabel.setText(programDetail.getIncidentDateLabel());
-            tvEnrollmentDateLabel.setText(programDetail.getEnrollmentDateLabel());
 
-            //Profile part
-            adapter.setProgramTrackedEntityAttributeList(programDetail.getProgramTrackedEntityAttributes());
-//            AppUtils.refreshListViewAsNonScroll(lvProfile);
-            vRoot.setVisibility(View.VISIBLE);
+            List<ItemModel> itemModels = new ArrayList<>();
+            if (programDetail.isDisplayIncidentDate()) {
+                itemModels.add(ItemModel.createIncidentDate(programDetail.getIncidentDateLabel(),
+                                                            programDetail.isSelectIncidentDatesInFuture()));
+            }
+            itemModels.add(ItemModel.createEnrollmentDate(programDetail.getEnrollmentDateLabel(),
+                                                          programDetail.isSelectEnrollmentDatesInFuture()));
+
+            boolean includeOrganizationUnit = false;
+            for (RProgramTrackedEntityAttribute rProgramTrackedEntityAttribute : programDetail
+                    .getProgramTrackedEntityAttributes()) {
+                itemModels.add(ItemModel.createRegisterFieldItem(rProgramTrackedEntityAttribute));
+                if (rProgramTrackedEntityAttribute.getValueType() == ValueType.ORGANISATION_UNIT) {
+                    includeOrganizationUnit = true;
+                }
+            }
+            itemModels.add(ItemModel.createRegisterButton());
+            adapter.setModelList(itemModels);
+            if (includeOrganizationUnit) {
+                presenter.getTop100Organization();
+            } else {
+                vRoot.setVisibility(View.VISIBLE);
+            }
         }
+    }
+
+    @Override
+    public void getOrganizationUnitList(List<ROrganizationUnit> organizationUnitList) {
+        adapter.setOrganizationUnitList(organizationUnitList);
+        vRoot.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -166,35 +174,6 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         Toast.makeText(application, baseResponse.toString(), Toast.LENGTH_SHORT).show();
     }
 
-    @Click(R.id.fragment_enroll_tv_incident_date_value)
-    void tvIncidentDateValueClick() {
-        DatePickerDialog datePicker = DatePickerDialog.newInstance(programDetail.isSelectIncidentDatesInFuture());
-        datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-            tvIncidentDateValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-        });
-        datePicker.show(getSupportFragmentManager());
-    }
-
-    @Click(R.id.fragment_enroll_tv_enrollment_date_value)
-    void tvEnrollmentDateValueClick() {
-        DatePickerDialog datePicker = DatePickerDialog.newInstance(programDetail.isSelectEnrollmentDatesInFuture());
-        datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
-            tvEnrollmentDateValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-        });
-        datePicker.show(getSupportFragmentManager());
-    }
-
-    @FocusChange(R.id.fragment_enroll_tv_incident_date_value)
-    void tvIncidentDateValueFocus() {
-        tvIncidentDateValueClick();
-    }
-
-    @FocusChange(R.id.fragment_enroll_tv_enrollment_date_value)
-    void tvEnrollmentDateValueFocus() {
-        tvEnrollmentDateValueClick();
-    }
-
-    @Click(R.id.activity_login_bt_register)
     void btRegisterClick() {
 
         boolean checkForm = true;
@@ -218,8 +197,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
             enrollmentRequest = new EnrollmentRequest(programId,
                                                       organizationUnitId,
-                                                      tvEnrollmentDateValue.getText().toString(),
-                                                      tvIncidentDateValue.getText().toString());
+                                                      adapter.getEnrollmentDateValue(),
+                                                      adapter.getIncidentDateValue());
             presenter.gotoProgramStage();
         } else {
             enrollmentRequest = null;

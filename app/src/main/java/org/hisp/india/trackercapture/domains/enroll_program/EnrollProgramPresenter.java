@@ -3,7 +3,6 @@ package org.hisp.india.trackercapture.domains.enroll_program;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
-import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
@@ -11,7 +10,6 @@ import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -64,7 +62,7 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
         if (isViewAttached()) {
             Observable
                     .defer(() -> Observable.just(ProgramQuery.getProgram(programId))
-                                           .delay(500, TimeUnit.MILLISECONDS)
+                                           .delay(100, TimeUnit.MILLISECONDS)
                                            .compose(RxScheduler.applyLogicSchedulers())
                                            .doOnSubscribe(() -> getView().showLoading())
                                            .doOnTerminate(() -> getView().hideLoading()))
@@ -81,8 +79,17 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
         router.navigateTo(Screens.ENROLL_PROGRAM_STAGE);
     }
 
-    public List<ROrganizationUnit> getTop100Organization() {
-        return OrganizationQuery.getTop100Organization();
+    public void getTop100Organization() {
+        if (isViewAttached()) {
+            Observable
+                    .defer(() -> Observable.just(OrganizationQuery.getTop100Organization())
+                                           .delay(100, TimeUnit.MILLISECONDS)
+                                           .compose(RxScheduler.applyLogicSchedulers())
+                                           .doOnSubscribe(() -> getView().showLoading())
+                                           .doOnTerminate(() -> getView().hideLoading()))
+                    .subscribe(organizationUnitList -> getView().getOrganizationUnitList(organizationUnitList));
+
+        }
     }
 
 }
