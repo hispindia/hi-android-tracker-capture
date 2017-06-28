@@ -11,6 +11,8 @@ import rx.Observable;
 
 public interface AccountService {
 
+    void setRestService(AccountApi accountApi);
+
     Credentials getCredentials();
 
     void updateCredentialHost(String host);

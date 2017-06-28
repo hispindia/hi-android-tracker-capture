@@ -10,6 +10,8 @@ import rx.Observable;
 
 public interface ProgramRuleVariableService {
 
+    void setRestService(ProgramRuleVariableApi programRuleVariableApi);
+
     Observable<ProgramRuleVariablesResponse> getProgramRuleVariables();
 
 }

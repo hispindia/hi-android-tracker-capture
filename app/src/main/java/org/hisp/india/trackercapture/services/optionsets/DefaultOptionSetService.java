@@ -2,7 +2,6 @@ package org.hisp.india.trackercapture.services.optionsets;
 
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.response.OptionSetsResponse;
-import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 
 import rx.Observable;
 
@@ -14,20 +13,21 @@ public class DefaultOptionSetService implements OptionSetService {
 
     private NetworkProvider networkProvider;
     private OptionSetApi restService;
-    private ApiErrorFilter apiErrorFilter;
 
     public DefaultOptionSetService(NetworkProvider networkProvider,
-                                   OptionSetApi restService,
-                                   ApiErrorFilter apiErrorFilter) {
+                                   OptionSetApi restService) {
         this.networkProvider = networkProvider;
         this.restService = restService;
-        this.apiErrorFilter = apiErrorFilter;
+    }
+
+    @Override
+    public void setRestService(OptionSetApi optionSetApi) {
+        restService = optionSetApi;
     }
 
     @Override
     public Observable<OptionSetsResponse> getOptionSets() {
         return networkProvider
-                .transformResponse(restService.getOptionSets())
-                .compose(apiErrorFilter.execute());
+                .transformResponse(restService.getOptionSets());
     }
 }

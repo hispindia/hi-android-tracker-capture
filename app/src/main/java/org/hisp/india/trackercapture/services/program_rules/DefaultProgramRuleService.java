@@ -2,7 +2,6 @@ package org.hisp.india.trackercapture.services.program_rules;
 
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.response.ProgramRulesResponse;
-import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 
 import rx.Observable;
 
@@ -14,20 +13,21 @@ public class DefaultProgramRuleService implements ProgramRuleService {
 
     private NetworkProvider networkProvider;
     private ProgramRuleApi restService;
-    private ApiErrorFilter apiErrorFilter;
 
     public DefaultProgramRuleService(NetworkProvider networkProvider,
-                                     ProgramRuleApi restService,
-                                     ApiErrorFilter apiErrorFilter) {
+                                     ProgramRuleApi restService) {
         this.networkProvider = networkProvider;
         this.restService = restService;
-        this.apiErrorFilter = apiErrorFilter;
+    }
+
+    @Override
+    public void setRestService(ProgramRuleApi programRuleApi) {
+        restService = programRuleApi;
     }
 
     @Override
     public Observable<ProgramRulesResponse> getProgramRules() {
         return networkProvider
-                .transformResponse(restService.getProgramRules())
-                .compose(apiErrorFilter.execute());
+                .transformResponse(restService.getProgramRules());
     }
 }

@@ -256,7 +256,6 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     @Override
     public void loginSuccessful(User user) {
         Toast.makeText(application, "Login success", Toast.LENGTH_SHORT).show();
-        application.refreshApplicationModule();
     }
 
     @Override

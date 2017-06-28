@@ -22,6 +22,11 @@ public class DefaultEventService implements EventService {
     }
 
     @Override
+    public void setRestService(EventApi eventApi) {
+
+    }
+
+    @Override
     public Observable<BaseResponse> postEvents(EventRequest eventRequest) {
         return networkProvider
                 .transformResponse(restService.getEvents(eventRequest));

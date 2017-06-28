@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture.di;
 import org.hisp.india.core.di.scope.ApplicationScope;
 import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.NetworkProvider;
+import org.hisp.india.trackercapture.services.RefreshCredentialService;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.events.EventService;
@@ -35,4 +36,6 @@ public interface ApplicationComponent {
     EnrollmentService enrollmentService();
 
     EventService eventService();
+
+    RefreshCredentialService refreshCredentialService();
 }

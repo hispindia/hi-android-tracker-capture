@@ -10,6 +10,8 @@ import rx.Observable;
 
 public interface ProgramRuleActionService {
 
+    void setRestService(ProgramRuleActionApi programRuleActionApi);
+
     Observable<ProgramRuleActionsResponse> getProgramRuleActions();
 
 }

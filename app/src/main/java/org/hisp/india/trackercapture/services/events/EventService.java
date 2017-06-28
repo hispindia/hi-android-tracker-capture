@@ -11,6 +11,8 @@ import rx.Observable;
 
 public interface EventService {
 
+    void setRestService(EventApi eventApi);
+
     Observable<BaseResponse> postEvents(EventRequest eventRequest);
 
 }

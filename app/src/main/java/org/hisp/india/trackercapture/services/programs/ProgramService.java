@@ -11,6 +11,8 @@ import rx.Observable;
 
 public interface ProgramService {
 
+    void setRestService(ProgramApi programApi);
+
     Observable<ProgramsResponse> getPrograms();
 
     Observable<Program> getProgramDetail(String programId);

@@ -8,6 +8,7 @@ import org.hisp.india.trackercapture.models.base.OrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RMapping;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.navigator.Screens;
+import org.hisp.india.trackercapture.services.RefreshCredentialService;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.utils.RealmHelper;
@@ -38,7 +39,8 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
     protected AccountService accountService;
     @Inject
     protected OrganizationService organizationService;
-
+    @Inject
+    protected RefreshCredentialService refreshCredentialService;
 
     protected Subscription subscription;
 
@@ -73,6 +75,7 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
     public void updateCredentialTokenAndLogin(String username, String password) {
         try {
             accountService.updateCredentialToken(username, password);
+            refreshCredentialService.updateCredentialToken();
             login();
         } catch (Exception e) {
             getView().showErrorMessage(e.getMessage());

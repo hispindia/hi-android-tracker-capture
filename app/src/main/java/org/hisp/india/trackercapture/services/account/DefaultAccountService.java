@@ -26,6 +26,11 @@ public class DefaultAccountService implements AccountService {
     }
 
     @Override
+    public void setRestService(AccountApi accountApi) {
+        restService = accountApi;
+    }
+
+    @Override
     public Credentials getCredentials() {
         return credentials;
     }

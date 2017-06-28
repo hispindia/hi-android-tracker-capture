@@ -25,6 +25,11 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
     }
 
     @Override
+    public void setRestService(TrackedEntityInstanceApi trackedEntityInstanceApi) {
+        restService = trackedEntityInstanceApi;
+    }
+
+    @Override
     public Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances() {
         return networkProvider
                 .transformResponse(restService.getTrackedEntityInstances());

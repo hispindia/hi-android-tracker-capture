@@ -10,6 +10,8 @@ import rx.Observable;
 
 public interface OptionSetService {
 
+    void setRestService(OptionSetApi optionSetApi);
+
     Observable<OptionSetsResponse> getOptionSets();
 
 }

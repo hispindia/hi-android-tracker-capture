@@ -14,6 +14,8 @@ import rx.Observable;
 
 public interface TrackedEntityInstanceService {
 
+    void setRestService(TrackedEntityInstanceApi trackedEntityInstanceApi);
+
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances();
 
     Observable<BaseResponse> postTrackedEntityInstances(TrackedEntityInstanceRequest trackedEntityInstanceRequest);

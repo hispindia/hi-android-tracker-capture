@@ -10,6 +10,8 @@ import rx.Observable;
 
 public interface OrganizationService {
 
+    void setRestService(OrganizationApi organizationApi);
+
     Observable<OrganizationUnitsResponse> getOrganizationUnits();
 
 }

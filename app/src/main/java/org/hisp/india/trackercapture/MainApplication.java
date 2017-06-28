@@ -51,7 +51,7 @@ public class MainApplication extends MultiDexApplication {
         Mint.disableNetworkMonitoring();
         Mint.initAndStartSession(this, "d80c7dbf");
 
-        refreshApplicationModule();
+        setApplicationComponent(getApplicationModuleInstance());
 
         //The Realm file will be located in Context.getFilesDir() with name "default.realm"
         initRealmConfig();
@@ -106,11 +106,7 @@ public class MainApplication extends MultiDexApplication {
         this.applicationComponent = applicationComponent;
     }
 
-    public void refreshApplicationModule() {
-        setApplicationComponent(getNewApplicationModuleInstance());
-    }
-
-    private ApplicationComponent getNewApplicationModuleInstance() {
+    private ApplicationComponent getApplicationModuleInstance() {
         return DaggerApplicationComponent
                 .builder()
                 .applicationModule(new ApplicationModule(this))

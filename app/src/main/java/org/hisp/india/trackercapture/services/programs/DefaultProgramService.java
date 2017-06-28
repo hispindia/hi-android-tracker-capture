@@ -22,6 +22,11 @@ public class DefaultProgramService implements ProgramService {
     }
 
     @Override
+    public void setRestService(ProgramApi programApi) {
+        restService = programApi;
+    }
+
+    @Override
     public Observable<ProgramsResponse> getPrograms() {
         return networkProvider
                 .transformResponse(restService.getPrograms());

@@ -22,6 +22,11 @@ public class DefaultEnrollmentService implements EnrollmentService {
     }
 
     @Override
+    public void setRestService(EnrollmentApi enrollmentApi) {
+        restService = enrollmentApi;
+    }
+
+    @Override
     public Observable<BaseResponse> postEnrollments(EnrollmentRequest enrollmentRequest) {
         return networkProvider
                 .transformResponse(restService.postEnrollments(enrollmentRequest));

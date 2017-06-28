@@ -13,9 +13,13 @@ import org.hisp.india.core.services.network.DefaultNetworkProvider;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.BuildConfig;
 import org.hisp.india.trackercapture.models.base.Credentials;
+import org.hisp.india.trackercapture.services.RefreshCredentialService;
 import org.hisp.india.trackercapture.services.account.AccountApi;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.account.DefaultAccountService;
+import org.hisp.india.trackercapture.services.constants.ConstantApi;
+import org.hisp.india.trackercapture.services.constants.ConstantService;
+import org.hisp.india.trackercapture.services.constants.DefaultConstantService;
 import org.hisp.india.trackercapture.services.enrollments.DefaultEnrollmentService;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentApi;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
@@ -23,12 +27,33 @@ import org.hisp.india.trackercapture.services.events.DefaultEventService;
 import org.hisp.india.trackercapture.services.events.EventApi;
 import org.hisp.india.trackercapture.services.events.EventService;
 import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
+import org.hisp.india.trackercapture.services.optionsets.DefaultOptionSetService;
+import org.hisp.india.trackercapture.services.optionsets.OptionSetApi;
+import org.hisp.india.trackercapture.services.optionsets.OptionSetService;
 import org.hisp.india.trackercapture.services.organization.DefaultOrganizationService;
 import org.hisp.india.trackercapture.services.organization.OrganizationApi;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
+import org.hisp.india.trackercapture.services.program_rule_actions.DefaultProgramRuleActionService;
+import org.hisp.india.trackercapture.services.program_rule_actions.ProgramRuleActionApi;
+import org.hisp.india.trackercapture.services.program_rule_actions.ProgramRuleActionService;
+import org.hisp.india.trackercapture.services.program_rule_variables.DefaultProgramRuleVariableService;
+import org.hisp.india.trackercapture.services.program_rule_variables.ProgramRuleVariableApi;
+import org.hisp.india.trackercapture.services.program_rule_variables.ProgramRuleVariableService;
+import org.hisp.india.trackercapture.services.program_rules.DefaultProgramRuleService;
+import org.hisp.india.trackercapture.services.program_rules.ProgramRuleApi;
+import org.hisp.india.trackercapture.services.program_rules.ProgramRuleService;
 import org.hisp.india.trackercapture.services.programs.DefaultProgramService;
 import org.hisp.india.trackercapture.services.programs.ProgramApi;
 import org.hisp.india.trackercapture.services.programs.ProgramService;
+import org.hisp.india.trackercapture.services.relationship_types.DefaultRelationshipTypeService;
+import org.hisp.india.trackercapture.services.relationship_types.RelationshipTypeApi;
+import org.hisp.india.trackercapture.services.relationship_types.RelationshipTypeService;
+import org.hisp.india.trackercapture.services.tracked_entity_attribute_groups.DefaultTrackedEntityAttributeGroupService;
+import org.hisp.india.trackercapture.services.tracked_entity_attribute_groups.TrackedEntityAttributeGroupApi;
+import org.hisp.india.trackercapture.services.tracked_entity_attribute_groups.TrackedEntityAttributeGroupService;
+import org.hisp.india.trackercapture.services.tracked_entity_attributes.DefaultTrackedEntityAttributeService;
+import org.hisp.india.trackercapture.services.tracked_entity_attributes.TrackedEntityAttributeApi;
+import org.hisp.india.trackercapture.services.tracked_entity_attributes.TrackedEntityAttributeService;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.DefaultTrackedEntityInstanceService;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceApi;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
@@ -165,6 +190,144 @@ public class ApplicationModule {
                         .provideApi(credentials.getHost(), EventApi.class);
 
         return new DefaultEventService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public ConstantService provideConstantService(NetworkProvider rxNetworkProvider, Credentials credentials) {
+
+        ConstantApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), ConstantApi.class);
+
+        return new DefaultConstantService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public OptionSetService provideOptionSetService(NetworkProvider rxNetworkProvider, Credentials credentials) {
+
+        OptionSetApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), OptionSetApi.class);
+
+        return new DefaultOptionSetService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public ProgramRuleService provideProgramRuleService(NetworkProvider rxNetworkProvider, Credentials credentials) {
+
+        ProgramRuleApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), ProgramRuleApi.class);
+
+        return new DefaultProgramRuleService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public ProgramRuleActionService provideProgramRuleActionService(NetworkProvider rxNetworkProvider,
+                                                                    Credentials credentials) {
+
+        ProgramRuleActionApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), ProgramRuleActionApi.class);
+
+        return new DefaultProgramRuleActionService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public ProgramRuleVariableService provideProgramRuleVariableService(NetworkProvider rxNetworkProvider,
+                                                                        Credentials credentials) {
+
+        ProgramRuleVariableApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), ProgramRuleVariableApi.class);
+
+        return new DefaultProgramRuleVariableService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public RelationshipTypeService provideRelationshipTypeService(NetworkProvider rxNetworkProvider,
+                                                                  Credentials credentials) {
+
+        RelationshipTypeApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), RelationshipTypeApi.class);
+
+        return new DefaultRelationshipTypeService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public TrackedEntityAttributeService provideTrackedEntityAttributeService(NetworkProvider rxNetworkProvider,
+                                                                              Credentials credentials) {
+
+        TrackedEntityAttributeApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), TrackedEntityAttributeApi.class);
+
+        return new DefaultTrackedEntityAttributeService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public TrackedEntityAttributeGroupService provideTrackedEntityAttributeGroupService(
+            NetworkProvider rxNetworkProvider, Credentials credentials) {
+
+        TrackedEntityAttributeGroupApi restService =
+                rxNetworkProvider
+                        .addHeader("Authorization", credentials.getApiToken())
+                        .provideApi(credentials.getHost(), TrackedEntityAttributeGroupApi.class);
+
+        return new DefaultTrackedEntityAttributeGroupService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public RefreshCredentialService provideRefreshCredentialService(Credentials credentials,
+                                                                    NetworkProvider rxNetworkProvider,
+                                                                    AccountService accountService,
+                                                                    OrganizationService organizationService,
+                                                                    ConstantService constantService,
+                                                                    EnrollmentService enrollmentService,
+                                                                    EventService eventService,
+                                                                    OptionSetService optionSetService,
+                                                                    ProgramService programService,
+                                                                    ProgramRuleService programRuleService,
+                                                                    ProgramRuleActionService programRuleActionService,
+                                                                    ProgramRuleVariableService programRuleVariableService,
+                                                                    RelationshipTypeService relationshipTypeService,
+                                                                    TrackedEntityInstanceService trackedEntityInstanceService,
+                                                                    TrackedEntityAttributeService trackedEntityAttributeService,
+                                                                    TrackedEntityAttributeGroupService trackedEntityAttributeGroupService) {
+
+        return new RefreshCredentialService(credentials,
+                                            rxNetworkProvider,
+                                            accountService,
+                                            organizationService,
+                                            constantService,
+                                            enrollmentService,
+                                            eventService,
+                                            optionSetService,
+                                            programService,
+                                            programRuleService,
+                                            programRuleActionService,
+                                            programRuleVariableService,
+                                            relationshipTypeService,
+                                            trackedEntityInstanceService,
+                                            trackedEntityAttributeService,
+                                            trackedEntityAttributeGroupService);
     }
 
 }

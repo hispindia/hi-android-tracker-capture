@@ -10,6 +10,8 @@ import rx.Observable;
 
 public interface ConstantService {
 
+    void setRestService(ConstantApi constantApi);
+
     Observable<ConstantsResponse> getConstants();
 
 }

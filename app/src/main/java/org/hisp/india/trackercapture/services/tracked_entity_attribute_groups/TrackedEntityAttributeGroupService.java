@@ -10,6 +10,8 @@ import rx.Observable;
 
 public interface TrackedEntityAttributeGroupService {
 
+    void setRestService(TrackedEntityAttributeGroupApi trackedEntityAttributeGroupApi);
+
     Observable<TrackedEntityAttributeGroupsResponse> getTrackedEntityAttributeGroups();
 
 }

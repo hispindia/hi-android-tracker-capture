@@ -10,6 +10,8 @@ import rx.Observable;
 
 public interface RelationshipTypeService {
 
+    void setRestService(RelationshipTypeApi relationshipTypeApi);
+
     Observable<RelationshipTypesResponse> getRelationshipTypes();
 
 }

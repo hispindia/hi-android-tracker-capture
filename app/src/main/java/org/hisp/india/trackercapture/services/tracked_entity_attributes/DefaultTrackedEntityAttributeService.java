@@ -2,7 +2,6 @@ package org.hisp.india.trackercapture.services.tracked_entity_attributes;
 
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.response.TrackedEntityAttributesResponse;
-import org.hisp.india.trackercapture.services.filter.ApiErrorFilter;
 
 import rx.Observable;
 
@@ -14,20 +13,21 @@ public class DefaultTrackedEntityAttributeService implements TrackedEntityAttrib
 
     private NetworkProvider networkProvider;
     private TrackedEntityAttributeApi restService;
-    private ApiErrorFilter apiErrorFilter;
 
     public DefaultTrackedEntityAttributeService(NetworkProvider networkProvider,
-                                                TrackedEntityAttributeApi restService,
-                                                ApiErrorFilter apiErrorFilter) {
+                                                TrackedEntityAttributeApi restService) {
         this.networkProvider = networkProvider;
         this.restService = restService;
-        this.apiErrorFilter = apiErrorFilter;
+    }
+
+    @Override
+    public void setRestService(TrackedEntityAttributeApi trackedEntityAttributeApi) {
+        restService = trackedEntityAttributeApi;
     }
 
     @Override
     public Observable<TrackedEntityAttributesResponse> getTrackedEntityAttributes() {
         return networkProvider
-                .transformResponse(restService.getTrackedEntityAttributes())
-                .compose(apiErrorFilter.execute());
+                .transformResponse(restService.getTrackedEntityAttributes());
     }
 }

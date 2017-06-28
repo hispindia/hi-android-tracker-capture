@@ -21,6 +21,11 @@ public class DefaultOrganizationService implements OrganizationService {
     }
 
     @Override
+    public void setRestService(OrganizationApi organizationApi) {
+        restService = organizationApi;
+    }
+
+    @Override
     public Observable<OrganizationUnitsResponse> getOrganizationUnits() {
         return networkProvider
                 .transformResponse(restService.getOrganizationUnits());

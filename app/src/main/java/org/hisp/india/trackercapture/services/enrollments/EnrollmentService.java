@@ -11,6 +11,8 @@ import rx.Observable;
 
 public interface EnrollmentService {
 
+    void setRestService(EnrollmentApi enrollmentApi);
+
     Observable<BaseResponse> postEnrollments(EnrollmentRequest enrollmentRequest);
 
 }
