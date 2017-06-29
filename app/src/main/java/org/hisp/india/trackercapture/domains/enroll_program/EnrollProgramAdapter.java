@@ -3,7 +3,6 @@ package org.hisp.india.trackercapture.domains.enroll_program;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.BaseModel;
-import org.hisp.india.trackercapture.models.base.Model;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
@@ -42,7 +40,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
     private String programName;
     private EnrollProgramActivity activity;
     private List<ItemModel> modelList;
-    private List<Model> organizationUnitList;
+    private List<BaseModel> organizationUnitList;
     private EnrollProgramCallBack enrollProgramCallBack;
 
     public EnrollProgramAdapter(EnrollProgramActivity activity, String programName,
@@ -77,8 +75,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
             for (ROrganizationUnit rOrganizationUnit : organizationUnitList) {
                 if (this.organizationUnitList.size() < 100) {
                     this.organizationUnitList
-                            .add(OptionDialog
-                                         .createModel(rOrganizationUnit.getId(), rOrganizationUnit.getDisplayName()));
+                            .add(new BaseModel(rOrganizationUnit.getId(), rOrganizationUnit.getDisplayName()));
                 }
             }
         }
@@ -161,7 +158,6 @@ public class EnrollProgramAdapter extends BaseAdapter {
             holder = (ButtonViewHolder) convertView.getTag();
         }
         holder.btRegister.setOnClickListener(v -> {
-            Log.e(TAG, "handleButtonViewHolder: btRegister");
             if (enrollProgramCallBack != null) {
                 enrollProgramCallBack.registerClick();
             }
@@ -268,7 +264,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
         }
 
         if (item.getTrackedEntityAttribute().isOptionSetValue()) {
-            List<Model> modelList = new ArrayList<>();
+            List<BaseModel> modelList = new ArrayList<>();
             for (ROption option : item.getTrackedEntityAttribute().getOptionSet().getOptions()) {
                 modelList.add(new BaseModel(option.getId(), option.getDisplayName()));
             }
@@ -307,7 +303,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
                     holder.etValue.setInputType(InputType.TYPE_CLASS_PHONE);
                     break;
                 case BOOLEAN:
-                    List<Model> modelList = new ArrayList<Model>() {
+                    List<BaseModel> modelList = new ArrayList<BaseModel>() {
                         {
                             add(new BaseModel("0", "Yes"));
                             add(new BaseModel("1", "No"));
@@ -338,7 +334,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void showOptionDialog(FieldListViewHolder holder, List<Model> modelList) {
+    private void showOptionDialog(FieldListViewHolder holder, List<BaseModel> modelList) {
         OptionDialog.newInstance(modelList, model -> {
             holder.tvValue.setText(model.getDisplayName());
             getItem(holder.ref).getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());

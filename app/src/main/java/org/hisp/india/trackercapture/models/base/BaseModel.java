@@ -12,6 +12,8 @@ public class BaseModel implements Serializable, Model {
 
     @SerializedName("id")
     private String id;
+    @SerializedName("code")
+    private String code;
     @SerializedName("displayName")
     private String displayName;
 
@@ -23,6 +25,12 @@ public class BaseModel implements Serializable, Model {
         this.displayName = displayName;
     }
 
+    public BaseModel(String id, String code, String displayName) {
+        this.id = id;
+        this.code = code;
+        this.displayName = displayName;
+    }
+
     @Override
     public String getId() {
         return id;
@@ -31,5 +39,9 @@ public class BaseModel implements Serializable, Model {
     @Override
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getCode() {
+        return code;
     }
 }
