@@ -1,8 +1,13 @@
 package org.hisp.india.trackercapture.domains.enroll_program;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -173,7 +178,6 @@ public class EnrollProgramAdapter extends BaseAdapter {
             holder = new FieldListViewHolder();
             convertView = View.inflate(parent.getContext(), R.layout.item_enroll_profile, null);
             holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
-            holder.tvMandatory = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_mandatory);
             holder.etValue = (EditText) convertView.findViewById(R.id.item_enroll_profile_et_value);
             holder.tvValue = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_value);
 
@@ -187,8 +191,12 @@ public class EnrollProgramAdapter extends BaseAdapter {
 
         HeaderDateModel model = getItem(holder.ref).getHeaderDateModel();
 
-        holder.tvLabel.setText(model.getLabel());
-        holder.tvMandatory.setVisibility(View.VISIBLE);
+        String label = model.getLabel() + "*";
+        SpannableString completedString = new SpannableString(label);
+        completedString.setSpan(new ForegroundColorSpan(Color.RED), label.length() - 1, label.length(),
+                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        holder.tvLabel.setText(completedString);
         holder.tvValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
             @Override
             public void after(Editable editable) {
@@ -218,7 +226,6 @@ public class EnrollProgramAdapter extends BaseAdapter {
             holder = new FieldListViewHolder();
             convertView = View.inflate(parent.getContext(), R.layout.item_enroll_profile, null);
             holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
-            holder.tvMandatory = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_mandatory);
             holder.etValue = (EditText) convertView.findViewById(R.id.item_enroll_profile_et_value);
             holder.tvValue = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_value);
 
@@ -230,8 +237,13 @@ public class EnrollProgramAdapter extends BaseAdapter {
 
         RProgramTrackedEntityAttribute item = getItem(holder.ref).getProgramTrackedEntityAttribute();
 
-        holder.tvLabel.setText(item.getDisplayName().replace(programName + " ", ""));
-        holder.tvMandatory.setVisibility(item.isMandatory() ? View.VISIBLE : View.GONE);
+        String label = item.getDisplayName().replace(programName + " ", "") + (item.isMandatory() ? "*" : "");
+        SpannableString completedString = new SpannableString(label);
+        if (item.isMandatory()) {
+            completedString.setSpan(new ForegroundColorSpan(Color.RED), label.length() - 1, label.length(),
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        holder.tvLabel.setText(completedString);
 
         if (item.getTrackedEntityAttribute().isOptionSetValue()
             || item.getValueType() == ValueType.BOOLEAN
@@ -264,16 +276,16 @@ public class EnrollProgramAdapter extends BaseAdapter {
         }
 
         if (item.getTrackedEntityAttribute().isOptionSetValue()) {
-            List<BaseModel> modelList = new ArrayList<>();
+            List<BaseModel> optionList = new ArrayList<>();
             for (ROption option : item.getTrackedEntityAttribute().getOptionSet().getOptions()) {
-                modelList.add(new BaseModel(option.getId(), option.getCode(), option.getDisplayName()));
+                optionList.add(new BaseModel(option.getId(), option.getDisplayName()));
             }
 
             holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
                 if (hasFocus) {
                     v.clearFocus();
                     AppUtils.hideKeyBoard(v);
-                    showOptionDialog(holder, modelList);
+                    showOptionDialog(holder, optionList);
                 }
             });
         } else {
@@ -305,8 +317,8 @@ public class EnrollProgramAdapter extends BaseAdapter {
                 case BOOLEAN:
                     List<BaseModel> modelList = new ArrayList<BaseModel>() {
                         {
-                            add(new BaseModel("0", "false", "No"));
-                            add(new BaseModel("1", "true", "Yes"));
+                            add(new BaseModel("0", "No"));
+                            add(new BaseModel("1", "Yes"));
                         }
                     };
                     holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
@@ -334,13 +346,13 @@ public class EnrollProgramAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void showOptionDialog(FieldListViewHolder holder, List<BaseModel> modelList) {
-        OptionDialog.newInstance(modelList, model -> {
+    private void showOptionDialog(FieldListViewHolder holder, List<BaseModel> optionList) {
+        OptionDialog.newInstance(optionList, model -> {
             holder.tvValue.setText(model.getDisplayName());
 
             ItemModel itemModel = getItem(holder.ref);
-            if (model.getCode() != null) {
-                itemModel.getProgramTrackedEntityAttribute().setValue(model.getCode());
+            if (!TextUtils.isEmpty(model.getDisplayName())) {
+                itemModel.getProgramTrackedEntityAttribute().setValue(model.getDisplayName());
             } else {
                 itemModel.getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());
             }
@@ -364,7 +376,6 @@ public class EnrollProgramAdapter extends BaseAdapter {
 
     private class FieldListViewHolder {
         private TextView tvLabel;
-        private TextView tvMandatory;
         private EditText etValue;
         private TextView tvValue;
         private int ref;

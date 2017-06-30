@@ -93,7 +93,7 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
 
     public void registerProgram(TrackedEntityInstanceRequest trackedEntityInstanceRequest,
                                 EnrollmentRequest enrollmentRequest, List<Event> eventList) {
-
+        System.out.println(trackedEntityInstanceRequest.getAttributeRequestList());
         NTaskManager
                 .postTask(RTask.build(UUID.randomUUID().toString(), TAG, new TaskRequest(trackedEntityInstanceRequest,
                                                                                          enrollmentRequest,

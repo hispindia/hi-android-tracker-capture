@@ -12,8 +12,6 @@ public class BaseModel implements Serializable, Model {
 
     @SerializedName("id")
     private String id;
-    @SerializedName("code")
-    private String code;
     @SerializedName("displayName")
     private String displayName;
 
@@ -22,12 +20,6 @@ public class BaseModel implements Serializable, Model {
 
     public BaseModel(String id, String displayName) {
         this.id = id;
-        this.displayName = displayName;
-    }
-
-    public BaseModel(String id, String code, String displayName) {
-        this.id = id;
-        this.code = code;
         this.displayName = displayName;
     }
 
@@ -41,7 +33,4 @@ public class BaseModel implements Serializable, Model {
         return displayName;
     }
 
-    public String getCode() {
-        return code;
-    }
 }
