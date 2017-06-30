@@ -266,7 +266,7 @@ public class EnrollProgramAdapter extends BaseAdapter {
         if (item.getTrackedEntityAttribute().isOptionSetValue()) {
             List<BaseModel> modelList = new ArrayList<>();
             for (ROption option : item.getTrackedEntityAttribute().getOptionSet().getOptions()) {
-                modelList.add(new BaseModel(option.getId(), option.getDisplayName()));
+                modelList.add(new BaseModel(option.getId(), option.getCode(), option.getDisplayName()));
             }
 
             holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
@@ -305,8 +305,8 @@ public class EnrollProgramAdapter extends BaseAdapter {
                 case BOOLEAN:
                     List<BaseModel> modelList = new ArrayList<BaseModel>() {
                         {
-                            add(new BaseModel("0", "Yes"));
-                            add(new BaseModel("1", "No"));
+                            add(new BaseModel("0", "false", "No"));
+                            add(new BaseModel("1", "true", "Yes"));
                         }
                     };
                     holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
@@ -337,7 +337,13 @@ public class EnrollProgramAdapter extends BaseAdapter {
     private void showOptionDialog(FieldListViewHolder holder, List<BaseModel> modelList) {
         OptionDialog.newInstance(modelList, model -> {
             holder.tvValue.setText(model.getDisplayName());
-            getItem(holder.ref).getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());
+
+            ItemModel itemModel = getItem(holder.ref);
+            if (model.getCode() != null) {
+                itemModel.getProgramTrackedEntityAttribute().setValue(model.getCode());
+            } else {
+                itemModel.getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());
+            }
         }).show(activity.getSupportFragmentManager());
     }
 

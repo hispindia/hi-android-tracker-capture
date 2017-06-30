@@ -13,6 +13,7 @@ public class ROption extends RealmObject implements Model {
 
     @PrimaryKey
     private String id;
+    private String code;
     private String displayName;
 
     @Override
@@ -33,4 +34,11 @@ public class ROption extends RealmObject implements Model {
         this.displayName = displayName;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 }
