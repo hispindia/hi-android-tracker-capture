@@ -16,7 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.models.base.BaseModel;
+import org.hisp.india.trackercapture.models.base.Option;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
@@ -46,9 +46,8 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String programName;
     private EnrollProgramActivity activity;
     private List<ItemModel> modelList;
-    private List<BaseModel> organizationUnitList;
+    private List<Option> organizationUnitList;
     private EnrollProgramCallBack enrollProgramCallBack;
-
 
     public EnrollProgramAdapter(EnrollProgramActivity activity, String programName,
                                 EnrollProgramCallBack enrollProgramCallBack) {
@@ -82,7 +81,8 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
             for (ROrganizationUnit rOrganizationUnit : organizationUnitList) {
                 if (this.organizationUnitList.size() < 100) {
                     this.organizationUnitList
-                            .add(new BaseModel(rOrganizationUnit.getId(), rOrganizationUnit.getDisplayName()));
+                            .add(new Option(rOrganizationUnit.getId(), rOrganizationUnit.getDisplayName(),
+                                            rOrganizationUnit.getCode()));
                 }
             }
         }
@@ -191,12 +191,6 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         holder.tvLabel.setText(completedString);
-        holder.tvValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
-            @Override
-            public void after(Editable editable) {
-                getItem(holder.ref).getHeaderDateModel().setValue(editable.toString());
-            }
-        }));
         holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 v.clearFocus();
@@ -205,7 +199,8 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                 DatePickerDialog datePicker = DatePickerDialog.newInstance(model.isAllowFutureDate());
                 datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
                     holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-                    getItem(holder.ref).getHeaderDateModel().setValue(holder.tvValue.getText().toString());
+                    ItemModel itemModel = getItem(holder.ref);
+                    itemModel.getHeaderDateModel().setValue(holder.tvValue.getText().toString());
                 });
                 datePicker.show(activity.getSupportFragmentManager());
             }
@@ -233,32 +228,27 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);
 
-            holder.etValue.setText(item.getValue());
             holder.tvValue.setText(item.getValue());
-            holder.tvValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
-                @Override
-                public void after(Editable editable) {
-                    getItem(holder.ref).getProgramTrackedEntityAttribute().setValue(editable.toString());
-                }
-            }));
+
         } else {
             holder.etValue.setVisibility(View.VISIBLE);
             holder.tvValue.setVisibility(View.GONE);
 
             holder.etValue.setText(item.getValue());
-            holder.tvValue.setText(item.getValue());
             holder.etValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
                 @Override
                 public void after(Editable editable) {
-                    getItem(holder.ref).getProgramTrackedEntityAttribute().setValue(editable.toString());
+                    ItemModel itemModel = getItem(holder.ref);
+                    itemModel.getProgramTrackedEntityAttribute().setValue(editable.toString());
+                    itemModel.getProgramTrackedEntityAttribute().setValueDisplay(editable.toString());
                 }
             }));
         }
 
         if (item.getTrackedEntityAttribute().isOptionSetValue()) {
-            List<BaseModel> optionList = new ArrayList<>();
+            List<Option> optionList = new ArrayList<>();
             for (ROption option : item.getTrackedEntityAttribute().getOptionSet().getOptions()) {
-                optionList.add(new BaseModel(option.getId(), option.getDisplayName()));
+                optionList.add(new Option(option.getId(), option.getDisplayName(), option.getCode()));
             }
 
             holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
@@ -295,10 +285,10 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                     holder.etValue.setInputType(InputType.TYPE_CLASS_PHONE);
                     break;
                 case BOOLEAN:
-                    List<BaseModel> modelList = new ArrayList<BaseModel>() {
+                    List<Option> modelList = new ArrayList<Option>() {
                         {
-                            add(new BaseModel("0", "No"));
-                            add(new BaseModel("1", "Yes"));
+                            add(new Option("0", "No", "false"));
+                            add(new Option("1", "Yes", "true"));
                         }
                     };
                     holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
@@ -325,16 +315,15 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    private void showOptionDialog(FieldListViewHolder holder, List<BaseModel> optionList) {
+    private void showOptionDialog(FieldListViewHolder holder, List<Option> optionList) {
         OptionDialog.newInstance(optionList, model -> {
             holder.tvValue.setText(model.getDisplayName());
 
             ItemModel itemModel = getItem(holder.ref);
-            if (!TextUtils.isEmpty(model.getDisplayName())) {
-                itemModel.getProgramTrackedEntityAttribute().setValue(model.getDisplayName());
-            } else {
-                itemModel.getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());
+            if (!TextUtils.isEmpty(model.getCode())) {
+                itemModel.getProgramTrackedEntityAttribute().setValue(model.getCode());
             }
+            itemModel.getProgramTrackedEntityAttribute().setValueDisplay(holder.tvValue.getText().toString());
         }).show(activity.getSupportFragmentManager());
     }
 
@@ -344,7 +333,9 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .newInstance(item.isAllowFutureDate());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
             holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-            getItem(holder.ref).getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());
+            ItemModel itemModel = getItem(holder.ref);
+            itemModel.getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());
+            itemModel.getProgramTrackedEntityAttribute().setValueDisplay(holder.tvValue.getText().toString());
         });
         datePicker.show(activity.getSupportFragmentManager());
     }
