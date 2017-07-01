@@ -1,7 +1,11 @@
 package org.hisp.india.trackercapture.domains.enroll_program_stage_detail;
 
+import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,8 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.models.base.BaseModel;
-import org.hisp.india.trackercapture.models.base.Model;
+import org.hisp.india.trackercapture.models.base.Option;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.RDataElement;
 import org.hisp.india.trackercapture.models.storage.ROption;
@@ -69,7 +72,6 @@ public class EnrollProgramStageDetailAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = View.inflate(parent.getContext(), R.layout.item_enroll_stage, null);
             holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
-            holder.tvMandatory = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_mandatory);
             holder.etValue = (EditText) convertView.findViewById(R.id.item_enroll_profile_et_value);
             holder.tvValue = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_value);
 
@@ -80,11 +82,15 @@ public class EnrollProgramStageDetailAdapter extends BaseAdapter {
         holder.ref = position;
 
         RProgramStageDataElement programStageDataElement = getItem(holder.ref);
-
         RDataElement item = programStageDataElement.getDataElement();
 
-        holder.tvLabel.setText(item.getDisplayName());
-        holder.tvMandatory.setVisibility(programStageDataElement.isCompulsory() ? View.VISIBLE : View.GONE);
+        String label = item.getDisplayName() + (programStageDataElement.isCompulsory() ? "*" : "");
+        SpannableString completedString = new SpannableString(label);
+        if (programStageDataElement.isCompulsory()) {
+            completedString.setSpan(new ForegroundColorSpan(Color.RED), label.length() - 1, label.length(),
+                                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        holder.tvLabel.setText(completedString);
 
         if (item.isOptionSetValue()
             || item.getValueType() == ValueType.BOOLEAN
@@ -93,32 +99,26 @@ public class EnrollProgramStageDetailAdapter extends BaseAdapter {
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);
 
-            holder.etValue.setText(programStageDataElement.getValue());
-            holder.tvValue.setText(programStageDataElement.getValue());
-            holder.tvValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
-                @Override
-                public void after(Editable editable) {
-                    getItem(holder.ref).setValue(editable.toString());
-                }
-            }));
+            holder.tvValue.setText(programStageDataElement.getValueDisplay());
         } else {
             holder.etValue.setVisibility(View.VISIBLE);
             holder.tvValue.setVisibility(View.GONE);
 
-            holder.etValue.setText(programStageDataElement.getValue());
-            holder.tvValue.setText(programStageDataElement.getValue());
+            holder.etValue.setText(programStageDataElement.getValueDisplay());
             holder.etValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
                 @Override
                 public void after(Editable editable) {
-                    getItem(holder.ref).setValue(editable.toString());
+                    RProgramStageDataElement itemModel = getItem(holder.ref);
+                    itemModel.setValue(editable.toString());
+                    itemModel.setValueDisplay(editable.toString());
                 }
             }));
         }
 
         if (item.isOptionSetValue()) {
-            List<Model> modelList = new ArrayList<>();
+            List<Option> modelList = new ArrayList<>();
             for (ROption option : item.getOptionSet().getOptions()) {
-                modelList.add(new BaseModel(option.getId(), option.getDisplayName()));
+                modelList.add(new Option(option.getId(), option.getDisplayName(), option.getCode()));
             }
 
             holder.tvValue.setOnClickListener((v) -> {
@@ -149,10 +149,10 @@ public class EnrollProgramStageDetailAdapter extends BaseAdapter {
                     holder.etValue.setInputType(InputType.TYPE_CLASS_PHONE);
                     break;
                 case BOOLEAN:
-                    List<Model> modelList = new ArrayList<Model>() {
+                    List<Option> modelList = new ArrayList<Option>() {
                         {
-                            add(new BaseModel("0", "Yes"));
-                            add(new BaseModel("1", "No"));
+                            add(new Option("0", "No", "false"));
+                            add(new Option("1", "Yes", "true"));
                         }
                     };
                     holder.tvValue.setOnClickListener((v) -> {
@@ -169,9 +169,14 @@ public class EnrollProgramStageDetailAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void showOptionDialog(ViewHolder holder, List<Model> modelList) {
+    private void showOptionDialog(ViewHolder holder, List<Option> modelList) {
         OptionDialog.newInstance(modelList, model -> {
             holder.tvValue.setText(model.getDisplayName());
+
+            RProgramStageDataElement itemModel = getItem(holder.ref);
+            itemModel.setValue(model.getCode());
+            itemModel.setValueDisplay(holder.tvValue.getText().toString());
+
         }).show(activity.getSupportFragmentManager());
     }
 
@@ -181,13 +186,17 @@ public class EnrollProgramStageDetailAdapter extends BaseAdapter {
                 .newInstance(item.isAllowFutureDate());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
             holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
+
+            RProgramStageDataElement itemModel = getItem(holder.ref);
+            itemModel.setValue(holder.tvValue.getText().toString());
+            itemModel.setValueDisplay(holder.tvValue.getText().toString());
+
         });
         datePicker.show(activity.getSupportFragmentManager());
     }
 
     private class ViewHolder {
         private TextView tvLabel;
-        private TextView tvMandatory;
         private EditText etValue;
         private TextView tvValue;
         private int ref;
