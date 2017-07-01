@@ -1,16 +1,16 @@
 package org.hisp.india.trackercapture.domains.enroll_program;
 
 import android.graphics.Color;
-import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -37,16 +37,18 @@ import static org.hisp.india.trackercapture.models.tmp.ItemModel.INCIDENT_DATE;
 import static org.hisp.india.trackercapture.models.tmp.ItemModel.REGISTER_BUTTON;
 
 /**
- * Created by nhancao on 5/10/17.
+ * Created by nhancao on 7/1/17.
  */
 
-public class EnrollProgramAdapter extends BaseAdapter {
+public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final String TAG = EnrollProgramAdapter.class.getSimpleName();
+
     private String programName;
     private EnrollProgramActivity activity;
     private List<ItemModel> modelList;
     private List<BaseModel> organizationUnitList;
     private EnrollProgramCallBack enrollProgramCallBack;
+
 
     public EnrollProgramAdapter(EnrollProgramActivity activity, String programName,
                                 EnrollProgramCallBack enrollProgramCallBack) {
@@ -102,23 +104,56 @@ public class EnrollProgramAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view;
+        try {
+            switch (viewType) {
+                case INCIDENT_DATE:
+                    view = LayoutInflater.from(parent.getContext())
+                                         .inflate(R.layout.item_enroll_profile, parent, false);
+                    return new FieldListViewHolder(view);
+                case ENROLLMENT_DATE:
+                    view = LayoutInflater.from(parent.getContext())
+                                         .inflate(R.layout.item_enroll_profile, parent, false);
+                    return new FieldListViewHolder(view);
+                case FIELD_LIST:
+                    view = LayoutInflater.from(parent.getContext())
+                                         .inflate(R.layout.item_enroll_profile, parent, false);
+                    return new FieldListViewHolder(view);
+                case REGISTER_BUTTON:
+                    view = LayoutInflater.from(parent.getContext())
+                                         .inflate(R.layout.item_enroll_profile_button, parent, false);
+                    return new ButtonViewHolder(view);
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        try {
+            switch (getItemViewType(position)) {
+                case INCIDENT_DATE:
+                    handleHeaderDateViewHolder(position, (FieldListViewHolder) holder);
+                    break;
+                case ENROLLMENT_DATE:
+                    handleHeaderDateViewHolder(position, (FieldListViewHolder) holder);
+                    break;
+                case FIELD_LIST:
+                    handleFieldListViewHolder(position, (FieldListViewHolder) holder);
+                    break;
+                case REGISTER_BUTTON:
+                    handleButtonViewHolder(position, (ButtonViewHolder) holder);
+                    break;
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    @Override
+    public int getItemCount() {
         return modelList.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return getItem(position).getType();
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return 4;
-    }
-
-    @Override
-    public ItemModel getItem(int position) {
-        return modelList.get(position);
     }
 
     @Override
@@ -127,64 +162,23 @@ public class EnrollProgramAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-
-        ItemModel itemModel = getItem(position);
-        switch (itemModel.getType()) {
-            case INCIDENT_DATE:
-                convertView = handleHeaderDateViewHolder(position, convertView, parent);
-                break;
-            case ENROLLMENT_DATE:
-                convertView = handleHeaderDateViewHolder(position, convertView, parent);
-                break;
-            case FIELD_LIST:
-                convertView = handleFieldListViewHolder(position, convertView, parent);
-                break;
-            case REGISTER_BUTTON:
-                convertView = handleButtonViewHolder(position, convertView, parent);
-                break;
-        }
-
-
-        return convertView;
+    public int getItemViewType(int position) {
+        return getItem(position).getType();
     }
 
+    public ItemModel getItem(int position) {
+        return modelList.get(position);
+    }
 
-    @NonNull
-    private View handleButtonViewHolder(int position, View convertView, ViewGroup parent) {
-        ButtonViewHolder holder;
-        if (convertView == null) {
-            holder = new ButtonViewHolder();
-            convertView = View.inflate(parent.getContext(), R.layout.item_enroll_profile_button, null);
-            holder.btRegister = (Button) convertView.findViewById(R.id.item_enroll_profile_btn_register);
-
-            convertView.setTag(holder);
-        } else {
-            holder = (ButtonViewHolder) convertView.getTag();
-        }
+    private void handleButtonViewHolder(int position, ButtonViewHolder holder) {
         holder.btRegister.setOnClickListener(v -> {
             if (enrollProgramCallBack != null) {
                 enrollProgramCallBack.registerClick();
             }
         });
-
-        return convertView;
     }
 
-    @NonNull
-    private View handleHeaderDateViewHolder(int position, View convertView, ViewGroup parent) {
-        FieldListViewHolder holder;
-        if (convertView == null) {
-            holder = new FieldListViewHolder();
-            convertView = View.inflate(parent.getContext(), R.layout.item_enroll_profile, null);
-            holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
-            holder.etValue = (EditText) convertView.findViewById(R.id.item_enroll_profile_et_value);
-            holder.tvValue = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_value);
-
-            convertView.setTag(holder);
-        } else {
-            holder = (FieldListViewHolder) convertView.getTag();
-        }
+    private void handleHeaderDateViewHolder(int position, FieldListViewHolder holder) {
         holder.ref = position;
         holder.tvValue.setVisibility(View.VISIBLE);
         holder.etValue.setVisibility(View.GONE);
@@ -216,23 +210,9 @@ public class EnrollProgramAdapter extends BaseAdapter {
                 datePicker.show(activity.getSupportFragmentManager());
             }
         });
-        return convertView;
     }
 
-    @NonNull
-    private View handleFieldListViewHolder(int position, View convertView, ViewGroup parent) {
-        FieldListViewHolder holder;
-        if (convertView == null) {
-            holder = new FieldListViewHolder();
-            convertView = View.inflate(parent.getContext(), R.layout.item_enroll_profile, null);
-            holder.tvLabel = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_label);
-            holder.etValue = (EditText) convertView.findViewById(R.id.item_enroll_profile_et_value);
-            holder.tvValue = (TextView) convertView.findViewById(R.id.item_enroll_profile_tv_value);
-
-            convertView.setTag(holder);
-        } else {
-            holder = (FieldListViewHolder) convertView.getTag();
-        }
+    private void handleFieldListViewHolder(int position, FieldListViewHolder holder) {
         holder.ref = position;
 
         RProgramTrackedEntityAttribute item = getItem(holder.ref).getProgramTrackedEntityAttribute();
@@ -343,7 +323,6 @@ public class EnrollProgramAdapter extends BaseAdapter {
                     break;
             }
         }
-        return convertView;
     }
 
     private void showOptionDialog(FieldListViewHolder holder, List<BaseModel> optionList) {
@@ -374,15 +353,28 @@ public class EnrollProgramAdapter extends BaseAdapter {
         void registerClick();
     }
 
-    private class FieldListViewHolder {
+    private static final class FieldListViewHolder extends RecyclerView.ViewHolder {
         private TextView tvLabel;
         private EditText etValue;
         private TextView tvValue;
         private int ref;
+
+        public FieldListViewHolder(View itemView) {
+            super(itemView);
+            tvLabel = (TextView) itemView.findViewById(R.id.item_enroll_profile_tv_label);
+            etValue = (EditText) itemView.findViewById(R.id.item_enroll_profile_et_value);
+            tvValue = (TextView) itemView.findViewById(R.id.item_enroll_profile_tv_value);
+        }
     }
 
-    private class ButtonViewHolder {
+    private static final class ButtonViewHolder extends RecyclerView.ViewHolder {
         private Button btRegister;
+
+        public ButtonViewHolder(View itemView) {
+            super(itemView);
+            btRegister = (Button) itemView.findViewById(R.id.item_enroll_profile_btn_register);
+
+        }
     }
 
 }

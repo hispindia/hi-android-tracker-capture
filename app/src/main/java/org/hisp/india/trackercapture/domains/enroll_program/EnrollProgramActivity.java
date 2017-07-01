@@ -1,9 +1,10 @@
 package org.hisp.india.trackercapture.domains.enroll_program;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterInject;
@@ -45,8 +46,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
     @ViewById(R.id.activity_enroll_program_toolbar)
     protected NToolbar toolbar;
-    @ViewById(R.id.fragment_enroll_lv_profile)
-    protected ListView lvProfile;
+    @ViewById(R.id.fragment_enroll_rv_profile)
+    protected RecyclerView rvProfile;
     @ViewById(R.id.activity_main_root_scroll)
     protected View vRoot;
 
@@ -99,12 +100,13 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         //Setup toolbar
         toolbar.applyEnrollProgramUi(this, "Enroll", () -> presenter.onBackCommandClick());
 
-        adapter = new EnrollProgramAdapter(this, programName, () -> {
-            btRegisterClick();
-        });
-        lvProfile.setAdapter(adapter);
-
-        lvProfile.post(() -> presenter.getProgramDetail(programId));
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        rvProfile.setHasFixedSize(true);
+        rvProfile.setLayoutManager(llm);
+        adapter = new EnrollProgramAdapter(this, programName, this::btRegisterClick);
+        rvProfile.setAdapter(adapter);
+        rvProfile.post(() -> presenter.getProgramDetail(programId));
 
     }
 
@@ -165,6 +167,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     @Override
     public void getOrganizationUnitList(List<ROrganizationUnit> organizationUnitList) {
         adapter.setOrganizationUnitList(organizationUnitList);
+        rvProfile.setItemViewCacheSize(organizationUnitList.size());
         vRoot.setVisibility(View.VISIBLE);
     }
 
