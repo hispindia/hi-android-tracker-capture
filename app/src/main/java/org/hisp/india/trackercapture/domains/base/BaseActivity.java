@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.dinuscxj.progressbar.CircleProgressBar;
 import com.hannesdorfmann.mosby3.mvp.MvpActivity;
 import com.hannesdorfmann.mosby3.mvp.MvpPresenter;
 import com.hannesdorfmann.mosby3.mvp.MvpView;
@@ -14,6 +15,8 @@ import com.hannesdorfmann.mosby3.mvp.MvpView;
 import org.androidannotations.annotations.EActivity;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.widgets.RotateLoading;
+
+import java.lang.ref.WeakReference;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -24,6 +27,8 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public abstract class BaseActivity<V extends MvpView, P extends MvpPresenter<V>> extends MvpActivity<V, P> {
 
     private Dialog progressDialogLoading;
+    private WeakReference<CircleProgressBar> circleProgressBarRef;
+    private WeakReference<RotateLoading> rotateloadingRef;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -34,12 +39,38 @@ public abstract class BaseActivity<V extends MvpView, P extends MvpPresenter<V>>
         showProgressLoading(null);
     }
 
+    public void setProgressCount(int progressCount) {
+        if (circleProgressBarRef != null && circleProgressBarRef.get() != null) {
+            if (rotateloadingRef != null && rotateloadingRef.get() != null) {
+                rotateloadingRef.get().setVisibility(View.GONE);
+            }
+            circleProgressBarRef.get().setVisibility(View.VISIBLE);
+            circleProgressBarRef.get().setProgress(Math.min(100, Math.max(0, progressCount)));
+        }
+    }
+
+    public void enableCircleProgressView(boolean enable) {
+        if (enable && circleProgressBarRef != null && circleProgressBarRef.get() != null) {
+            if (rotateloadingRef != null && rotateloadingRef.get() != null) {
+                rotateloadingRef.get().setVisibility(View.GONE);
+            }
+            circleProgressBarRef.get().setVisibility(View.VISIBLE);
+        } else {
+            if (rotateloadingRef != null && rotateloadingRef.get() != null) {
+                rotateloadingRef.get().setVisibility(View.VISIBLE);
+            }
+            circleProgressBarRef.get().setVisibility(View.GONE);
+        }
+    }
+
     public void showProgressLoading(String msg) {
 
         if (progressDialogLoading != null) {
             progressDialogLoading.dismiss();
         }
         View view = getLayoutInflater().inflate(R.layout.layout_progress_loading, null);
+        CircleProgressBar circleProgressBar = (CircleProgressBar) view
+                .findViewById(R.id.layout_loading_circle_progress);
         RotateLoading rotateloading = (RotateLoading) view.findViewById(R.id.layout_loading_rotate);
         TextView tvMessage = (TextView) view.findViewById(R.id.layout_loading_tv_msg);
         if (TextUtils.isEmpty(msg)) {
@@ -48,6 +79,10 @@ public abstract class BaseActivity<V extends MvpView, P extends MvpPresenter<V>>
             tvMessage.setVisibility(View.VISIBLE);
             tvMessage.setText(msg);
         }
+
+        circleProgressBar.setVisibility(View.GONE);
+        circleProgressBarRef = new WeakReference<>(circleProgressBar);
+        rotateloadingRef = new WeakReference<>(rotateloading);
 
         rotateloading.start();
         progressDialogLoading = new Dialog(this);

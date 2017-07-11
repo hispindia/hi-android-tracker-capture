@@ -179,4 +179,6 @@ dependencies {
     //Realm browser
     compile dependency.realmBrowser
     compile dependency.ntask
+    //Progress
+    compile 'com.dinuscxj:circleprogressbar:1.1.1'
 }

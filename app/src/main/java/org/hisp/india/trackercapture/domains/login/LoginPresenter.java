@@ -2,9 +2,6 @@ package org.hisp.india.trackercapture.domains.login;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.hisp.india.core.bus.ProgressBus;
-import org.hisp.india.core.services.network.DefaultNetworkProvider;
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
@@ -55,19 +52,12 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
     public void attachView(LoginView view) {
         super.attachView(view);
         navigatorHolder.setNavigator(view.getNavigator());
-        DefaultNetworkProvider.PROGRESS_BUS.register(this);
     }
 
     @Override
     public void detachView(boolean retainInstance) {
         navigatorHolder.removeNavigator();
-        DefaultNetworkProvider.PROGRESS_BUS.unregister(this);
         super.detachView(retainInstance);
-    }
-
-    @Subscribe
-    public void progressSubscribe(ProgressBus progressBus) {
-        System.out.println(progressBus);
     }
 
     public Credentials getCredential() {
@@ -100,7 +90,7 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
                                      .doOnTerminate(() -> getView().hideLoading())
                                      .subscribe(user -> {
                                          getView().loginSuccessful(user);
-                                         getAllOrgs(user.getOrganizationUnits());
+//                                         getAllOrgs(user.getOrganizationUnits());
                                      }, this::exportError);
     }
 
