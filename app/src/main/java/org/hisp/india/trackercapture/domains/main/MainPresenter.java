@@ -157,6 +157,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                                               .subscribe(organizationUnitsResponse -> getUserOrganizations(),
                                                          throwable -> getView().showError(throwable.getMessage()));
 
+        } else {
+            getUserOrganizations();
         }
     }
 
