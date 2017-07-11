@@ -170,8 +170,6 @@ dependencies {
     compile dependency.saripaar
     //Fonts
     compile dependency.calligraphy
-    //Messages aka EventBus
-    compile dependency.eventBus
     //Permission
     compile dependency.npermission
     //Navigator

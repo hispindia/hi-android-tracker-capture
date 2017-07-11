@@ -126,6 +126,7 @@ public class ApplicationModule {
         AccountApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), AccountApi.class);
 
         return new DefaultAccountService(rxNetworkProvider, restService, credentials);

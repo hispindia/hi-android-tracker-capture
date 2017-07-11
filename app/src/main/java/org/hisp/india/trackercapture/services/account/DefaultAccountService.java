@@ -14,7 +14,6 @@ import rx.Observable;
 
 public class DefaultAccountService implements AccountService {
     private static final String TAG = DefaultAccountService.class.getSimpleName();
-
     private NetworkProvider networkProvider;
     private AccountApi restService;
     private Credentials credentials;
