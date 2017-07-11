@@ -45,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import es.dmoral.toasty.Toasty;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Replace;
 import rx.Observable;
@@ -286,6 +287,6 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
 
     @Override
     public void showErrorMessage(String message) {
-        Toast.makeText(application, message, Toast.LENGTH_SHORT).show();
+        Toasty.error(application, message).show();
     }
 }

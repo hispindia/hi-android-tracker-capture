@@ -29,6 +29,7 @@ public abstract class BaseActivity<V extends MvpView, P extends MvpPresenter<V>>
     private Dialog progressDialogLoading;
     private WeakReference<CircleProgressBar> circleProgressBarRef;
     private WeakReference<RotateLoading> rotateloadingRef;
+    private WeakReference<TextView> tvMessageRef;
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -63,6 +64,12 @@ public abstract class BaseActivity<V extends MvpView, P extends MvpPresenter<V>>
         }
     }
 
+    public void updateProgressText(String message) {
+        if (tvMessageRef != null && tvMessageRef.get() != null) {
+            tvMessageRef.get().setText(message);
+        }
+    }
+
     public void showProgressLoading(String msg) {
 
         if (progressDialogLoading != null) {
@@ -83,6 +90,7 @@ public abstract class BaseActivity<V extends MvpView, P extends MvpPresenter<V>>
         circleProgressBar.setVisibility(View.GONE);
         circleProgressBarRef = new WeakReference<>(circleProgressBar);
         rotateloadingRef = new WeakReference<>(rotateloading);
+        tvMessageRef = new WeakReference<>(tvMessage);
 
         rotateloading.start();
         progressDialogLoading = new Dialog(this);

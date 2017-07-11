@@ -22,6 +22,8 @@ public interface MainView extends MvpView {
      */
     void showLoading();
 
+    void showLoading(String msg);
+
     /**
      * Display a loading view while loading data in background.
      */
@@ -34,5 +36,9 @@ public interface MainView extends MvpView {
     void queryProgramSuccess(QueryResponse queryResponse);
 
     void syncSuccessful();
+
+    void showError(String error);
+
+    void updateProgressStatus(String message);
 
 }

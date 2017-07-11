@@ -48,6 +48,8 @@ import org.hisp.india.trackercapture.services.programs.ProgramService;
 import org.hisp.india.trackercapture.services.relationship_types.DefaultRelationshipTypeService;
 import org.hisp.india.trackercapture.services.relationship_types.RelationshipTypeApi;
 import org.hisp.india.trackercapture.services.relationship_types.RelationshipTypeService;
+import org.hisp.india.trackercapture.services.sync.DefaultSyncService;
+import org.hisp.india.trackercapture.services.sync.SyncService;
 import org.hisp.india.trackercapture.services.tracked_entity_attribute_groups.DefaultTrackedEntityAttributeGroupService;
 import org.hisp.india.trackercapture.services.tracked_entity_attribute_groups.TrackedEntityAttributeGroupApi;
 import org.hisp.india.trackercapture.services.tracked_entity_attribute_groups.TrackedEntityAttributeGroupService;
@@ -139,6 +141,7 @@ public class ApplicationModule {
         OrganizationApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), OrganizationApi.class);
 
         return new DefaultOrganizationService(rxNetworkProvider, restService);
@@ -151,6 +154,7 @@ public class ApplicationModule {
         ProgramApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), ProgramApi.class);
 
         return new DefaultProgramService(rxNetworkProvider, restService);
@@ -164,6 +168,7 @@ public class ApplicationModule {
         TrackedEntityInstanceApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), TrackedEntityInstanceApi.class);
 
         return new DefaultTrackedEntityInstanceService(rxNetworkProvider, restService);
@@ -176,6 +181,7 @@ public class ApplicationModule {
         EnrollmentApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), EnrollmentApi.class);
 
         return new DefaultEnrollmentService(rxNetworkProvider, restService);
@@ -188,6 +194,7 @@ public class ApplicationModule {
         EventApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), EventApi.class);
 
         return new DefaultEventService(rxNetworkProvider, restService);
@@ -200,6 +207,7 @@ public class ApplicationModule {
         ConstantApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), ConstantApi.class);
 
         return new DefaultConstantService(rxNetworkProvider, restService);
@@ -212,6 +220,7 @@ public class ApplicationModule {
         OptionSetApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), OptionSetApi.class);
 
         return new DefaultOptionSetService(rxNetworkProvider, restService);
@@ -224,6 +233,7 @@ public class ApplicationModule {
         ProgramRuleApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), ProgramRuleApi.class);
 
         return new DefaultProgramRuleService(rxNetworkProvider, restService);
@@ -237,6 +247,7 @@ public class ApplicationModule {
         ProgramRuleActionApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), ProgramRuleActionApi.class);
 
         return new DefaultProgramRuleActionService(rxNetworkProvider, restService);
@@ -250,6 +261,7 @@ public class ApplicationModule {
         ProgramRuleVariableApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), ProgramRuleVariableApi.class);
 
         return new DefaultProgramRuleVariableService(rxNetworkProvider, restService);
@@ -263,6 +275,7 @@ public class ApplicationModule {
         RelationshipTypeApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), RelationshipTypeApi.class);
 
         return new DefaultRelationshipTypeService(rxNetworkProvider, restService);
@@ -276,6 +289,7 @@ public class ApplicationModule {
         TrackedEntityAttributeApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), TrackedEntityAttributeApi.class);
 
         return new DefaultTrackedEntityAttributeService(rxNetworkProvider, restService);
@@ -289,9 +303,16 @@ public class ApplicationModule {
         TrackedEntityAttributeGroupApi restService =
                 rxNetworkProvider
                         .addHeader("Authorization", credentials.getApiToken())
+                        .enableProgress(true)
                         .provideApi(credentials.getHost(), TrackedEntityAttributeGroupApi.class);
 
         return new DefaultTrackedEntityAttributeGroupService(rxNetworkProvider, restService);
+    }
+
+    @Provides
+    @ApplicationScope
+    public SyncService provideSyncService() {
+        return new DefaultSyncService();
     }
 
     @Provides
