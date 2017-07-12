@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.domains.main;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
@@ -204,8 +205,15 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Override
     protected void onResume() {
         super.onResume();
-        nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         DefaultNetworkProvider.PROGRESS_BUS.register(this);
+        if (Build.VERSION.SDK_INT >= 23) {
+            nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        } else {
+            //@nhancv TODO: after get all required permission
+            application.initRealmConfig();
+            //Fetching all org from remote and save to local
+            presenter.fetchingAllOrgs();
+        }
     }
 
     @NonNull
