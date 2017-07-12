@@ -137,9 +137,9 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             Toast.makeText(application, "Program detail is null", Toast.LENGTH_SHORT).show();
         } else {
             this.programDetail = programDetail;
-
             List<ItemModel> itemModels = new ArrayList<>();
             if (programDetail.isDisplayIncidentDate()) {
+
                 itemModels.add(ItemModel.createIncidentDate(programDetail.getIncidentDateLabel(),
                                                             programDetail.isSelectIncidentDatesInFuture()));
             }
@@ -152,6 +152,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
                 itemModels.add(ItemModel.createRegisterFieldItem(rProgramTrackedEntityAttribute));
                 if (rProgramTrackedEntityAttribute.getValueType() == ValueType.ORGANISATION_UNIT) {
                     includeOrganizationUnit = true;
+                    break;
                 }
             }
             itemModels.add(ItemModel.createRegisterButton());

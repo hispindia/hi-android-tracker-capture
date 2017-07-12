@@ -17,12 +17,14 @@ import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.Option;
+import org.hisp.india.trackercapture.models.e_num.OrgValueType;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.tmp.HeaderDateModel;
 import org.hisp.india.trackercapture.models.tmp.ItemModel;
+import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
 import org.hisp.india.trackercapture.widgets.NTextChange;
@@ -86,6 +88,17 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
             }
         }
+    }
+
+    public List<Option> optionOrganizationUnitListMap(List<ROrganizationUnit> organizationUnitList) {
+        List<Option> res = new ArrayList<>();
+        if (organizationUnitList != null) {
+            for (ROrganizationUnit rOrganizationUnit : organizationUnitList) {
+                res.add(new Option(rOrganizationUnit.getId(), rOrganizationUnit.getDisplayName(),
+                                   rOrganizationUnit.getCode()));
+            }
+        }
+        return res;
     }
 
     public void setModelList(List<ItemModel> modelList) {
@@ -228,13 +241,13 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);
 
-            holder.tvValue.setText(item.getValue());
+            holder.tvValue.setText(item.getValueDisplay());
 
         } else {
             holder.etValue.setVisibility(View.VISIBLE);
             holder.tvValue.setVisibility(View.GONE);
 
-            holder.etValue.setText(item.getValue());
+            holder.etValue.setText(item.getValueDisplay());
             holder.etValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
                 @Override
                 public void after(Editable editable) {
@@ -261,6 +274,61 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         } else {
             switch (item.getValueType()) {
                 case TEXT:
+                    OrgValueType orgValueType = OrgValueType.getType(item.getDisplayName());
+                    if (orgValueType != null) {
+                        switch (orgValueType) {
+                            case State:
+                                List<Option> initOptionList = optionOrganizationUnitListMap(
+                                        OrganizationQuery.getOrgFromLocalByLevel(orgValueType.getLevel()));
+                                if (initOptionList.size() == 0) {
+                                    holder.etValue.setVisibility(View.VISIBLE);
+                                    holder.tvValue.setVisibility(View.GONE);
+
+                                    holder.etValue.setText(item.getValueDisplay());
+                                } else {
+                                    holder.tvValue.setVisibility(View.VISIBLE);
+                                    holder.etValue.setVisibility(View.GONE);
+
+                                    holder.tvValue.setText(item.getValueDisplay());
+                                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+                                        if (hasFocus) {
+                                            v.clearFocus();
+                                            AppUtils.hideKeyBoard(v);
+                                            showOptionDialog(holder, initOptionList);
+                                        }
+                                    });
+                                }
+                                break;
+                            case District:
+                            case Block:
+                            case Village:
+                                initOptionList = optionOrganizationUnitListMap(
+                                        OrganizationQuery.getOrgFromLocalByLevel(orgValueType.getParent(),
+                                                                                 orgValueType.getLevel()));
+                                if (initOptionList.size() == 0) {
+                                    holder.etValue.setVisibility(View.VISIBLE);
+                                    holder.tvValue.setVisibility(View.GONE);
+
+                                    holder.etValue.setText(item.getValue());
+
+                                } else {
+                                    holder.tvValue.setVisibility(View.VISIBLE);
+                                    holder.etValue.setVisibility(View.GONE);
+
+                                    holder.tvValue.setText(item.getValue());
+                                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+                                        if (hasFocus) {
+                                            v.clearFocus();
+                                            AppUtils.hideKeyBoard(v);
+                                            showOptionDialog(holder, initOptionList);
+                                        }
+                                    });
+                                }
+                                break;
+                        }
+
+                        break;
+                    }
                 case LONG_TEXT:
                 case LETTER:
                     holder.etValue.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -320,10 +388,31 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.tvValue.setText(model.getDisplayName());
 
             ItemModel itemModel = getItem(holder.ref);
-            if (!TextUtils.isEmpty(model.getCode())) {
-                itemModel.getProgramTrackedEntityAttribute().setValue(model.getCode());
+            itemModel.getProgramTrackedEntityAttribute().setValueDisplay(model.getDisplayName());
+
+            OrgValueType orgValueType = OrgValueType.getType(holder.tvLabel.getText().toString());
+            if (orgValueType != null) {
+                switch (orgValueType) {
+                    case State:
+                        OrgValueType.District.setParent(model.getId());
+                        break;
+                    case District:
+                        OrgValueType.Block.setParent(model.getId());
+                        break;
+                    case Block:
+                        OrgValueType.Village.setParent(model.getId());
+                        break;
+                }
+                itemModel.getProgramTrackedEntityAttribute().setValue(model.getDisplayName());
+                notifyDataSetChanged();
+            } else {
+                if (!TextUtils.isEmpty(model.getCode())) {
+                    itemModel.getProgramTrackedEntityAttribute().setValue(model.getCode());
+                } else {
+                    itemModel.getProgramTrackedEntityAttribute().setValue(model.getId());
+                }
             }
-            itemModel.getProgramTrackedEntityAttribute().setValueDisplay(holder.tvValue.getText().toString());
+
         }).show(activity.getSupportFragmentManager());
     }
 
