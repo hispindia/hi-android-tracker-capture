@@ -281,11 +281,6 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     }
 
     @Override
-    public void loginError(Throwable throwable) {
-        showErrorMessage(throwable.getMessage());
-    }
-
-    @Override
     public void showErrorMessage(String message) {
         Toasty.error(application, message).show();
     }

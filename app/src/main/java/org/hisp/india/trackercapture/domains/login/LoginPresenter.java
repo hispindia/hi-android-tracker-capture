@@ -84,7 +84,6 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
 
     private void exportError(Throwable throwable) {
         accountService.logout();
-        getView().loginError(throwable);
     }
 
 }

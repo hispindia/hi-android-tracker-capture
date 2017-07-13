@@ -59,7 +59,7 @@ public class TaskService extends AbstractTaskService {
                 System.out.println("Failed tasks: " + errorCount);
                 NTaskManager.getInstance().resetStatusQueue();
                 System.out.println("Wait....");
-                SystemClock.sleep(5000);
+                SystemClock.sleep(10000);
                 doingLoop();
             } else {
                 postBus(BusProgress.UP_QUEUE);

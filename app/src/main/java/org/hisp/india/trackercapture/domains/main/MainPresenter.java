@@ -82,15 +82,6 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         router.replaceScreen(Screens.LOGIN_SCREEN);
     }
 
-    public void sync() {
-        RxScheduler.onStop(subscription);
-        getView().showLoading();
-        subscription = accountService.login()
-                                     .compose(RxScheduler.applyIoSchedulers())
-                                     .doOnTerminate(() -> getView().hideLoading())
-                                     .subscribe(user -> getView().syncSuccessful());
-    }
-
     public void getUserOrganizations() {
         List<ROrganizationUnit> tOrganizationUnits = OrganizationQuery.getUserOrganizations();
         getView().showOrgList(tOrganizationUnits);
@@ -161,5 +152,76 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
             getUserOrganizations();
         }
     }
+
+
+    /**
+     * Sync data
+     */
+
+    public void sync() {
+        syncUserData();
+    }
+
+    public void syncUserData() {
+        RxScheduler.onStop(subscription);
+        getView().showLoading("Sync user data");
+        subscription = accountService.login()
+                                     .compose(RxScheduler.applyIoSchedulers())
+                                     .doOnTerminate(() -> {
+                                         if (isViewAttached()) getView().hideLoading();
+                                     })
+                                     .subscribe(user -> syncOrganizationData());
+    }
+
+    public void syncOrganizationData() {
+        RxScheduler.onStop(subscription);
+        getView().showLoading("Retrieve all organization ...");
+        subscription = organizationService.getOrganizationUnits()
+                                          .observeOn(Schedulers.computation())
+                                          .map(organizationUnitsResponse -> {
+                                              if (getView() != null) {
+                                                  getView().updateProgressStatus("Saving organizations ...");
+                                              }
+                                              List<ROrganizationUnit> currentOrgForUser = OrganizationQuery
+                                                      .getAllOrganization();
+
+                                              List<ROrganizationUnit> rOrganizationUnits = new ArrayList<>();
+
+                                              ////@nhancv TODO: create map for current org of user
+                                              HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
+                                              if (currentOrgForUser.size() > 0) {
+                                                  for (ROrganizationUnit rOrganizationUnit : currentOrgForUser) {
+                                                      userOrgKeyMap.put(rOrganizationUnit.getId(), true);
+                                                  }
+                                              }
+
+                                              for (OrganizationUnit organizationUnit :
+                                                      organizationUnitsResponse.getOrganizationUnits()) {
+                                                  if (!userOrgKeyMap.containsKey(organizationUnit.getId())) {
+                                                      rOrganizationUnits.add(RMapping.from(organizationUnit));
+                                                  }
+                                              }
+
+                                              RealmHelper.transaction(realm -> {
+                                                  realm.copyToRealmOrUpdate(rOrganizationUnits);
+
+                                                  //update sync flag
+                                                  realm.copyToRealmOrUpdate(
+                                                          RSync.create(SyncKey.ROrganizationUnit, true));
+                                              });
+
+                                              return organizationUnitsResponse;
+                                          })
+                                          .compose(RxScheduler.applyIoSchedulers())
+                                          .doOnTerminate(() -> {
+                                              if (isViewAttached()) getView().hideLoading();
+                                          })
+                                          .subscribe(organizationUnitsResponse -> {
+                                              if (isViewAttached()) getView().syncSuccessful();
+                                          }, throwable -> {
+                                              if (isViewAttached()) getView().showError(throwable.getMessage());
+                                          });
+    }
+
 
 }

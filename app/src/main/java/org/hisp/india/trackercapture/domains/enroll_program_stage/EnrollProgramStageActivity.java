@@ -149,6 +149,11 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     }
 
     @Override
+    public void showLoading(String msg) {
+        showProgressLoading(msg);
+    }
+
+    @Override
     public void hideLoading() {
         hideProgressLoading();
     }
