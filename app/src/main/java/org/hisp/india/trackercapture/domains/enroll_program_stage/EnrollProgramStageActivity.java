@@ -35,6 +35,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import es.dmoral.toasty.Toasty;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Back;
 import ru.terrakok.cicerone.commands.Forward;
@@ -181,6 +182,11 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @Override
     public void registerProgramSuccess() {
         Toast.makeText(application, "Register program succeed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showToastMessage(String msg) {
+        Toasty.info(this, msg).show();
     }
 
     @CheckedChange({R.id.fragment_enroll_program_stage_cb_status})

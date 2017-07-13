@@ -30,4 +30,6 @@ public interface EnrollProgramStageView extends MvpView {
 
     void registerProgramSuccess();
 
+    void showToastMessage(String msg);
+
 }

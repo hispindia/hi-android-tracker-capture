@@ -184,4 +184,6 @@ dependencies {
     //Android animation
     compile 'com.daimajia.easing:library:2.0@aar'
     compile 'com.daimajia.androidanimations:library:2.2@aar'
+    //Swipe layout
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
 }

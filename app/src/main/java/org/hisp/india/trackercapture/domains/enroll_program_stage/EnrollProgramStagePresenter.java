@@ -61,13 +61,16 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
         if (isViewAttached()) {
             switch (busProgress) {
                 case LOADING:
-                    getView().showLoading("Process ...");
+                    getView().showToastMessage("Process ...");
                     break;
                 case FINISH:
-                    getView().hideLoading();
                     break;
                 case SUCCESS:
                     getView().registerProgramSuccess();
+                    router.exit();
+                    break;
+                case ERROR:
+                    getView().showToastMessage("Something error");
                     router.exit();
                     break;
             }

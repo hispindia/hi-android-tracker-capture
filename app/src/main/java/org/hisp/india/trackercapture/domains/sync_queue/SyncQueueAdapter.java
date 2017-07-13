@@ -1,10 +1,12 @@
 package org.hisp.india.trackercapture.domains.sync_queue;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
+import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 import com.nhancv.ntask.RTask;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
@@ -19,14 +21,16 @@ import rx.Observable;
  * Created by nhancao on 5/10/17.
  */
 
-public class SyncQueueAdapter extends BaseAdapter {
+public class SyncQueueAdapter extends BaseSwipeAdapter {
     private static final String TAG = SyncQueueAdapter.class.getSimpleName();
 
     private List<QueueItem> taskList;
     private rx.Subscription subscription;
+    private SyncQueueAdapterCallback callback;
 
-    public SyncQueueAdapter() {
-        taskList = new ArrayList<>();
+    public SyncQueueAdapter(SyncQueueAdapterCallback callback) {
+        this.taskList = new ArrayList<>();
+        this.callback = callback;
     }
 
     public void setTaskList(List<RTask> _taskList) {
@@ -36,7 +40,8 @@ public class SyncQueueAdapter extends BaseAdapter {
             for (RTask task : _taskList) {
                 String id = task.getId().substring(task.getId().length() / 4);
                 QueueItem queueItem = new QueueItem(id,
-                                                    "Status: " + task.getStatus() + " - Retry: " + task.getRetryTime());
+                                                    "Status: " + task.getStatus() + " - Retry: " + task.getRetryTime(),
+                                                    task);
                 res.add(queueItem);
             }
 
@@ -64,41 +69,52 @@ public class SyncQueueAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            holder = new ViewHolder();
-            convertView = View.inflate(parent.getContext(), R.layout.item_tracked_entity, null);
-            holder.tvLabel = (TextView) convertView.findViewById(R.id.item_tracked_entity_tv_label);
-            holder.tvValue = (TextView) convertView.findViewById(R.id.item_tracked_entity_tv_value);
+    public int getSwipeLayoutResourceId(int position) {
+        return R.id.item_room_swipe;
+    }
 
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+    @Override
+    public View generateView(int position, ViewGroup parent) {
+        return LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tracked_entity, parent, false);
+    }
+
+    @Override
+    public void fillValues(int position, View convertView) {
+        QueueItem item = getItem(position);
+
+        SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.item_room_swipe);
+        View closeRoom = convertView.findViewById(R.id.bottom_wrapper);
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+        swipeLayout.addDrag(SwipeLayout.DragEdge.Left, closeRoom);
+
+        closeRoom.setOnClickListener(v -> {
+            callback.removeTask(item.getTask());
+            swipeLayout.close();
+        });
+        TextView tvLabel = (TextView) convertView.findViewById(R.id.item_tracked_entity_tv_label);
+        TextView tvValue = (TextView) convertView.findViewById(R.id.item_tracked_entity_tv_value);
 
         QueueItem task = getItem(position);
 
         String hashId = task.getId().substring(
                 task.getId().length() - ((task.getId().length() > 12) ? 12 : task.getId().length()));
-        holder.tvLabel.setText(String.format("Task: %s", hashId));
-        holder.tvValue.setText(task.getValue());
-
-        return convertView;
+        tvLabel.setText(String.format("Task: %s", hashId));
+        tvValue.setText(task.getValue());
     }
 
-    private class ViewHolder {
-        private TextView tvLabel;
-        private TextView tvValue;
+    public interface SyncQueueAdapterCallback {
+        void removeTask(RTask rTask);
     }
 
     private class QueueItem {
         private String id;
         private String value;
+        private RTask task;
 
-        QueueItem(String id, String value) {
+        QueueItem(String id, String value, RTask task) {
             this.id = id;
             this.value = value;
+            this.task = task;
         }
 
         public String getId() {
@@ -108,7 +124,10 @@ public class SyncQueueAdapter extends BaseAdapter {
         public String getValue() {
             return value;
         }
-    }
 
+        public RTask getTask() {
+            return task;
+        }
+    }
 
 }

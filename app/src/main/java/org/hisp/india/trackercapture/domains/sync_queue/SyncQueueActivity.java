@@ -64,7 +64,7 @@ public class SyncQueueActivity extends BaseActivity<SyncQueueView, SyncQueuePres
         //Setup toolbar
         toolbar.applySyncQueueUi(this, "Sync Queue", () -> presenter.onBackCommandClick());
 
-        adapter = new SyncQueueAdapter();
+        adapter = new SyncQueueAdapter(NTaskManager::completeTask);
         lvItem.setAdapter(adapter);
 
         updateSyncQueue();
