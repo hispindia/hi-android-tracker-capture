@@ -3,10 +3,12 @@ package org.hisp.india.trackercapture.domains.sync_queue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
+import com.nhancv.ntask.NTaskManager;
 import com.nhancv.ntask.RTask;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
@@ -53,6 +55,27 @@ public class SyncQueueAdapter extends BaseSwipeAdapter {
 
     }
 
+    public RTask getTask(String taskId) {
+        for (QueueItem queueItem : taskList) {
+            if (queueItem.getTask().getId().equals(taskId)) {
+                return queueItem.getTask();
+            }
+        }
+        return null;
+    }
+
+    public void completeTask(RTask task) {
+        for (int i = 0; i < taskList.size(); i++) {
+            QueueItem queueItem = taskList.get(i);
+            if (queueItem.getTask().getId().equals(task.getId())) {
+                NTaskManager.completeTask(task);
+                taskList.remove(i);
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
     @Override
     public int getCount() {
         return taskList.size();
@@ -91,6 +114,7 @@ public class SyncQueueAdapter extends BaseSwipeAdapter {
             callback.removeTask(item.getTask());
             swipeLayout.close();
         });
+        LinearLayout llItem = (LinearLayout) convertView.findViewById(R.id.item_tracked_entity_ll_item);
         TextView tvLabel = (TextView) convertView.findViewById(R.id.item_tracked_entity_tv_label);
         TextView tvValue = (TextView) convertView.findViewById(R.id.item_tracked_entity_tv_value);
 
@@ -100,10 +124,16 @@ public class SyncQueueAdapter extends BaseSwipeAdapter {
                 task.getId().length() - ((task.getId().length() > 12) ? 12 : task.getId().length()));
         tvLabel.setText(String.format("Task: %s", hashId));
         tvValue.setText(task.getValue());
+
+        llItem.setOnClickListener(v -> {
+            callback.onClick(item.getTask());
+        });
     }
 
     public interface SyncQueueAdapterCallback {
         void removeTask(RTask rTask);
+
+        void onClick(RTask rTask);
     }
 
     private class QueueItem {

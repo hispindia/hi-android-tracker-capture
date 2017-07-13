@@ -43,6 +43,7 @@
             >
             <!--What you want to show in SurfaceView-->
             <LinearLayout
+                android:id="@+id/item_tracked_entity_ll_item"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
