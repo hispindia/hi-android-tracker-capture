@@ -48,7 +48,6 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String programName;
     private EnrollProgramActivity activity;
     private List<ItemModel> modelList;
-    private List<Option> organizationUnitList;
     private EnrollProgramCallBack enrollProgramCallBack;
 
     public EnrollProgramAdapter(EnrollProgramActivity activity, String programName,
@@ -56,7 +55,6 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.programName = programName;
         this.activity = activity;
         this.modelList = new ArrayList<>();
-        this.organizationUnitList = new ArrayList<>();
         this.enrollProgramCallBack = enrollProgramCallBack;
     }
 
@@ -76,18 +74,6 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
         }
         return null;
-    }
-
-    public void setOrganizationUnitList(List<ROrganizationUnit> organizationUnitList) {
-        if (organizationUnitList != null) {
-            for (ROrganizationUnit rOrganizationUnit : organizationUnitList) {
-                if (this.organizationUnitList.size() < 100) {
-                    this.organizationUnitList
-                            .add(new Option(rOrganizationUnit.getId(), rOrganizationUnit.getDisplayName(),
-                                            rOrganizationUnit.getCode()));
-                }
-            }
-        }
     }
 
     public List<Option> optionOrganizationUnitListMap(List<ROrganizationUnit> organizationUnitList) {
@@ -236,7 +222,6 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (item.getTrackedEntityAttribute().isOptionSetValue()
             || item.getValueType() == ValueType.BOOLEAN
             || item.getValueType() == ValueType.DATE
-            || item.getValueType() == ValueType.ORGANISATION_UNIT
                 ) {
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);
@@ -273,62 +258,9 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
             });
         } else {
             switch (item.getValueType()) {
+                case ORGANISATION_UNIT:
                 case TEXT:
-                    OrgValueType orgValueType = OrgValueType.getType(item.getDisplayName());
-                    if (orgValueType != null) {
-                        switch (orgValueType) {
-                            case State:
-                                List<Option> initOptionList = optionOrganizationUnitListMap(
-                                        OrganizationQuery.getOrgFromLocalByLevel(orgValueType.getLevel()));
-                                if (initOptionList.size() == 0) {
-                                    holder.etValue.setVisibility(View.VISIBLE);
-                                    holder.tvValue.setVisibility(View.GONE);
-
-                                    holder.etValue.setText(item.getValueDisplay());
-                                } else {
-                                    holder.tvValue.setVisibility(View.VISIBLE);
-                                    holder.etValue.setVisibility(View.GONE);
-
-                                    holder.tvValue.setText(item.getValueDisplay());
-                                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
-                                        if (hasFocus) {
-                                            v.clearFocus();
-                                            AppUtils.hideKeyBoard(v);
-                                            showOptionDialog(holder, initOptionList);
-                                        }
-                                    });
-                                }
-                                break;
-                            case District:
-                            case Block:
-                            case Village:
-                                initOptionList = optionOrganizationUnitListMap(
-                                        OrganizationQuery.getOrgFromLocalByLevel(orgValueType.getParent(),
-                                                                                 orgValueType.getLevel()));
-                                if (initOptionList.size() == 0) {
-                                    holder.etValue.setVisibility(View.VISIBLE);
-                                    holder.tvValue.setVisibility(View.GONE);
-
-                                    holder.etValue.setText(item.getValue());
-
-                                } else {
-                                    holder.tvValue.setVisibility(View.VISIBLE);
-                                    holder.etValue.setVisibility(View.GONE);
-
-                                    holder.tvValue.setText(item.getValue());
-                                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
-                                        if (hasFocus) {
-                                            v.clearFocus();
-                                            AppUtils.hideKeyBoard(v);
-                                            showOptionDialog(holder, initOptionList);
-                                        }
-                                    });
-                                }
-                                break;
-                        }
-
-                        break;
-                    }
+                    if (handleOrgDataValueType(holder, item)) break;
                 case LONG_TEXT:
                 case LETTER:
                     holder.etValue.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -367,20 +299,72 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                         }
                     });
                     break;
-                case ORGANISATION_UNIT:
-                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
-                        if (hasFocus) {
-                            v.clearFocus();
-                            AppUtils.hideKeyBoard(v);
-                            showOptionDialog(holder, organizationUnitList);
-                        }
-                    });
-                    break;
                 default:
                     holder.etValue.setInputType(InputType.TYPE_CLASS_TEXT);
                     break;
             }
         }
+    }
+
+    private boolean handleOrgDataValueType(FieldListViewHolder holder,
+                                           RProgramTrackedEntityAttribute item) {
+        OrgValueType
+                orgValueType = OrgValueType.getType(item.getDisplayName());
+        if (orgValueType != null) {
+            switch (orgValueType) {
+                case State:
+                    List<Option> initOptionList = optionOrganizationUnitListMap(
+                            OrganizationQuery.getOrgFromLocalByLevel(orgValueType.getLevel()));
+                    if (initOptionList.size() == 0) {
+                        holder.etValue.setVisibility(View.VISIBLE);
+                        holder.tvValue.setVisibility(View.GONE);
+
+                        holder.etValue.setText(item.getValueDisplay());
+                    } else {
+                        holder.tvValue.setVisibility(View.VISIBLE);
+                        holder.etValue.setVisibility(View.GONE);
+
+                        holder.tvValue.setText(item.getValueDisplay());
+                        holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+                            if (hasFocus) {
+                                v.clearFocus();
+                                AppUtils.hideKeyBoard(v);
+                                showOptionDialog(holder, initOptionList);
+                            }
+                        });
+                    }
+                    break;
+                case District:
+                case Block:
+                case Village:
+                    initOptionList = optionOrganizationUnitListMap(
+                            OrganizationQuery.getOrgFromLocalByLevel(orgValueType.getParent(),
+                                                                     orgValueType.getLevel()));
+                    if (initOptionList.size() == 0) {
+                        holder.etValue.setVisibility(View.VISIBLE);
+                        holder.tvValue.setVisibility(View.GONE);
+
+                        holder.etValue.setText(item.getValue());
+
+                    } else {
+                        holder.tvValue.setVisibility(View.VISIBLE);
+                        holder.etValue.setVisibility(View.GONE);
+
+                        holder.tvValue.setText(item.getValue());
+                        holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+                            if (hasFocus) {
+                                v.clearFocus();
+                                AppUtils.hideKeyBoard(v);
+                                showOptionDialog(holder, initOptionList);
+                            }
+                        });
+                    }
+                    break;
+            }
+
+            return true;
+        }
+        return false;
     }
 
     private void showOptionDialog(FieldListViewHolder holder, List<Option> optionList) {

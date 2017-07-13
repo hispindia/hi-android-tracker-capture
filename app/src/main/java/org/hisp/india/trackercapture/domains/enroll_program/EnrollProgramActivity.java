@@ -17,7 +17,6 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity_;
-import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.request.AttributeRequest;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
@@ -139,35 +138,26 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             this.programDetail = programDetail;
             List<ItemModel> itemModels = new ArrayList<>();
             if (programDetail.isDisplayIncidentDate()) {
-
                 itemModels.add(ItemModel.createIncidentDate(programDetail.getIncidentDateLabel(),
                                                             programDetail.isSelectIncidentDatesInFuture()));
             }
             itemModels.add(ItemModel.createEnrollmentDate(programDetail.getEnrollmentDateLabel(),
                                                           programDetail.isSelectEnrollmentDatesInFuture()));
 
-            boolean includeOrganizationUnit = false;
             for (RProgramTrackedEntityAttribute rProgramTrackedEntityAttribute : programDetail
                     .getProgramTrackedEntityAttributes()) {
                 itemModels.add(ItemModel.createRegisterFieldItem(rProgramTrackedEntityAttribute));
-                if (rProgramTrackedEntityAttribute.getValueType() == ValueType.ORGANISATION_UNIT) {
-                    includeOrganizationUnit = true;
-                    break;
-                }
             }
             itemModels.add(ItemModel.createRegisterButton());
+
+            rvProfile.setItemViewCacheSize(itemModels.size());
             adapter.setModelList(itemModels);
-            if (includeOrganizationUnit) {
-                presenter.getTop100Organization();
-            } else {
-                vRoot.setVisibility(View.VISIBLE);
-            }
+            vRoot.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void getOrganizationUnitList(List<ROrganizationUnit> organizationUnitList) {
-        adapter.setOrganizationUnitList(organizationUnitList);
         rvProfile.setItemViewCacheSize(organizationUnitList.size());
         vRoot.setVisibility(View.VISIBLE);
     }
