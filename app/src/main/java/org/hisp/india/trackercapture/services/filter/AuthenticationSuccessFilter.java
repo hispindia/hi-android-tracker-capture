@@ -44,13 +44,11 @@ public class AuthenticationSuccessFilter
                     return user;
                 })
                 .flatMap(user -> {
-
                     RealmHelper.transaction(realm -> {
-                        realm.copyToRealmOrUpdate(RMapping.from(user));
+                        realm.copyToRealmOrUpdate(RMapping.from(user)).asObservable();
                     });
 
                     credentials.setLoginSuccess(true);
-
                     return Observable.just(user);
                 });
     }
