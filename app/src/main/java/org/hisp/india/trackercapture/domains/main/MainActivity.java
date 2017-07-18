@@ -407,6 +407,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         runOnUiThread(() -> updateProgressText(message));
     }
 
+    @Override
+    public void hideCircleProgressView() {
+        runOnUiThread(() -> enableCircleProgressView(false));
+    }
+
     @Subscribe
     public void progressSubscribe(ProgressBus progressBus) {
         runOnUiThread(

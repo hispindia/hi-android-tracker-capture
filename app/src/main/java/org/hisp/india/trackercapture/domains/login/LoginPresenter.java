@@ -7,6 +7,7 @@ import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.RefreshCredentialService;
 import org.hisp.india.trackercapture.services.account.AccountService;
+import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 
 import javax.inject.Inject;
 
@@ -74,6 +75,12 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
         RxScheduler.onStop(subscription);
         getView().showLoading("Authentication ...");
         subscription = accountService.login()
+                                     .map(user -> {
+                                         getView().updateProgressStatus("Save user data ...");
+                                         return user;
+                                     })
+                                     .compose(
+                                             new AuthenticationSuccessFilter(accountService.getCredentials()).execute())
                                      .compose(RxScheduler.applyIoSchedulers())
                                      .doOnTerminate(() -> getView().hideLoading())
                                      .subscribe(user -> {

@@ -12,10 +12,17 @@ import java.util.List;
 
 public class OrganizationUnitsResponse {
 
+    @SerializedName("pager")
+    private PageResponse pageResponse;
+
     @SerializedName("organisationUnits")
     private List<OrganizationUnit> organizationUnits;
 
     public List<OrganizationUnit> getOrganizationUnits() {
         return organizationUnits;
+    }
+
+    public PageResponse getPageResponse() {
+        return pageResponse;
     }
 }

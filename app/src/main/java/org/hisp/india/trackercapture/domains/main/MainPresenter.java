@@ -6,6 +6,7 @@ import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.e_num.SyncKey;
+import org.hisp.india.trackercapture.models.response.OrganizationUnitsResponse;
 import org.hisp.india.trackercapture.models.storage.RMapping;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RSync;
@@ -13,6 +14,7 @@ import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.account.AccountQuery;
 import org.hisp.india.trackercapture.services.account.AccountService;
+import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.services.sync.SyncService;
@@ -28,6 +30,7 @@ import javax.inject.Inject;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -51,6 +54,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     protected SyncService syncService;
 
     private Subscription subscription;
+    private int orgUnitTotalPages;
 
     @Inject
     public MainPresenter(Router router, NavigatorHolder navigatorHolder, AccountService accountService,
@@ -106,47 +110,20 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         RSync orgSync = syncService.getSyncRowByKey(SyncKey.ROrganizationUnit);
         if (orgSync == null || !orgSync.isStatus()) {
             RxScheduler.onStop(subscription);
-            getView().showLoading("Retrieve all organization ...");
-            subscription = organizationService.getOrganizationUnits()
-                                              .observeOn(Schedulers.computation())
-                                              .map(organizationUnitsResponse -> {
-                                                  if (getView() != null) {
-                                                      getView().updateProgressStatus("Saving organizations ...");
-                                                  }
-                                                  List<ROrganizationUnit> currentOrgForUser = OrganizationQuery
-                                                          .getAllOrganization();
+            List<ROrganizationUnit> currentOrgForUser = OrganizationQuery
+                    .getAllOrganization();
+            HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
+            if (currentOrgForUser.size() > 0) {
+                for (ROrganizationUnit rOrganizationUnit : currentOrgForUser) {
+                    userOrgKeyMap.put(rOrganizationUnit.getId(), true);
+                }
+            }
 
-                                                  List<ROrganizationUnit> rOrganizationUnits = new ArrayList<>();
+            getView().showLoading("Retrieve all organization...");
 
-                                                  ////@nhancv TODO: create map for current org of user
-                                                  HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
-                                                  if (currentOrgForUser.size() > 0) {
-                                                      for (ROrganizationUnit rOrganizationUnit : currentOrgForUser) {
-                                                          userOrgKeyMap.put(rOrganizationUnit.getId(), true);
-                                                      }
-                                                  }
-
-                                                  for (OrganizationUnit organizationUnit :
-                                                          organizationUnitsResponse.getOrganizationUnits()) {
-                                                      if (!userOrgKeyMap.containsKey(organizationUnit.getId())) {
-                                                          rOrganizationUnits.add(RMapping.from(organizationUnit));
-                                                      }
-                                                  }
-
-                                                  RealmHelper.transaction(realm -> {
-                                                      realm.copyToRealmOrUpdate(rOrganizationUnits);
-
-                                                      //update sync flag
-                                                      realm.copyToRealmOrUpdate(
-                                                              RSync.create(SyncKey.ROrganizationUnit, true));
-                                                  });
-
-                                                  return organizationUnitsResponse;
-                                              })
-                                              .compose(RxScheduler.applyIoSchedulers())
-                                              .doOnTerminate(() -> getView().hideLoading())
-                                              .subscribe(organizationUnitsResponse -> getUserOrganizations(),
-                                                         throwable -> getView().showError(throwable.getMessage()));
+            fetchOrganizationUnitsRecursion(1, userOrgKeyMap, organizationUnitsResponse -> {
+                getView().syncSuccessful();
+            });
 
         } else {
             getUserOrganizations();
@@ -164,64 +141,94 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
     public void syncUserData() {
         RxScheduler.onStop(subscription);
-        getView().showLoading("Sync user data");
+        getView().showLoading("Sync user data ...");
         subscription = accountService.login()
+                                     .map(user -> {
+                                         getView().updateProgressStatus("Save user data ...");
+                                         return user;
+                                     })
+                                     .compose(
+                                             new AuthenticationSuccessFilter(accountService.getCredentials()).execute())
                                      .compose(RxScheduler.applyIoSchedulers())
                                      .doOnTerminate(() -> {
                                          if (isViewAttached()) getView().hideLoading();
                                      })
-                                     .subscribe(user -> syncOrganizationData());
+                                     .subscribe(user -> {
+                                         System.gc();
+                                         syncOrganizationData();
+                                     });
     }
 
     public void syncOrganizationData() {
         RxScheduler.onStop(subscription);
-        getView().showLoading("Retrieve all organization ...");
-        subscription = organizationService.getOrganizationUnits()
-                                          .observeOn(Schedulers.computation())
-                                          .map(organizationUnitsResponse -> {
-                                              if (getView() != null) {
-                                                  getView().updateProgressStatus("Saving organizations ...");
-                                              }
-                                              List<ROrganizationUnit> currentOrgForUser = OrganizationQuery
-                                                      .getAllOrganization();
 
-                                              List<ROrganizationUnit> rOrganizationUnits = new ArrayList<>();
+        ////@nhancv TODO: create map for current org of user
+        List<ROrganizationUnit> currentOrgForUser = OrganizationQuery
+                .getAllOrganization();
+        HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
+        if (currentOrgForUser.size() > 0) {
+            for (ROrganizationUnit rOrganizationUnit : currentOrgForUser) {
+                userOrgKeyMap.put(rOrganizationUnit.getId(), true);
+            }
+        }
+        getView().showLoading("Retrieve all organization...");
 
-                                              ////@nhancv TODO: create map for current org of user
-                                              HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
-                                              if (currentOrgForUser.size() > 0) {
-                                                  for (ROrganizationUnit rOrganizationUnit : currentOrgForUser) {
-                                                      userOrgKeyMap.put(rOrganizationUnit.getId(), true);
-                                                  }
-                                              }
+        fetchOrganizationUnitsRecursion(1, userOrgKeyMap, organizationUnitsResponse -> {
+            getView().syncSuccessful();
+        });
 
-                                              for (OrganizationUnit organizationUnit :
-                                                      organizationUnitsResponse.getOrganizationUnits()) {
-                                                  if (!userOrgKeyMap.containsKey(organizationUnit.getId())) {
-                                                      rOrganizationUnits.add(RMapping.from(organizationUnit));
-                                                  }
-                                              }
-
-                                              RealmHelper.transaction(realm -> {
-                                                  realm.copyToRealmOrUpdate(rOrganizationUnits);
-
-                                                  //update sync flag
-                                                  realm.copyToRealmOrUpdate(
-                                                          RSync.create(SyncKey.ROrganizationUnit, true));
-                                              });
-
-                                              return organizationUnitsResponse;
-                                          })
-                                          .compose(RxScheduler.applyIoSchedulers())
-                                          .doOnTerminate(() -> {
-                                              if (isViewAttached()) getView().hideLoading();
-                                          })
-                                          .subscribe(organizationUnitsResponse -> {
-                                              if (isViewAttached()) getView().syncSuccessful();
-                                          }, throwable -> {
-                                              if (isViewAttached()) getView().showError(throwable.getMessage());
-                                          });
     }
 
+    public void fetchOrganizationUnitsRecursion(int page,
+                                                HashMap<String, Boolean> userOrgKeyMap,
+                                                Action1<? super OrganizationUnitsResponse> onNext) {
+        String m = (orgUnitTotalPages <= 0) ? String.format("%s/%s", page, "-") :
+                   String.format("%s/%s", page, orgUnitTotalPages);
+        getView().hideCircleProgressView();
+        getView().updateProgressStatus("Retrieve organization (" + m + ")...");
+        organizationService.getOrganizationUnits(page)
+                           .observeOn(Schedulers.computation())
+                           .map(organizationUnitsResponse -> {
+                               orgUnitTotalPages = organizationUnitsResponse.getPageResponse().getPageCount();
+                               if (getView() != null) {
+                                   getView().hideCircleProgressView();
+                                   getView().updateProgressStatus(
+                                           String.format("Saving organizations (%s/%s)...", page, orgUnitTotalPages));
+                               }
+
+                               List<ROrganizationUnit> rOrganizationUnits = new ArrayList<>();
+
+                               for (OrganizationUnit organizationUnit :
+                                       organizationUnitsResponse.getOrganizationUnits()) {
+                                   if (!userOrgKeyMap.containsKey(organizationUnit.getId())) {
+                                       rOrganizationUnits.add(RMapping.from(organizationUnit));
+                                   }
+                               }
+
+                               RealmHelper.transaction(realm -> {
+                                   realm.copyToRealmOrUpdate(rOrganizationUnits);
+
+                                   if (page >= orgUnitTotalPages) {
+                                       //update sync flag
+                                       realm.copyToRealmOrUpdate(
+                                               RSync.create(SyncKey.ROrganizationUnit, true));
+                                   }
+                               });
+
+                               return organizationUnitsResponse;
+                           })
+                           .compose(RxScheduler.applyIoSchedulers())
+                           .subscribe(organizationUnitsResponse -> {
+                               if (page < orgUnitTotalPages) {
+                                   fetchOrganizationUnitsRecursion(page + 1, userOrgKeyMap, onNext);
+                               } else if (isViewAttached()) {
+                                   getView().hideLoading();
+                                   onNext.call(organizationUnitsResponse);
+                               }
+                           }, throwable -> {
+                               if (isViewAttached()) getView().showError(throwable.getMessage());
+                           });
+        ;
+    }
 
 }

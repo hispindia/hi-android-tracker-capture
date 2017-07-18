@@ -26,9 +26,9 @@ public class DefaultOrganizationService implements OrganizationService {
     }
 
     @Override
-    public Observable<OrganizationUnitsResponse> getOrganizationUnits() {
+    public Observable<OrganizationUnitsResponse> getOrganizationUnits(int pageSize) {
         return networkProvider
-                .transformResponse(restService.getOrganizationUnits());
+                .transformResponse(restService.getOrganizationUnits(pageSize));
     }
 
 }

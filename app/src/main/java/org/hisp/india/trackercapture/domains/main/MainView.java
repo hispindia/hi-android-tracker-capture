@@ -41,4 +41,6 @@ public interface MainView extends MvpView {
 
     void updateProgressStatus(String message);
 
+    void hideCircleProgressView();
+
 }

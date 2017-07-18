@@ -30,7 +30,7 @@ public class AuthenticationSuccessFilter
     @Override
     public Observable.Transformer<User, User> execute() {
         return userObservable -> userObservable
-                .observeOn(Schedulers.computation())
+                .observeOn(Schedulers.io())
                 .map(user -> {
                     for (OrganizationUnit organizationUnit : user.getOrganizationUnits()) {
                         List<Program> programList = new ArrayList<>();

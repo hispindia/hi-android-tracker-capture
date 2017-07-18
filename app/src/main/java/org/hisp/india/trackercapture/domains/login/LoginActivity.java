@@ -284,4 +284,15 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     public void showErrorMessage(String message) {
         Toasty.error(application, message).show();
     }
+
+    @Override
+    public void updateProgressStatus(String message) {
+        runOnUiThread(() -> updateProgressText(message));
+    }
+
+    @Override
+    public void hideCircleProgressView() {
+        runOnUiThread(() -> enableCircleProgressView(false));
+    }
+
 }
