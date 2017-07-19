@@ -21,7 +21,6 @@ import org.hisp.india.trackercapture.services.sync.SyncService;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.RealmHelper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -110,8 +109,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         RSync orgSync = syncService.getSyncRowByKey(SyncKey.ROrganizationUnit);
         if (orgSync == null || !orgSync.isStatus()) {
             RxScheduler.onStop(subscription);
-            List<ROrganizationUnit> currentOrgForUser = OrganizationQuery
-                    .getAllOrganization();
+            List<ROrganizationUnit> currentOrgForUser = OrganizationQuery.getUserOrganizations();
             HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
             if (currentOrgForUser.size() > 0) {
                 for (ROrganizationUnit rOrganizationUnit : currentOrgForUser) {
@@ -122,6 +120,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
             getView().showLoading("Retrieve all organization...");
 
             fetchOrganizationUnitsRecursion(1, userOrgKeyMap, organizationUnitsResponse -> {
+                getUserOrganizations();
                 getView().syncSuccessful();
             });
 
@@ -144,6 +143,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         getView().showLoading("Sync user data ...");
         subscription = accountService.login()
                                      .map(user -> {
+                                         getView().hideCircleProgressView();
                                          getView().updateProgressStatus("Save user data ...");
                                          return user;
                                      })
@@ -163,8 +163,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         RxScheduler.onStop(subscription);
 
         ////@nhancv TODO: create map for current org of user
-        List<ROrganizationUnit> currentOrgForUser = OrganizationQuery
-                .getAllOrganization();
+        List<ROrganizationUnit> currentOrgForUser = OrganizationQuery.getUserOrganizations();
         HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
         if (currentOrgForUser.size() > 0) {
             for (ROrganizationUnit rOrganizationUnit : currentOrgForUser) {
@@ -174,9 +173,9 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         getView().showLoading("Retrieve all organization...");
 
         fetchOrganizationUnitsRecursion(1, userOrgKeyMap, organizationUnitsResponse -> {
+            getUserOrganizations();
             getView().syncSuccessful();
         });
-
     }
 
     public void fetchOrganizationUnitsRecursion(int page,
@@ -187,7 +186,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         getView().hideCircleProgressView();
         getView().updateProgressStatus("Retrieve organization (" + m + ")...");
         organizationService.getOrganizationUnits(page)
-                           .observeOn(Schedulers.computation())
+                           .observeOn(Schedulers.io())
                            .map(organizationUnitsResponse -> {
                                orgUnitTotalPages = organizationUnitsResponse.getPageResponse().getPageCount();
                                if (getView() != null) {
@@ -196,17 +195,13 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                                            String.format("Saving organizations (%s/%s)...", page, orgUnitTotalPages));
                                }
 
-                               List<ROrganizationUnit> rOrganizationUnits = new ArrayList<>();
-
-                               for (OrganizationUnit organizationUnit :
-                                       organizationUnitsResponse.getOrganizationUnits()) {
-                                   if (!userOrgKeyMap.containsKey(organizationUnit.getId())) {
-                                       rOrganizationUnits.add(RMapping.from(organizationUnit));
-                                   }
-                               }
-
                                RealmHelper.transaction(realm -> {
-                                   realm.copyToRealmOrUpdate(rOrganizationUnits);
+                                   for (OrganizationUnit organizationUnit :
+                                           organizationUnitsResponse.getOrganizationUnits()) {
+                                       if (!userOrgKeyMap.containsKey(organizationUnit.getId())) {
+                                           realm.copyToRealmOrUpdate(RMapping.from(organizationUnit));
+                                       }
+                                   }
 
                                    if (page >= orgUnitTotalPages) {
                                        //update sync flag

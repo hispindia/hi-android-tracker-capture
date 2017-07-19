@@ -20,7 +20,7 @@ import rx.schedulers.Schedulers;
 
 public class AuthenticationSuccessFilter
         implements OutputFilter<Observable.Transformer<User, User>> {
-
+    private static final String TAG = AuthenticationSuccessFilter.class.getSimpleName();
     private Credentials credentials;
 
     public AuthenticationSuccessFilter(Credentials credentials) {
@@ -44,10 +44,7 @@ public class AuthenticationSuccessFilter
                     return user;
                 })
                 .flatMap(user -> {
-                    RealmHelper.transaction(realm -> {
-                        realm.copyToRealmOrUpdate(RMapping.from(user)).asObservable();
-                    });
-
+                    RealmHelper.transaction(realm -> realm.copyToRealmOrUpdate(RMapping.from(user)));
                     credentials.setLoginSuccess(true);
                     return Observable.just(user);
                 });
