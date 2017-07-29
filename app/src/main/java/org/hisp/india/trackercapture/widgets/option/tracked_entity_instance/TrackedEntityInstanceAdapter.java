@@ -36,7 +36,7 @@ public abstract class TrackedEntityInstanceAdapter extends OptionAdapter<Tracked
                     List<TrackedEntityInstance> resultsData = new ArrayList<>();
                     String searchStr = constraint.toString();
                     for (TrackedEntityInstance item : originalList) {
-                        if (AppUtils.isContainText(searchStr, getMainAttribute(item).getDisplayName())) {
+                        if (AppUtils.isContainText(searchStr, item.getDisplayName())) {
                             resultsData.add(item);
                         }
                     }
@@ -58,12 +58,4 @@ public abstract class TrackedEntityInstanceAdapter extends OptionAdapter<Tracked
         };
     }
 
-    public Attribute getMainAttribute(TrackedEntityInstance trackedEntityInstance) {
-        for (Attribute attribute : trackedEntityInstance.getAttributeList()) {
-            if (attribute.getDisplayName().contains("House number")) {
-                return attribute;
-            }
-        }
-        return null;
-    }
 }

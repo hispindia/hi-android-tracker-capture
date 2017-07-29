@@ -26,6 +26,7 @@ import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.tmp.ItemModel;
 import org.hisp.india.trackercapture.navigator.Screens;
+import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
 
@@ -103,7 +104,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rvProfile.setHasFixedSize(true);
         rvProfile.setLayoutManager(llm);
-        adapter = new EnrollProgramAdapter(this, programName, this::btRegisterClick);
+        adapter = new EnrollProgramAdapter(this, organizationUnitId, programId, programName, this::btRegisterClick);
         rvProfile.setAdapter(adapter);
         rvProfile.post(() -> presenter.getProgramDetail(programId));
 
@@ -202,4 +203,10 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         }
 
     }
+
+
+    public TrackedEntityInstanceService getTrackedEntityInstanceService() {
+        return presenter.getTrackedEntityInstanceService();
+    }
+
 }

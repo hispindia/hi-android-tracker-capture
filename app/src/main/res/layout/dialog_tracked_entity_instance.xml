@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    tools:ignore="MissingPrefix"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_dialog"
         android:orientation="vertical"
         >
 
         <LinearLayout
-            android:id="@+id/dialog_option_lv_search"
+            android:id="@+id/dialog_tracked_entity_instance_lv_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:visibility="gone"
             >
 
             <EditText
-                android:id="@+id/dialog_option_et_search"
+                android:id="@+id/dialog_tracked_entity_instance_et_search"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@android:color/transparent"
@@ -47,14 +50,42 @@
                 />
         </LinearLayout>
 
-
-        <ListView
-            android:id="@+id/dialog_option_lv_item"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@color/dark_grey"
-            android:dividerHeight="1px"
+            android:orientation="vertical"
             >
-        </ListView>
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/dialog_tracked_entity_instance_loading_indicator"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center_horizontal"
+                app:indicatorColor="@color/colorPrimary"
+                app:indicatorName="BallGridPulseIndicator"
+                />
+
+            <TextView
+                android:id="@+id/dialog_tracked_entity_instance_tv_empty"
+                fontPath="fonts/Montserrat-Bold.ttf"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:text="No item"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:visibility="gone"
+                />
+
+            <ListView
+                android:id="@+id/dialog_tracked_entity_instance_lv_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@color/dark_grey"
+                android:dividerHeight="1px"
+                >
+            </ListView>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

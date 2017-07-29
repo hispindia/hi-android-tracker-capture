@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.Option;
+import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
 import org.hisp.india.trackercapture.models.e_num.OrgValueType;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
@@ -27,8 +29,10 @@ import org.hisp.india.trackercapture.models.tmp.ItemModel;
 import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
+import org.hisp.india.trackercapture.widgets.ItemClickListener;
 import org.hisp.india.trackercapture.widgets.NTextChange;
 import org.hisp.india.trackercapture.widgets.option.OptionDialog;
+import org.hisp.india.trackercapture.widgets.option.tracked_entity_instance.TrackedEntityInstanceDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,13 +50,17 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
     private static final String TAG = EnrollProgramAdapter.class.getSimpleName();
 
     private String programName;
+    private String orgUnitId;
+    private String programId;
     private EnrollProgramActivity activity;
     private List<ItemModel> modelList;
     private EnrollProgramCallBack enrollProgramCallBack;
 
-    public EnrollProgramAdapter(EnrollProgramActivity activity, String programName,
-                                EnrollProgramCallBack enrollProgramCallBack) {
+    public EnrollProgramAdapter(EnrollProgramActivity activity, String orgUnitId, String programId,
+                                String programName, EnrollProgramCallBack enrollProgramCallBack) {
         this.programName = programName;
+        this.orgUnitId = orgUnitId;
+        this.programId = programId;
         this.activity = activity;
         this.modelList = new ArrayList<>();
         this.enrollProgramCallBack = enrollProgramCallBack;
@@ -222,6 +230,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         if (item.getTrackedEntityAttribute().isOptionSetValue()
             || item.getValueType() == ValueType.BOOLEAN
             || item.getValueType() == ValueType.DATE
+            || item.getValueType() == ValueType.TRACKER_ASSOCIATE
                 ) {
             holder.tvValue.setVisibility(View.VISIBLE);
             holder.etValue.setVisibility(View.GONE);
@@ -269,13 +278,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                     holder.etValue.setInputType(InputType.TYPE_CLASS_NUMBER);
                     break;
                 case DATE:
-                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
-                        if (hasFocus) {
-                            v.clearFocus();
-                            AppUtils.hideKeyBoard(v);
-                            showDatePickerDialog(holder, item);
-                        }
-                    });
+                    handleDateValueType(holder, item);
                     break;
                 case DATE_TIME:
                 case TIME:
@@ -285,25 +288,64 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                     holder.etValue.setInputType(InputType.TYPE_CLASS_PHONE);
                     break;
                 case BOOLEAN:
-                    List<Option> modelList = new ArrayList<Option>() {
-                        {
-                            add(new Option("0", "No", "false"));
-                            add(new Option("1", "Yes", "true"));
-                        }
-                    };
-                    holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
-                        if (hasFocus) {
-                            v.clearFocus();
-                            AppUtils.hideKeyBoard(v);
-                            showOptionDialog(holder, modelList);
-                        }
-                    });
+                    handleBooleanValueType(holder);
+                    break;
+                case TRACKER_ASSOCIATE:
+                    handleTrackerAssociateValueType(holder, item);
                     break;
                 default:
                     holder.etValue.setInputType(InputType.TYPE_CLASS_TEXT);
                     break;
             }
         }
+    }
+
+    private void handleDateValueType(FieldListViewHolder holder, RProgramTrackedEntityAttribute item) {
+        holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.clearFocus();
+                AppUtils.hideKeyBoard(v);
+                showDatePickerDialog(holder, item);
+            }
+        });
+    }
+
+    private void handleBooleanValueType(FieldListViewHolder holder) {
+        List<Option> modelList = new ArrayList<Option>() {
+            {
+                add(new Option("0", "No", "false"));
+                add(new Option("1", "Yes", "true"));
+            }
+        };
+        holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.clearFocus();
+                AppUtils.hideKeyBoard(v);
+                showOptionDialog(holder, modelList);
+            }
+        });
+    }
+
+    private void handleTrackerAssociateValueType(FieldListViewHolder holder, RProgramTrackedEntityAttribute item) {
+        holder.tvValue.setText(item.getValueDisplay());
+        holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                v.clearFocus();
+                AppUtils.hideKeyBoard(v);
+                TrackedEntityInstanceDialog
+                        .newInstance(orgUnitId, programId, activity.getTrackedEntityInstanceService(),
+                                     new ItemClickListener<TrackedEntityInstance>() {
+                                         @Override
+                                         public void onItemClick(TrackedEntityInstance model) {
+                                             holder.tvValue.setText(model.getDisplayName());
+                                             ItemModel itemModel = getItem(holder.ref);
+                                             itemModel.getProgramTrackedEntityAttribute()
+                                                      .setValueDisplay(model.getDisplayName());
+                                         }
+                                     }).show(activity.getSupportFragmentManager());
+            }
+        });
+
     }
 
     private boolean handleOrgDataValueType(FieldListViewHolder holder,

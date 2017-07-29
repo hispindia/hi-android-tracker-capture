@@ -16,6 +16,7 @@ public enum ValueType {
     TIME,
     NUMBER,
     ORGANISATION_UNIT,
+    TRACKER_ASSOCIATE,
     OTHER;
 
     public static ValueType getType(String valueType) {

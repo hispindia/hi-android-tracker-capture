@@ -78,5 +78,7 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
         router.navigateTo(Screens.ENROLL_PROGRAM_STAGE);
     }
 
-
+    public TrackedEntityInstanceService getTrackedEntityInstanceService() {
+        return trackedEntityInstanceService;
+    }
 }
