@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.services.tracked_entity_instances;
 
+import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
@@ -17,9 +18,6 @@ import rx.Observable;
 
 public interface TrackedEntityInstanceApi {
 
-    @GET("api/trackedEntityInstances?paging=false")
-    Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances();
-
     @POST("api/trackedEntityInstances")
     Observable<BaseResponse> postTrackedEntityInstances(
             @Body TrackedEntityInstanceRequest trackedEntityInstanceRequest);
@@ -28,6 +26,10 @@ public interface TrackedEntityInstanceApi {
     Observable<QueryResponse> queryTrackedEntityInstances(@Query("ou") String orgUnitId,
                                                           @Query("program") String programId,
                                                           @Query("programStatus") String programStatus);
+
+    @GET("api/trackedEntityInstances?paging=false&fields=*")
+    Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(@Query("ou") String orgUnitId,
+                                                                         @Query("program") String programId);
 
 
 }

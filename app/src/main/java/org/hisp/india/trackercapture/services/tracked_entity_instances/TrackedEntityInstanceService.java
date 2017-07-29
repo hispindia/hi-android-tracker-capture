@@ -16,7 +16,7 @@ public interface TrackedEntityInstanceService {
 
     void setRestService(TrackedEntityInstanceApi trackedEntityInstanceApi);
 
-    Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances();
+    Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(String orgUnitId, String programId);
 
     Observable<BaseResponse> postTrackedEntityInstances(TrackedEntityInstanceRequest trackedEntityInstanceRequest);
 
