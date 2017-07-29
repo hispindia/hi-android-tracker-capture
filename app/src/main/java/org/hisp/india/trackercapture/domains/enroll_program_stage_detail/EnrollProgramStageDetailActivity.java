@@ -73,7 +73,6 @@ public class EnrollProgramStageDetailActivity
 
     private Navigator navigator = command -> {
         if (command instanceof Back) {
-
             Intent intent = getIntent();
 
             StageDetail stageDetail = new StageDetail(programStage.getId(),

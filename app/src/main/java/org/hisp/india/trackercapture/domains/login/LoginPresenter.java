@@ -4,25 +4,16 @@ import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.base.Credentials;
-import org.hisp.india.trackercapture.models.base.OrganizationUnit;
-import org.hisp.india.trackercapture.models.storage.RMapping;
-import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.RefreshCredentialService;
 import org.hisp.india.trackercapture.services.account.AccountService;
-import org.hisp.india.trackercapture.services.organization.OrganizationService;
-import org.hisp.india.trackercapture.utils.RealmHelper;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 
 import javax.inject.Inject;
 
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
 import rx.Subscription;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by nhancao on 5/5/17.
@@ -37,8 +28,6 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
     protected NavigatorHolder navigatorHolder;
     @Inject
     protected AccountService accountService;
-    @Inject
-    protected OrganizationService organizationService;
     @Inject
     protected RefreshCredentialService refreshCredentialService;
 
@@ -86,53 +75,22 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
         RxScheduler.onStop(subscription);
         getView().showLoading("Authentication ...");
         subscription = accountService.login()
+                                     .map(user -> {
+                                         getView().updateProgressStatus("Save user data ...");
+                                         return user;
+                                     })
+                                     .compose(
+                                             new AuthenticationSuccessFilter(accountService.getCredentials()).execute())
                                      .compose(RxScheduler.applyIoSchedulers())
                                      .doOnTerminate(() -> getView().hideLoading())
                                      .subscribe(user -> {
                                          getView().loginSuccessful(user);
-                                         getAllOrgs(user.getOrganizationUnits());
+                                         router.replaceScreen(Screens.MAIN_SCREEN);
                                      }, this::exportError);
-    }
-
-    public void getAllOrgs(List<OrganizationUnit> currentOrgForUser) {
-        RxScheduler.onStop(subscription);
-        getView().showLoading("Retrieve all organization ...");
-        subscription = organizationService.getOrganizationUnits()
-                                          .observeOn(Schedulers.computation())
-                                          .map(organizationUnitsResponse -> {
-                                              List<ROrganizationUnit> rOrganizationUnits = new ArrayList<>();
-
-                                              ////@nhancv TODO: create map for current org of user
-                                              HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
-                                              if (currentOrgForUser != null && currentOrgForUser.size() > 0) {
-                                                  for (OrganizationUnit organizationUnit : currentOrgForUser) {
-                                                      userOrgKeyMap.put(organizationUnit.getId(), true);
-                                                  }
-                                              }
-
-                                              for (OrganizationUnit organizationUnit :
-                                                      organizationUnitsResponse.getOrganizationUnits()) {
-                                                  if (!userOrgKeyMap.containsKey(organizationUnit.getId())) {
-                                                      rOrganizationUnits.add(RMapping.from(organizationUnit));
-                                                  }
-                                              }
-
-                                              RealmHelper.transaction(realm -> {
-                                                  realm.copyToRealmOrUpdate(rOrganizationUnits);
-                                              });
-                                              return organizationUnitsResponse;
-                                          })
-                                          .compose(RxScheduler.applyIoSchedulers())
-                                          .doOnTerminate(() -> getView().hideLoading())
-                                          .subscribe(organizationUnitsResponse -> {
-                                              router.replaceScreen(Screens.MAIN_SCREEN);
-                                          }, this::exportError);
-
     }
 
     private void exportError(Throwable throwable) {
         accountService.logout();
-        getView().loginError(throwable);
     }
 
 }

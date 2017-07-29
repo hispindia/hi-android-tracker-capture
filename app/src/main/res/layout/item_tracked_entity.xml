@@ -8,35 +8,81 @@
     tools:ignore="MissingPrefix"
     >
 
-    <LinearLayout
+    <com.daimajia.swipe.SwipeLayout
+        android:id="@+id/item_room_swipe"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         >
-
-        <TextView
-            android:id="@+id/item_tracked_entity_tv_label"
-            fontPath="fonts/Montserrat-Regular.ttf"
+        <!-- Bottom View Start-->
+        <LinearLayout
+            android:id="@+id/bottom_wrapper"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Label"
-            android:textColor="#6A89DF"
-            android:textSize="16sp"
-            />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:background="#e9191d"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            >
+            <!--What you want to show-->
+            <TextView
+                fontPath="fonts/Montserrat-Regular.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:text="Close"
+                android:textColor="#fff"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
+        <!-- Bottom View End-->
+        <!-- Surface View Start -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <!--What you want to show in SurfaceView-->
+            <LinearLayout
+                android:id="@+id/item_tracked_entity_ll_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                >
 
-    <TextView
-        android:id="@+id/item_tracked_entity_tv_value"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@android:color/transparent"
-        android:gravity="center_vertical"
-        android:hint="Empty"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textColor="@android:color/black"
-        android:textCursorDrawable="@null"
-        android:textSize="14sp"
-        android:theme="@style/EditText"
-        />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <TextView
+                        android:id="@+id/item_tracked_entity_tv_label"
+                        fontPath="fonts/Montserrat-Regular.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Label"
+                        android:textColor="#6A89DF"
+                        android:textSize="16sp"
+                        />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/item_tracked_entity_tv_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:hint="Empty"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:textColor="@android:color/black"
+                    android:textCursorDrawable="@null"
+                    android:textSize="14sp"
+                    android:theme="@style/EditText"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+        <!-- Surface View End -->
+    </com.daimajia.swipe.SwipeLayout>
 </LinearLayout>

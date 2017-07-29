@@ -9,6 +9,7 @@ import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.events.EventService;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.services.programs.ProgramService;
+import org.hisp.india.trackercapture.services.sync.SyncService;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 
 import dagger.Component;
@@ -36,6 +37,8 @@ public interface ApplicationComponent {
     EnrollmentService enrollmentService();
 
     EventService eventService();
+
+    SyncService syncService();
 
     RefreshCredentialService refreshCredentialService();
 }

@@ -1,6 +1,9 @@
 package org.hisp.india.trackercapture.services.task;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.SystemClock;
 
 import com.google.gson.Gson;
@@ -33,7 +36,7 @@ import rx.schedulers.Schedulers;
 public class TaskService extends AbstractTaskService {
 
     public static EventBus bus = new EventBus();
-    private final int MAX_RETRY = 5;
+    private final int MAX_RETRY = 3;
     private Gson gson;
     private EventService eventService;
     private EnrollmentService enrollmentService;
@@ -43,11 +46,15 @@ public class TaskService extends AbstractTaskService {
 
     @Override
     protected void doing(Intent intent) {
-        initComponent();
+        if (isNetworkAvailable()) {
+            initComponent();
 
-        doingLoop();
+            doingLoop();
 
-        checkErrorTask();
+            checkErrorTask();
+        } else {
+            postBus(BusProgress.ERROR);
+        }
     }
 
     private void checkErrorTask() {
@@ -59,7 +66,7 @@ public class TaskService extends AbstractTaskService {
                 System.out.println("Failed tasks: " + errorCount);
                 NTaskManager.getInstance().resetStatusQueue();
                 System.out.println("Wait....");
-                SystemClock.sleep(5000);
+                SystemClock.sleep(10000);
                 doingLoop();
             } else {
                 postBus(BusProgress.UP_QUEUE);
@@ -126,7 +133,11 @@ public class TaskService extends AbstractTaskService {
                                 checkErrorTask();
                             })
                             .doOnError(throwable -> {
-                                NTaskManager.markTaskFailed(rTask);
+                                if (!isNetworkAvailable()) {
+                                    NTaskManager.refreshTask(rTask);
+                                } else {
+                                    NTaskManager.markTaskFailed(rTask);
+                                }
                                 checkErrorTask();
                             })
                             .doOnTerminate(() -> postBus(BusProgress.FINISH))
@@ -154,5 +165,10 @@ public class TaskService extends AbstractTaskService {
         RxScheduler.runOnUi(o -> bus.post(busProgress));
     }
 
-
+    private boolean isNetworkAvailable() {
+        ConnectivityManager
+                connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 }

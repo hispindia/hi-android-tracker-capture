@@ -7,7 +7,7 @@ buildscript {
         retroLambdaVersion = '3.6.0'
         androidAptVersion = '1.8'
         googleGmsVersion = '3.0.0'
-        realmVersion = '3.1.2'
+        realmVersion = '3.5.0'
         grgitVersion = '1.5.0'
 
         //Plugin version.
@@ -20,8 +20,7 @@ buildscript {
         picassoVersion = '2.5.2'
         gsonVersion = '2.8.0'
         retrofitVersion = '2.1.0'
-        urlconnectionVersion = '2.7.5'
-        okhttpVersion = '3.3.1'
+        okhttpVersion = '3.8.1'
         rxAndroidVersion = '1.2.0'
         rxJavaVersion = '1.1.5'
         eventBusVersion = '3.0.0'
@@ -36,8 +35,8 @@ buildscript {
 
         navigatorVersion = '1.0.2'
         toastyVersion = '1.1.5'
-        realmBrowserVersion = '1.2.2'
-        ntaskVersion = '2.4'
+        realmBrowserVersion = '1.2.3'
+        ntaskVersion = '2.7'
 
         //Configuration.
         config = [
@@ -83,8 +82,6 @@ buildscript {
                 retrofit                 : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
                 retrofitConverterGson    : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
                 retrofitAdapterRxjava    : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
-                urlconnection            : "com.squareup.okhttp:okhttp-urlconnection:${urlconnectionVersion}",
-                okhttp      : "com.squareup.okhttp3:okhttp:${okhttpVersion}",
 
                 //EventBus
                 eventBus    : "org.greenrobot:eventbus:${eventBusVersion}",

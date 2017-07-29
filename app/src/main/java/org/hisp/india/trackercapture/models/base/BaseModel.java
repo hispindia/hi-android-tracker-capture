@@ -32,4 +32,5 @@ public class BaseModel implements Serializable, Model {
     public String getDisplayName() {
         return displayName;
     }
+
 }

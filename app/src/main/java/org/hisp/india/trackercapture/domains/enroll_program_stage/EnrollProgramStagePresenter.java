@@ -61,13 +61,16 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
         if (isViewAttached()) {
             switch (busProgress) {
                 case LOADING:
-                    getView().showLoading();
+                    getView().showToastMessage("Process ...");
                     break;
                 case FINISH:
-                    getView().hideLoading();
                     break;
                 case SUCCESS:
                     getView().registerProgramSuccess();
+                    router.exit();
+                    break;
+                case ERROR:
+                    getView().showToastMessage("Something error");
                     router.exit();
                     break;
             }
@@ -93,7 +96,7 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
 
     public void registerProgram(TrackedEntityInstanceRequest trackedEntityInstanceRequest,
                                 EnrollmentRequest enrollmentRequest, List<Event> eventList) {
-
+        System.out.println(trackedEntityInstanceRequest.getAttributeRequestList());
         NTaskManager
                 .postTask(RTask.build(UUID.randomUUID().toString(), TAG, new TaskRequest(trackedEntityInstanceRequest,
                                                                                          enrollmentRequest,

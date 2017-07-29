@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.widget.ListView;
 
 import com.nhancv.ntask.NTaskManager;
+import com.nhancv.ntask.RTask;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -64,7 +65,22 @@ public class SyncQueueActivity extends BaseActivity<SyncQueueView, SyncQueuePres
         //Setup toolbar
         toolbar.applySyncQueueUi(this, "Sync Queue", () -> presenter.onBackCommandClick());
 
-        adapter = new SyncQueueAdapter();
+        adapter = new SyncQueueAdapter(new SyncQueueAdapter.SyncQueueAdapterCallback() {
+            @Override
+            public void removeTask(RTask rTask) {
+                adapter.completeTask(rTask);
+            }
+
+            @Override
+            public void onClick(RTask rTask) {
+                SyncQueueDialog.newInstance(rTask).setDialogInterface((dialogFragment, taskId) -> {
+                    RTask task = adapter.getTask(taskId);
+                    if (task != null) {
+                        adapter.completeTask(rTask);
+                    }
+                }).show(getSupportFragmentManager());
+            }
+        });
         lvItem.setAdapter(adapter);
 
         updateSyncQueue();

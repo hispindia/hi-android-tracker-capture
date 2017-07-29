@@ -26,6 +26,9 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.TextChange;
 import org.androidannotations.annotations.ViewById;
+import org.greenrobot.eventbus.Subscribe;
+import org.hisp.india.core.bus.ProgressBus;
+import org.hisp.india.core.services.network.DefaultNetworkProvider;
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
@@ -42,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import es.dmoral.toasty.Toasty;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Replace;
 import rx.Observable;
@@ -146,6 +150,18 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
         }
     }
 
+    @Override
+    protected void onPause() {
+        DefaultNetworkProvider.PROGRESS_BUS.unregister(this);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DefaultNetworkProvider.PROGRESS_BUS.register(this);
+    }
+
     @NonNull
     @Override
     public LoginPresenter createPresenter() {
@@ -186,6 +202,12 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Subscribe
+    public void progressSubscribe(ProgressBus progressBus) {
+        runOnUiThread(
+                () -> setProgressCount((int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
     }
 
     @Click(R.id.activity_login_fl_icon)
@@ -259,12 +281,18 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     }
 
     @Override
-    public void loginError(Throwable throwable) {
-        showErrorMessage(throwable.getMessage());
+    public void showErrorMessage(String message) {
+        Toasty.error(application, message).show();
     }
 
     @Override
-    public void showErrorMessage(String message) {
-        Toast.makeText(application, message, Toast.LENGTH_SHORT).show();
+    public void updateProgressStatus(String message) {
+        runOnUiThread(() -> updateProgressText(message));
     }
+
+    @Override
+    public void hideCircleProgressView() {
+        runOnUiThread(() -> enableCircleProgressView(false));
+    }
+
 }

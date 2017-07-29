@@ -24,6 +24,8 @@ public class RProgramTrackedEntityAttribute extends RealmObject implements Model
 
     @Ignore
     private String value;
+    @Ignore
+    private String valueDisplay;
 
     @Override
     public String getId() {
@@ -63,12 +65,12 @@ public class RProgramTrackedEntityAttribute extends RealmObject implements Model
         return ValueType.getType(valueType);
     }
 
-    public void setValueType(ValueType valueType) {
-        this.valueType = valueType.name();
-    }
-
     public void setValueType(String valueType) {
         this.valueType = valueType;
+    }
+
+    public void setValueType(ValueType valueType) {
+        this.valueType = valueType.name();
     }
 
     public RTrackedEntityAttribute getTrackedEntityAttribute() {
@@ -94,5 +96,13 @@ public class RProgramTrackedEntityAttribute extends RealmObject implements Model
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getValueDisplay() {
+        return valueDisplay;
+    }
+
+    public void setValueDisplay(String valueDisplay) {
+        this.valueDisplay = valueDisplay;
     }
 }

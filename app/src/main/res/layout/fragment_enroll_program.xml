@@ -25,15 +25,15 @@
             android:orientation="vertical"
             >
 
-            <ListView
-                android:id="@+id/fragment_enroll_lv_profile"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fragment_enroll_rv_profile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
                 android:scrollbars="none"
                 >
-            </ListView>
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

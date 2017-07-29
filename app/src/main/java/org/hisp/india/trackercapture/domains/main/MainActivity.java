@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.domains.main;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
@@ -26,6 +27,9 @@ import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+import org.greenrobot.eventbus.Subscribe;
+import org.hisp.india.core.bus.ProgressBus;
+import org.hisp.india.core.services.network.DefaultNetworkProvider;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
@@ -58,6 +62,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import es.dmoral.toasty.Toasty;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.Replace;
@@ -192,9 +197,23 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     }
 
     @Override
+    protected void onPause() {
+        DefaultNetworkProvider.PROGRESS_BUS.unregister(this);
+        super.onPause();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        DefaultNetworkProvider.PROGRESS_BUS.register(this);
+        if (Build.VERSION.SDK_INT >= 23) {
+            nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        } else {
+            //@nhancv TODO: after get all required permission
+            application.initRealmConfig();
+            //Fetching all org from remote and save to local
+            presenter.fetchingAllOrgs();
+        }
     }
 
     @NonNull
@@ -228,7 +247,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                     //@nhancv TODO: after get all required permission
                     application.initRealmConfig();
 
-                    presenter.getOrganizations();
+                    //Fetching all org from remote and save to local
+                    presenter.fetchingAllOrgs();
 
                 } else {
                     nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -264,6 +284,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Override
     public void showLoading() {
         showProgressLoading();
+    }
+
+    @Override
+    public void showLoading(String msg) {
+        showProgressLoading(msg);
     }
 
     @Override
@@ -370,6 +395,27 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Override
     public void syncSuccessful() {
         Toast.makeText(application, "Sync succeed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showError(String error) {
+        Toasty.error(this, error).show();
+    }
+
+    @Override
+    public void updateProgressStatus(String message) {
+        runOnUiThread(() -> updateProgressText(message));
+    }
+
+    @Override
+    public void hideCircleProgressView() {
+        runOnUiThread(() -> enableCircleProgressView(false));
+    }
+
+    @Subscribe
+    public void progressSubscribe(ProgressBus progressBus) {
+        runOnUiThread(
+                () -> setProgressCount((int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
     }
 
     @Click(R.id.activity_main_tv_organization)

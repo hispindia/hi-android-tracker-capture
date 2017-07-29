@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:ignore="MissingPrefix"
     >
@@ -24,17 +24,6 @@
             android:textSize="16sp"
             />
 
-        <TextView
-            android:id="@+id/item_enroll_profile_tv_mandatory"
-            fontPath="fonts/Montserrat-Regular.ttf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="*"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="16sp"
-            android:visibility="gone"
-            />
     </LinearLayout>
 
     <EditText
@@ -73,4 +62,11 @@
         android:theme="@style/EditText"
         />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#6A89DF"
+        />
 </LinearLayout>

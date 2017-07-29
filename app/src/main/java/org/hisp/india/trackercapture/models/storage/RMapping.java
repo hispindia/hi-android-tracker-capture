@@ -123,6 +123,7 @@ public class RMapping {
         if (option == null) return null;
         ROption model = new ROption();
         model.setId(option.getId());
+        model.setCode(option.getCode());
         model.setDisplayName(option.getDisplayName());
         return model;
     }

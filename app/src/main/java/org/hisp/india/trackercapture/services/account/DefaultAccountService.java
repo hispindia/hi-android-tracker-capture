@@ -3,7 +3,6 @@ package org.hisp.india.trackercapture.services.account;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.models.base.User;
-import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 import org.hisp.india.trackercapture.utils.RealmHelper;
 
 import rx.Observable;
@@ -14,7 +13,6 @@ import rx.Observable;
 
 public class DefaultAccountService implements AccountService {
     private static final String TAG = DefaultAccountService.class.getSimpleName();
-
     private NetworkProvider networkProvider;
     private AccountApi restService;
     private Credentials credentials;
@@ -64,8 +62,7 @@ public class DefaultAccountService implements AccountService {
     @Override
     public Observable<User> login() {
         return networkProvider
-                .transformResponse(restService.login())
-                .compose(new AuthenticationSuccessFilter(credentials).execute());
+                .transformResponse(restService.login());
     }
 
     @Override

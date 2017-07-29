@@ -19,6 +19,8 @@ public interface EnrollProgramStageView extends MvpView {
      */
     void showLoading();
 
+    void showLoading(String msg);
+
     /**
      * Display a loading view while loading data in background.
      */
@@ -27,5 +29,7 @@ public interface EnrollProgramStageView extends MvpView {
     void getProgramDetail(RProgram programDetail);
 
     void registerProgramSuccess();
+
+    void showToastMessage(String msg);
 
 }

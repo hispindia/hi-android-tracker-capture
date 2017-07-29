@@ -6,7 +6,6 @@ import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
-import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 
@@ -79,17 +78,5 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
         router.navigateTo(Screens.ENROLL_PROGRAM_STAGE);
     }
 
-    public void getTop100Organization() {
-        if (isViewAttached()) {
-            Observable
-                    .defer(() -> Observable.just(OrganizationQuery.getTop100Organization())
-                                           .delay(100, TimeUnit.MILLISECONDS)
-                                           .compose(RxScheduler.applyLogicSchedulers())
-                                           .doOnSubscribe(() -> getView().showLoading())
-                                           .doOnTerminate(() -> getView().hideLoading()))
-                    .subscribe(organizationUnitList -> getView().getOrganizationUnitList(organizationUnitList));
-
-        }
-    }
 
 }

@@ -1,9 +1,10 @@
 package org.hisp.india.trackercapture.domains.enroll_program;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterInject;
@@ -16,7 +17,6 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity_;
-import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.request.AttributeRequest;
 import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
@@ -45,8 +45,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
     @ViewById(R.id.activity_enroll_program_toolbar)
     protected NToolbar toolbar;
-    @ViewById(R.id.fragment_enroll_lv_profile)
-    protected ListView lvProfile;
+    @ViewById(R.id.fragment_enroll_rv_profile)
+    protected RecyclerView rvProfile;
     @ViewById(R.id.activity_main_root_scroll)
     protected View vRoot;
 
@@ -99,12 +99,13 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         //Setup toolbar
         toolbar.applyEnrollProgramUi(this, "Enroll", () -> presenter.onBackCommandClick());
 
-        adapter = new EnrollProgramAdapter(this, programName, () -> {
-            btRegisterClick();
-        });
-        lvProfile.setAdapter(adapter);
-
-        lvProfile.post(() -> presenter.getProgramDetail(programId));
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        rvProfile.setHasFixedSize(true);
+        rvProfile.setLayoutManager(llm);
+        adapter = new EnrollProgramAdapter(this, programName, this::btRegisterClick);
+        rvProfile.setAdapter(adapter);
+        rvProfile.post(() -> presenter.getProgramDetail(programId));
 
     }
 
@@ -135,7 +136,6 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             Toast.makeText(application, "Program detail is null", Toast.LENGTH_SHORT).show();
         } else {
             this.programDetail = programDetail;
-
             List<ItemModel> itemModels = new ArrayList<>();
             if (programDetail.isDisplayIncidentDate()) {
                 itemModels.add(ItemModel.createIncidentDate(programDetail.getIncidentDateLabel(),
@@ -144,27 +144,21 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             itemModels.add(ItemModel.createEnrollmentDate(programDetail.getEnrollmentDateLabel(),
                                                           programDetail.isSelectEnrollmentDatesInFuture()));
 
-            boolean includeOrganizationUnit = false;
             for (RProgramTrackedEntityAttribute rProgramTrackedEntityAttribute : programDetail
                     .getProgramTrackedEntityAttributes()) {
                 itemModels.add(ItemModel.createRegisterFieldItem(rProgramTrackedEntityAttribute));
-                if (rProgramTrackedEntityAttribute.getValueType() == ValueType.ORGANISATION_UNIT) {
-                    includeOrganizationUnit = true;
-                }
             }
             itemModels.add(ItemModel.createRegisterButton());
+
+            rvProfile.setItemViewCacheSize(itemModels.size());
             adapter.setModelList(itemModels);
-            if (includeOrganizationUnit) {
-                presenter.getTop100Organization();
-            } else {
-                vRoot.setVisibility(View.VISIBLE);
-            }
+            vRoot.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void getOrganizationUnitList(List<ROrganizationUnit> organizationUnitList) {
-        adapter.setOrganizationUnitList(organizationUnitList);
+        rvProfile.setItemViewCacheSize(organizationUnitList.size());
         vRoot.setVisibility(View.VISIBLE);
     }
 

@@ -33,7 +33,10 @@ public interface LoginView extends MvpView {
     /**
      * Api error.
      */
-    void loginError(Throwable throwable);
-
     void showErrorMessage(String message);
+
+    void updateProgressStatus(String message);
+
+    void hideCircleProgressView();
+
 }

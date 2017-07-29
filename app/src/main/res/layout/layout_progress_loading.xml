@@ -11,6 +11,13 @@
     tools:ignore="MissingPrefix"
     >
 
+    <com.dinuscxj.progressbar.CircleProgressBar
+        android:id="@+id/layout_loading_circle_progress"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        />
+
     <org.hisp.india.trackercapture.widgets.RotateLoading
         android:id="@+id/layout_loading_rotate"
         android:layout_width="30dp"

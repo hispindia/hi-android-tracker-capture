@@ -24,6 +24,8 @@ public class RProgramStageDataElement extends RealmObject implements Model {
 
     @Ignore
     private String value;
+    @Ignore
+    private String valueDisplay;
 
     @Ignore
     private String dueDate;
@@ -108,5 +110,13 @@ public class RProgramStageDataElement extends RealmObject implements Model {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getValueDisplay() {
+        return valueDisplay;
+    }
+
+    public void setValueDisplay(String valueDisplay) {
+        this.valueDisplay = valueDisplay;
     }
 }
