@@ -1,4 +1,4 @@
-package org.hisp.india.trackercapture.widgets.option;
+package org.hisp.india.trackercapture.widgets.option.tracked_entity_instance;
 
 import android.app.Dialog;
 import android.graphics.Color;
@@ -22,20 +22,21 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.R;
-import org.hisp.india.trackercapture.models.base.Model;
+import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
 import org.hisp.india.trackercapture.utils.AppUtils;
-import org.hisp.india.trackercapture.widgets.NTextChange;
 import org.hisp.india.trackercapture.widgets.ItemClickListener;
+import org.hisp.india.trackercapture.widgets.NTextChange;
+import org.hisp.india.trackercapture.widgets.option.DefaultOptionAdapter;
+import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 
 import java.util.List;
 
 /**
- * Created by nhancao on 4/25/17.
+ * Created by YesKone on 29-Jul-17.
  */
 
 @EFragment(R.layout.dialog_option)
-public class OptionDialog<T extends Model> extends DialogFragment {
-    private static final String TAG = OptionDialog.class.getSimpleName();
+public class TrackedEntityInstanceDialog  extends DialogFragment {
 
     @ViewById(R.id.dialog_option_lv_search)
     protected LinearLayout lvSearch;
@@ -44,30 +45,16 @@ public class OptionDialog<T extends Model> extends DialogFragment {
     @ViewById(R.id.dialog_option_lv_item)
     protected ListView lvItem;
 
-    private ItemClickListener<T> onItemClickListener;
-    private DefaultOptionAdapter<T> adapter;
-    private List<T> modelList;
+    private ItemClickListener<TrackedEntityInstance> onItemClickListener;
+    private TrackedEntityInstanceAdapter adapter;
+    private List<TrackedEntityInstance> modelList;
 
-    public static Model createModel(final String id, final String displayName) {
-        return new Model() {
-            @Override
-            public String getId() {
-                return id;
-            }
-
-            @Override
-            public String getDisplayName() {
-                return displayName;
-            }
-        };
-    }
-
-    public static <T extends Model> OptionDialog newInstance(List<T> modelList,
-                                                             ItemClickListener<T> onItemClickListener) {
-        OptionDialog<T> optionDialog = OptionDialog_.<T>builder().build();
-        optionDialog.setModelList(modelList);
-        optionDialog.setOnItemClickListener(onItemClickListener);
-        return optionDialog;
+    public static  TrackedEntityInstanceDialog newInstance(List<TrackedEntityInstance> modelList,
+                                                             ItemClickListener<TrackedEntityInstance> onItemClickListener) {
+        TrackedEntityInstanceDialog dialog = TrackedEntityInstanceDialog_.builder().build();
+        dialog.setModelList(modelList);
+        dialog.setOnItemClickListener(onItemClickListener);
+        return dialog;
     }
 
     @NonNull
@@ -84,12 +71,12 @@ public class OptionDialog<T extends Model> extends DialogFragment {
     @AfterViews
     void init() {
 
-        adapter = new DefaultOptionAdapter<T>(getContext(), R.layout.item_dialog_option) {
+        adapter = new TrackedEntityInstanceAdapter<TrackedEntityInstance>(getContext(), R.layout.item_dialog_option) {
             @Override
-            protected void convert(BaseAdapterHelper helper, T item) {
+            protected void convert(BaseAdapterHelper helper, TrackedEntityInstance item) {
                 TextView tvDisplay = helper.getView(R.id.item_dialog_option_title);
                 tvDisplay.setText(AppUtils.highlightText(etSearch.getText().toString(), item.getDisplayName(),
-                                                         Color.parseColor("#7A7986")));
+                        Color.parseColor("#7A7986")));
             }
         };
         lvItem.setAdapter(adapter);
@@ -114,23 +101,27 @@ public class OptionDialog<T extends Model> extends DialogFragment {
     }
 
     @ItemClick(R.id.dialog_option_lv_item)
-    void lvItemClick(T model) {
+    void lvItemClick(TrackedEntityInstance model) {
         if (onItemClickListener != null) {
             onItemClickListener.onItemClick(model);
         }
         dismiss();
     }
 
-    public void setOnItemClickListener(ItemClickListener<T> onItemClickListener) {
+    public void setOnItemClickListener(ItemClickListener<TrackedEntityInstance> onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void setModelList(List<T> modelList) {
+    public void setModelList(List<TrackedEntityInstance> modelList) {
         this.modelList = modelList;
     }
 
     public void show(FragmentManager manager) {
         super.show(manager, OptionDialog.class.getSimpleName());
     }
+
+
+
+
 
 }

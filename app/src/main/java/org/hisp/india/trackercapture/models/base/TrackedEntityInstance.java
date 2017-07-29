@@ -11,7 +11,7 @@ import java.util.List;
  * Created by nhancao on 4/9/17.
  */
 
-public class TrackedEntityInstance extends BaseModel implements Serializable {
+public class TrackedEntityInstance implements Serializable {
     @SerializedName("trackedEntity")
     private String trackedEntityId;
     @SerializedName("trackedEntityInstance")
