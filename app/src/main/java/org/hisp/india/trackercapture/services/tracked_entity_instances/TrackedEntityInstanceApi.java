@@ -27,7 +27,7 @@ public interface TrackedEntityInstanceApi {
                                                           @Query("program") String programId,
                                                           @Query("programStatus") String programStatus);
 
-    @GET("api/trackedEntityInstances?paging=false&fields=*")
+    @GET("api/trackedEntityInstances?paging=false&fields=[*]")
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(@Query("ou") String orgUnitId,
                                                                          @Query("program") String programId);
 

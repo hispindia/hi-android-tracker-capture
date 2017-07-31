@@ -2,33 +2,62 @@
 
 buildscript {
     ext {
+
+        // Config version for core
+        hiCoreVersion = [
+                buildGradle          : "2.3.3",
+                androidApt           : "1.8",
+                retrolambda          : "3.6.0",
+                realm                : "3.5.0",
+                grgit                : "1.5.0",
+                compileSdkVersion    : 26,
+                buildToolsVersion    : "26.0.1",
+                minSdkVersion        : 16,
+                targetSdkVersion     : 26,
+                gson                 : "2.8.0",
+                okhttp               : "3.8.1",
+                retrofit             : "2.1.0",
+                retrofitConverterGson: "2.1.0",
+                retrofitAdapterRxjava: "2.1.0",
+                rxAndroid            : "1.2.0",
+                rxJava               : "1.1.5",
+                dagger               : "2.0",
+                daggerCompiler       : "2.0",
+                jsr250Api            : "1.0",
+                joda                 : "2.9.3",
+                hawk                 : "1.23",
+                cicerone             : "1.2.1",
+                logentries           : "logentries-android-4.4.1",
+                eventbus             : "3.0.0"
+        ]
+
         //Plugin version.
-        androidPluginVersion = '2.2.3'
-        retroLambdaVersion = '3.6.0'
-        androidAptVersion = '1.8'
+        androidPluginVersion = hiCoreVersion.buildGradle
+        retroLambdaVersion = hiCoreVersion.retrolambda
+        androidAptVersion = hiCoreVersion.androidApt
+        realmVersion = hiCoreVersion.realm
+        grgitVersion = hiCoreVersion.grgit
         googleGmsVersion = '3.0.0'
-        realmVersion = '3.5.0'
-        grgitVersion = '1.5.0'
 
         //Plugin version.
         androidSupportVersion = '25.3.1'
         androidSupportMultidexVersion = '1.0.1'
 
-        daggerVersion = '2.8'
+        daggerVersion = hiCoreVersion.dagger
+        gsonVersion = hiCoreVersion.gson
+        retrofitVersion = hiCoreVersion.retrofit
+        okhttpVersion = hiCoreVersion.okhttp
+        rxAndroidVersion = hiCoreVersion.rxAndroid
+        rxJavaVersion = hiCoreVersion.rxJava
+        eventBusVersion = hiCoreVersion.eventbus
+        jodaVersion = hiCoreVersion.joda
+        hawkVersion = hiCoreVersion.hawk
         androidAnnotationVersion = '4.1.0'
         generatedAnnotationVersion = '1.0'
         picassoVersion = '2.5.2'
-        gsonVersion = '2.8.0'
-        retrofitVersion = '2.1.0'
-        okhttpVersion = '3.8.1'
-        rxAndroidVersion = '1.2.0'
-        rxJavaVersion = '1.1.5'
-        eventBusVersion = '3.0.0'
         baseAdapterVersion = '1.1.11'
         saripaarVersion = '2.0.3'
         calligraphyVersion = '2.2.0'
-        jodaVersion = '2.9.3'
-        hawkVersion = '1.23'
         npermissionVersion = 'v1.3'
         mvpVersion = '3.0.2'
         mvpViewStateVersion = '3.0.2'
@@ -40,10 +69,10 @@ buildscript {
 
         //Configuration.
         config = [
-                minSdkVersion        : 16,
-                compileSdkVersion    : 25,
-                buildToolsVersion    : '25.0.2',
-                targetSdkVersion     : 25,
+                minSdkVersion        : hiCoreVersion.minSdkVersion,
+                compileSdkVersion    : hiCoreVersion.compileSdkVersion,
+                buildToolsVersion    : hiCoreVersion.buildToolsVersion,
+                targetSdkVersion     : hiCoreVersion.targetSdkVersion,
                 renderscriptTargetApi: 23
 
         ]
@@ -84,41 +113,41 @@ buildscript {
                 retrofitAdapterRxjava    : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
 
                 //EventBus
-                eventBus    : "org.greenrobot:eventbus:${eventBusVersion}",
+                eventBus                 : "org.greenrobot:eventbus:${eventBusVersion}",
 
                 //Async
-                rxAndroid   : "io.reactivex:rxandroid:${rxAndroidVersion}",
-                rxJava      : "io.reactivex:rxjava:${rxJavaVersion}",
+                rxAndroid                : "io.reactivex:rxandroid:${rxAndroidVersion}",
+                rxJava                   : "io.reactivex:rxjava:${rxJavaVersion}",
 
                 //Adapters
-                baseAdapter : "com.joanzapata.android:base-adapter-helper:${baseAdapterVersion}",
+                baseAdapter              : "com.joanzapata.android:base-adapter-helper:${baseAdapterVersion}",
 
                 //UI Validations
-                saripaar    : "com.mobsandgeeks:android-saripaar:${saripaarVersion}",
+                saripaar                 : "com.mobsandgeeks:android-saripaar:${saripaarVersion}",
 
                 //Fonts
-                calligraphy : "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
+                calligraphy              : "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
 
                 //Date times
-                joda        : "net.danlew:android.joda:${jodaVersion}",
+                joda                     : "net.danlew:android.joda:${jodaVersion}",
 
                 //Pref storage
-                hawk        : "com.github.orhanobut:hawk:${hawkVersion}",
+                hawk                     : "com.github.orhanobut:hawk:${hawkVersion}",
 
                 //Permissions
-                npermission : "com.github.nhancv:nc-android-npermission:${npermissionVersion}",
+                npermission              : "com.github.nhancv:nc-android-npermission:${npermissionVersion}",
 
                 //MVP
-                mvp         : "com.hannesdorfmann.mosby3:mvp:${mvpVersion}",
-                mvpViewState: "com.hannesdorfmann.mosby3:viewstate:${mvpViewStateVersion}",
+                mvp                      : "com.hannesdorfmann.mosby3:mvp:${mvpVersion}",
+                mvpViewState             : "com.hannesdorfmann.mosby3:viewstate:${mvpViewStateVersion}",
 
                 //Navigator
-                navigator   : "com.yarolegovich:sliding-root-nav:${navigatorVersion}",
+                navigator                : "com.yarolegovich:sliding-root-nav:${navigatorVersion}",
                 //Toasty
-                toasty      : "com.github.GrenderG:Toasty:${toastyVersion}",
+                toasty                   : "com.github.GrenderG:Toasty:${toastyVersion}",
                 //Realm browser
-                realmBrowser: "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}",
-                ntask       : "com.github.nhancv:nc-android-ntask:${ntaskVersion}"
+                realmBrowser             : "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}",
+                ntask                    : "com.github.nhancv:nc-android-ntask:${ntaskVersion}"
         ]
     }
 
