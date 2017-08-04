@@ -2,6 +2,8 @@ package org.hisp.india.trackercapture.di;
 
 import android.app.Application;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.orhanobut.hawk.Hawk;
@@ -67,6 +69,7 @@ import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
+import io.realm.RealmObject;
 
 /**
  * Created by nhancao on 5/5/17.
@@ -112,6 +115,17 @@ public class ApplicationModule {
             @Override
             public GsonBuilder createBuilder() {
                 return super.createBuilder()
+                            .setExclusionStrategies(new ExclusionStrategy() {
+                                @Override
+                                public boolean shouldSkipField(FieldAttributes f) {
+                                    return f.getDeclaringClass().equals(RealmObject.class);
+                                }
+
+                                @Override
+                                public boolean shouldSkipClass(Class<?> clazz) {
+                                    return false;
+                                }
+                            })
                             .registerTypeAdapter(new TypeToken<Map<String, String>>() {}.getType(),
                                                  new MapDeserializer());
             }

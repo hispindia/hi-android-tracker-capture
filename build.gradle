@@ -8,7 +8,6 @@ buildscript {
                 buildGradle          : "2.3.3",
                 androidApt           : "1.8",
                 retrolambda          : "3.6.0",
-                realm                : "3.5.0",
                 grgit                : "1.5.0",
                 compileSdkVersion    : 26,
                 buildToolsVersion    : "26.0.1",
@@ -35,24 +34,16 @@ buildscript {
         androidPluginVersion = hiCoreVersion.buildGradle
         retroLambdaVersion = hiCoreVersion.retrolambda
         androidAptVersion = hiCoreVersion.androidApt
-        realmVersion = hiCoreVersion.realm
         grgitVersion = hiCoreVersion.grgit
         googleGmsVersion = '3.0.0'
+        realmVersion = '3.5.0'
 
         //Plugin version.
         androidSupportVersion = '25.3.1'
         androidSupportMultidexVersion = '1.0.1'
 
         daggerVersion = hiCoreVersion.dagger
-        gsonVersion = hiCoreVersion.gson
-        retrofitVersion = hiCoreVersion.retrofit
-        okhttpVersion = hiCoreVersion.okhttp
-        rxAndroidVersion = hiCoreVersion.rxAndroid
-        rxJavaVersion = hiCoreVersion.rxJava
-        eventBusVersion = hiCoreVersion.eventbus
-        jodaVersion = hiCoreVersion.joda
-        hawkVersion = hiCoreVersion.hawk
-        androidAnnotationVersion = '4.1.0'
+        androidAnnotationVersion = '4.3.1'
         generatedAnnotationVersion = '1.0'
         picassoVersion = '2.5.2'
         baseAdapterVersion = '1.1.11'
@@ -93,54 +84,26 @@ buildscript {
                 supportv4                : "com.android.support:support-v4:${androidSupportVersion}",
                 appcompatv7              : "com.android.support:appcompat-v7:${androidSupportVersion}",
                 recyclerviewv7           : "com.android.support:recyclerview-v7:${androidSupportVersion}",
-
                 //Dagger
                 dagger                   : "com.google.dagger:dagger:${daggerVersion}",
                 daggerCompiler           : "com.google.dagger:dagger-compiler:${daggerVersion}",
                 generatedAnnotation      : "javax.annotation:jsr250-api:${generatedAnnotationVersion}",
-
                 //Android annotation
                 androidAnnotation        : "org.androidannotations:androidannotations-api:${androidAnnotationVersion}",
                 androidAnnotationCompiler: "org.androidannotations:androidannotations:${androidAnnotationVersion}",
-
                 //Image Loader
                 picasso                  : "com.squareup.picasso:picasso:${picassoVersion}",
-
-                //REST client
-                gson                     : "com.google.code.gson:gson:${gsonVersion}",
-                retrofit                 : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
-                retrofitConverterGson    : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
-                retrofitAdapterRxjava    : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
-
-                //EventBus
-                eventBus                 : "org.greenrobot:eventbus:${eventBusVersion}",
-
-                //Async
-                rxAndroid                : "io.reactivex:rxandroid:${rxAndroidVersion}",
-                rxJava                   : "io.reactivex:rxjava:${rxJavaVersion}",
-
                 //Adapters
                 baseAdapter              : "com.joanzapata.android:base-adapter-helper:${baseAdapterVersion}",
-
                 //UI Validations
                 saripaar                 : "com.mobsandgeeks:android-saripaar:${saripaarVersion}",
-
                 //Fonts
                 calligraphy              : "uk.co.chrisjenx:calligraphy:${calligraphyVersion}",
-
-                //Date times
-                joda                     : "net.danlew:android.joda:${jodaVersion}",
-
-                //Pref storage
-                hawk                     : "com.github.orhanobut:hawk:${hawkVersion}",
-
                 //Permissions
                 npermission              : "com.github.nhancv:nc-android-npermission:${npermissionVersion}",
-
                 //MVP
                 mvp                      : "com.hannesdorfmann.mosby3:mvp:${mvpVersion}",
                 mvpViewState             : "com.hannesdorfmann.mosby3:viewstate:${mvpViewStateVersion}",
-
                 //Navigator
                 navigator                : "com.yarolegovich:sliding-root-nav:${navigatorVersion}",
                 //Toasty
