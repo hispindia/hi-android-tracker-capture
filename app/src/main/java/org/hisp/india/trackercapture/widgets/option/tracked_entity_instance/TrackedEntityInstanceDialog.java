@@ -1,8 +1,10 @@
 package org.hisp.india.trackercapture.widgets.option.tracked_entity_instance;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -16,22 +18,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.joanzapata.android.BaseAdapterHelper;
+import com.joanzapata.android.QuickAdapter;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
-import org.androidannotations.annotations.ItemClick;
 import org.androidannotations.annotations.ViewById;
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.Attribute;
 import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
+import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.ItemClickListener;
 import org.hisp.india.trackercapture.widgets.NTextChange;
-import org.hisp.india.trackercapture.widgets.option.DefaultOptionAdapter;
 import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 
 import java.util.ArrayList;
@@ -43,6 +46,7 @@ import java.util.List;
 
 @EFragment(R.layout.dialog_tracked_entity_instance)
 public class TrackedEntityInstanceDialog extends DialogFragment {
+    private static final String TAG = TrackedEntityInstanceDialog.class.getSimpleName();
 
     @ViewById(R.id.dialog_tracked_entity_instance_lv_search)
     protected LinearLayout lvSearch;
@@ -56,17 +60,15 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
     protected TextView tvEmpty;
     @FragmentArg
     protected String orgUnitId;
-    @FragmentArg
-    protected String programId;
     private ItemClickListener<TrackedEntityInstance> onItemClickListener;
     private TrackedEntityInstanceAdapter adapter;
     private TrackedEntityInstanceService trackedEntityInstanceService;
 
-    public static TrackedEntityInstanceDialog newInstance(String orgUnitId, String programId,
+    public static TrackedEntityInstanceDialog newInstance(String orgUnitId,
                                                           TrackedEntityInstanceService trackedEntityInstanceService,
                                                           ItemClickListener<TrackedEntityInstance> onItemClickListener) {
         TrackedEntityInstanceDialog dialog = TrackedEntityInstanceDialog_.builder()
-                                                                         .orgUnitId(orgUnitId).programId(programId)
+                                                                         .orgUnitId(orgUnitId)
                                                                          .build();
         dialog.setOnItemClickListener(onItemClickListener);
         dialog.setTrackedEntityInstanceService(trackedEntityInstanceService);
@@ -74,8 +76,11 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
     }
 
     public void loadData() {
+        RProgram houseHoldProgram = ProgramQuery.getProgramByName("Household");
+        if (houseHoldProgram == null) return;
+
         showLoading(true);
-        trackedEntityInstanceService.getTrackedEntityInstances(orgUnitId, programId)
+        trackedEntityInstanceService.getTrackedEntityInstances(orgUnitId, houseHoldProgram.getId())
                                     .compose(RxScheduler.applyIoSchedulers())
                                     .doOnTerminate(() -> {
                                         showLoading(false);
@@ -112,8 +117,53 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
             @Override
             protected void convert(BaseAdapterHelper helper, TrackedEntityInstance item) {
                 TextView tvDisplay = helper.getView(R.id.item_dialog_option_title);
-                tvDisplay.setText(AppUtils.highlightText(etSearch.getText().toString(), item.getDisplayName(),
+
+                String display = "";
+                for (Attribute attribute : item.getAttributePreview()) {
+                    display += String.format("%s: %s\n", attribute.getDisplayName(), attribute.getValue());
+                }
+
+                tvDisplay.setText(AppUtils.highlightText(etSearch.getText().toString(), display,
                                                          Color.parseColor("#7A7986")));
+
+                helper.getView().setOnClickListener(view -> {
+                    showDialogInfo(item);
+                });
+            }
+
+            private void showDialogInfo(TrackedEntityInstance item) {
+                AlertDialog.Builder builder;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(context);
+                }
+
+                View view = View.inflate(getContext(), R.layout.dialog_info, null);
+
+                ListView lvInfoItem = view.findViewById(R.id.dialog_info_lv_item);
+                lvInfoItem.setAdapter(
+                        new QuickAdapter<Attribute>(getContext(), R.layout.item_dialog_info, item.getAttributeList()) {
+                            @Override
+                            protected void convert(BaseAdapterHelper helper, Attribute item) {
+                                helper.setText(R.id.item_dialog_info_title, item.getDisplayName());
+                                helper.setText(R.id.item_dialog_info_value, item.getValue());
+                            }
+                        });
+
+                builder.setTitle("Info")
+                       .setView(view)
+                       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                           if (onItemClickListener != null) {
+                               onItemClickListener.onItemClick(item);
+                           }
+                           dismiss();
+                       })
+                       .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                           // do nothing
+                       })
+                       .setIcon(android.R.drawable.ic_dialog_info)
+                       .show();
             }
         };
         lvItem.setAdapter(adapter);
@@ -131,14 +181,6 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
             }
         }));
         loadData();
-    }
-
-    @ItemClick(R.id.dialog_option_lv_item)
-    void lvItemClick(TrackedEntityInstance model) {
-        if (onItemClickListener != null) {
-            onItemClickListener.onItemClick(model);
-        }
-        dismiss();
     }
 
     public void setOnItemClickListener(ItemClickListener<TrackedEntityInstance> onItemClickListener) {
@@ -160,8 +202,10 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
             Attribute attribute = getMainAttribute(trackedEntityInstance);
             if (attribute != null) {
                 trackedEntityInstance.setDisplayName(attribute.getDisplayName());
+                trackedEntityInstance.setValue(attribute.getValue());
                 modelList.add(trackedEntityInstance);
             }
+            trackedEntityInstance.initAttributePreview();
         }
         if (modelList.size() == 0) {
             tvEmpty.setVisibility(View.VISIBLE);

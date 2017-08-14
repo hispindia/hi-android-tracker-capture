@@ -20,6 +20,17 @@ public class ProgramQuery {
         });
     }
 
+    public static RProgram getProgramByName(String name) {
+        return RealmHelper.query(realm -> {
+            RProgram program = realm.where(RProgram.class).equalTo("displayName", name).findFirst();
+            if (program != null) {
+                return realm.copyFromRealm(program);
+            }
+            return null;
+        });
+
+    }
+
     public static RProgramStage getProgramStage(String programStageId) {
         return RealmHelper.query(realm -> {
             RProgramStage program = realm.where(RProgramStage.class).equalTo("id", programStageId).findFirst();

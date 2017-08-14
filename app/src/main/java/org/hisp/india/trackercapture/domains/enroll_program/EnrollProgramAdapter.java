@@ -8,7 +8,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.Option;
-import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
 import org.hisp.india.trackercapture.models.e_num.OrgValueType;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
@@ -29,7 +27,6 @@ import org.hisp.india.trackercapture.models.tmp.ItemModel;
 import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
-import org.hisp.india.trackercapture.widgets.ItemClickListener;
 import org.hisp.india.trackercapture.widgets.NTextChange;
 import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 import org.hisp.india.trackercapture.widgets.option.tracked_entity_instance.TrackedEntityInstanceDialog;
@@ -333,15 +330,12 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                 v.clearFocus();
                 AppUtils.hideKeyBoard(v);
                 TrackedEntityInstanceDialog
-                        .newInstance(orgUnitId, programId, activity.getTrackedEntityInstanceService(),
-                                     new ItemClickListener<TrackedEntityInstance>() {
-                                         @Override
-                                         public void onItemClick(TrackedEntityInstance model) {
-                                             holder.tvValue.setText(model.getDisplayName());
-                                             ItemModel itemModel = getItem(holder.ref);
-                                             itemModel.getProgramTrackedEntityAttribute()
-                                                      .setValueDisplay(model.getDisplayName());
-                                         }
+                        .newInstance(orgUnitId, activity.getTrackedEntityInstanceService(),
+                                     model -> {
+                                         holder.tvValue.setText(model.getValue());
+                                         ItemModel itemModel = getItem(holder.ref);
+                                         itemModel.getProgramTrackedEntityAttribute()
+                                                  .setValueDisplay(model.getValue());
                                      }).show(activity.getSupportFragmentManager());
             }
         });

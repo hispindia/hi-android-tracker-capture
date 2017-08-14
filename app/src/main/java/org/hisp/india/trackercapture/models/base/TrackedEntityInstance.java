@@ -3,9 +3,8 @@ package org.hisp.india.trackercapture.models.base;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.hisp.india.trackercapture.models.request.AttributeRequest;
-
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +23,10 @@ public class TrackedEntityInstance implements Serializable {
 
     @Expose
     private String displayName;
+    @Expose
+    private String value;
+    @Expose
+    private List<Attribute> attributePreview;
 
     public String getTrackedEntityId() {
         return trackedEntityId;
@@ -47,5 +50,35 @@ public class TrackedEntityInstance implements Serializable {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public void initAttributePreview() {
+        attributePreview = new ArrayList<>();
+        if (attributeList == null || attributeList.size() == 0 || displayName == null) return;
+        for (Attribute attribute : attributeList) {
+            if (attribute.getDisplayName().equals(displayName)) {
+                attributePreview.add(attribute);
+                break;
+            }
+        }
+        for (Attribute attribute : attributeList) {
+            if (attributePreview.size() > 0 &&
+                attributePreview.size() < 4 &&
+                !attribute.getDisplayName().equals(displayName)) {
+                attributePreview.add(attribute);
+            }
+        }
+    }
+
+    public List<Attribute> getAttributePreview() {
+        return attributePreview;
     }
 }
