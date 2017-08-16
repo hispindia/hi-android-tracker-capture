@@ -162,7 +162,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     public void syncOrganizationData() {
         RxScheduler.onStop(subscription);
 
-        ////@nhancv TODO: create map for current org of user
+        //@nhancv TODO: create map for current org of user
         List<ROrganizationUnit> currentOrgForUser = OrganizationQuery.getUserOrganizations();
         HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
         if (currentOrgForUser.size() > 0) {

@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="AVB"
+            android:text="Tracker"
             android:textColor="@android:color/white"
             android:textSize="17.3sp"
             app:fontPath="fonts/Montserrat-Bold.ttf"

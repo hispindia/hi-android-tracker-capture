@@ -36,6 +36,7 @@ import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.main.MainActivity_;
 import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.navigator.Screens;
+import org.hisp.india.trackercapture.services.account.AccountApi;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.utils.Constants;
 import org.hisp.india.trackercapture.utils.NKeyboard;
@@ -97,6 +98,8 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     private Navigator navigator = command -> {
         if (command instanceof Replace) {
             if (((Replace) command).getScreenKey().equals(Screens.MAIN_SCREEN)) {
+                application.resetApplicationComponent();
+
                 MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
                              .start();
             }
@@ -206,8 +209,12 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
 
     @Subscribe
     public void progressSubscribe(ProgressBus progressBus) {
-        runOnUiThread(
-                () -> setProgressCount((int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
+        if (progressBus.getApiClass() == AccountApi.class) {
+            runOnUiThread(() ->
+                                  setProgressCount(
+                                          (int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
+
+        }
     }
 
     @Click(R.id.activity_login_fl_icon)

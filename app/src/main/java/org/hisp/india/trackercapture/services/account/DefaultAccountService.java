@@ -41,21 +41,14 @@ public class DefaultAccountService implements AccountService {
     @Override
     public void updateCredentialHost(String host) {
         credentials.setHost(host);
-
-        restService = networkProvider
-                .addDefaultHeader()
-                .addHeader("Authorization", credentials.getApiToken())
-                .provideApi(credentials.getHost(), AccountApi.class);
+        updateServiceApi();
 
     }
 
     @Override
     public void updateCredentialToken(String username, String password) {
         credentials.setApiToken(username, password);
-        restService = networkProvider
-                .addDefaultHeader()
-                .addHeader("Authorization", credentials.getApiToken())
-                .provideApi(credentials.getHost(), AccountApi.class);
+        updateServiceApi();
 
     }
 
@@ -69,6 +62,12 @@ public class DefaultAccountService implements AccountService {
     public void logout() {
         RealmHelper.transaction(realm -> realm.deleteAll());
         credentials.clear();
+    }
+
+    private void updateServiceApi() {
+        restService = networkProvider
+                .addHeader("Authorization", credentials.getApiToken())
+                .provideApi(credentials.getHost(), AccountApi.class, true);
     }
 
 }

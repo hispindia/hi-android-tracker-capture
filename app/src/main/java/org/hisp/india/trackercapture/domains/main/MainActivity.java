@@ -414,8 +414,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @Subscribe
     public void progressSubscribe(ProgressBus progressBus) {
-        runOnUiThread(
-                () -> setProgressCount((int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
+        runOnUiThread(() ->
+                              setProgressCount(
+                                      (int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
     }
 
     @Click(R.id.activity_main_tv_organization)

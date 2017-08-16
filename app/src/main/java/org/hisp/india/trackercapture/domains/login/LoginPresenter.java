@@ -5,7 +5,6 @@ import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.base.Credentials;
 import org.hisp.india.trackercapture.navigator.Screens;
-import org.hisp.india.trackercapture.services.RefreshCredentialService;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 
@@ -28,8 +27,6 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
     protected NavigatorHolder navigatorHolder;
     @Inject
     protected AccountService accountService;
-    @Inject
-    protected RefreshCredentialService refreshCredentialService;
 
     protected Subscription subscription;
 
@@ -64,7 +61,6 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
     public void updateCredentialTokenAndLogin(String username, String password) {
         try {
             accountService.updateCredentialToken(username, password);
-            refreshCredentialService.updateCredentialToken();
             login();
         } catch (Exception e) {
             getView().showErrorMessage(e.getMessage());
