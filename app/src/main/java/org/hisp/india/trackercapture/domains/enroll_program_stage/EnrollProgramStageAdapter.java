@@ -24,8 +24,8 @@ import io.realm.RealmList;
 
 public class EnrollProgramStageAdapter extends BaseAdapter {
 
-    private List<RProgramStage> programStageList;
     private String enrollmentDate;
+    private List<RProgramStage> programStageList;
     private ItemClickListener<RProgramStage> itemClickListener;
 
     public EnrollProgramStageAdapter() {

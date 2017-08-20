@@ -297,8 +297,12 @@ public class ApplicationModule {
 
     @Provides
     @ApplicationScope
-    public SyncService provideSyncService() {
-        return new DefaultSyncService();
+    public SyncService provideSyncService(TrackedEntityInstanceService trackedEntityInstanceService,
+                                          EnrollmentService enrollmentService,
+                                          EventService eventService) {
+        return new DefaultSyncService(trackedEntityInstanceService,
+                                      enrollmentService,
+                                      eventService);
     }
 
 

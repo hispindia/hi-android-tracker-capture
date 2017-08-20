@@ -1,8 +1,8 @@
 package org.hisp.india.trackercapture.services.enrollments;
 
 import org.hisp.india.core.services.network.NetworkProvider;
-import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 
 import rx.Observable;
 
@@ -27,7 +27,7 @@ public class DefaultEnrollmentService implements EnrollmentService {
     }
 
     @Override
-    public Observable<BaseResponse> postEnrollments(EnrollmentRequest enrollmentRequest) {
+    public Observable<BaseResponse> postEnrollments(RTaskEnrollment enrollmentRequest) {
         return networkProvider
                 .transformResponse(restService.postEnrollments(enrollmentRequest));
     }

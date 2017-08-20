@@ -1,7 +1,6 @@
 package org.hisp.india.trackercapture.services.sync;
 
-import org.hisp.india.trackercapture.models.e_num.SyncKey;
-import org.hisp.india.trackercapture.models.storage.RSync;
+import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 
 /**
  * Created by nhancao on 7/11/17.
@@ -9,6 +8,7 @@ import org.hisp.india.trackercapture.models.storage.RSync;
 
 public interface SyncService {
 
-    RSync getSyncRowByKey(SyncKey syncKey);
+    void syncEnrollProgram();
 
+    void syncEnrollProgram(String taskId, SyncCallback<RTaskRequest> syncCallback);
 }

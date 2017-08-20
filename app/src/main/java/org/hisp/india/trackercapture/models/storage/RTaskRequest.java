@@ -1,6 +1,7 @@
 package org.hisp.india.trackercapture.models.storage;
 
 import org.hisp.india.trackercapture.utils.RealmHelper;
+import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +30,11 @@ public class RTaskRequest extends RealmObject {
     private String lastError;
 
     public RTaskRequest() {
+        this.eventList = new RealmList<>();
+
         setUuid(UUID.randomUUID().toString());
+        setCreateTime(new DateTime().toString());
+        setNeedSync(true);
     }
 
     public static RTaskRequest create(RTaskTrackedEntityInstance trackedEntityInstance,
@@ -134,10 +139,38 @@ public class RTaskRequest extends RealmObject {
     }
 
     public void save() {
+        setUpdateTime(new DateTime().toString());
         RealmHelper.transaction(realm -> {
             realm.insertOrUpdate(this);
         });
     }
 
+    public void delete() {
+        RealmHelper.transaction(realm -> {
+            RTaskRequest rTask = realm.where(RTaskRequest.class).equalTo("uuid", getUuid()).findFirst();
+            if (rTask != null) {
+                rTask.deleteFromRealm();
+            }
+        });
+    }
 
+    public void updateSyncStatus(boolean isSucceed, String errorMsg) {
+        setLastSyncStatus(isSucceed);
+        setNeedSync(!isSucceed);
+        setHadSynced(isSucceed);
+        setLastSyncTime(new DateTime().toString());
+        setLastError(errorMsg);
+    }
+
+    @Override
+    public String toString() {
+        return "uuid='" + uuid + '\'' +
+               ", createTime='" + createTime + '\'' +
+               ", updateTime='" + updateTime + '\'' +
+               ", lastSyncTime='" + lastSyncTime + '\'' +
+               ", lastSyncStatus=" + lastSyncStatus +
+               ", needSync=" + needSync +
+               ", hadSynced=" + hadSynced +
+               ", lastError='" + lastError;
+    }
 }

@@ -2,9 +2,7 @@ package org.hisp.india.trackercapture.domains.sync_queue;
 
 import android.support.annotation.NonNull;
 import android.widget.ListView;
-
-import com.nhancv.ntask.NTaskManager;
-import com.nhancv.ntask.RTask;
+import android.widget.Toast;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -16,6 +14,8 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.models.base.RowModel;
+import org.hisp.india.trackercapture.models.storage.RTaskRequest;
+import org.hisp.india.trackercapture.services.sync.SyncQuery;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
 
@@ -38,11 +38,11 @@ public class SyncQueueActivity extends BaseActivity<SyncQueueView, SyncQueuePres
     protected MainApplication application;
     @Extra
     protected RowModel rowModel;
+
     @Inject
     protected SyncQueuePresenter presenter;
 
     private SyncQueueAdapter adapter;
-
 
     private Navigator navigator = command -> {
         if (command instanceof Back) {
@@ -67,23 +67,20 @@ public class SyncQueueActivity extends BaseActivity<SyncQueueView, SyncQueuePres
 
         adapter = new SyncQueueAdapter(new SyncQueueAdapter.SyncQueueAdapterCallback() {
             @Override
-            public void removeTask(RTask rTask) {
-                adapter.completeTask(rTask);
+            public void removeTask(RTaskRequest rTask) {
+                adapter.removeTask(rTask);
             }
 
             @Override
-            public void onClick(RTask rTask) {
-                SyncQueueDialog.newInstance(rTask).setDialogInterface((dialogFragment, taskId) -> {
-                    RTask task = adapter.getTask(taskId);
-                    if (task != null) {
-                        adapter.completeTask(rTask);
-                    }
-                }).show(getSupportFragmentManager());
+            public void onClick(RTaskRequest rTask) {
+                SyncQueueDialog.newInstance(rTask)
+                               .setDialogInterface((dialogFragment, taskId) -> {
+                                   presenter.syncProgram(taskId);
+                               }).show(getSupportFragmentManager());
             }
         });
         lvItem.setAdapter(adapter);
-
-        updateSyncQueue();
+        updateTaskList();
 
     }
 
@@ -99,9 +96,17 @@ public class SyncQueueActivity extends BaseActivity<SyncQueueView, SyncQueuePres
     }
 
     @Override
-    public void updateSyncQueue() {
-        lvItem.post(() -> adapter.setTaskList(NTaskManager.getInstance().getTaskList()));
+    public void syncSucceed() {
+        Toast.makeText(application, "Sync succeed", Toast.LENGTH_SHORT).show();
+        updateTaskList();
     }
 
+    @Override
+    public void syncError(String e) {
+        Toast.makeText(application, "Sync error: " + e, Toast.LENGTH_SHORT).show();
+        updateTaskList();
+    }
+
+    private void updateTaskList() {lvItem.post(() -> adapter.setTaskList(SyncQuery.getRTaskRequestList()));}
 
 }

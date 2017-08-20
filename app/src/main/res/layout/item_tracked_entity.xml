@@ -30,7 +30,7 @@
                 android:gravity="center"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
-                android:text="Close"
+                android:text="Remove"
                 android:textColor="#fff"
                 android:textSize="16sp"
                 />
@@ -42,46 +42,60 @@
             android:layout_height="match_parent"
             >
             <!--What you want to show in SurfaceView-->
-            <LinearLayout
-                android:id="@+id/item_tracked_entity_ll_item"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
                 >
-
                 <LinearLayout
+                    android:id="@+id/item_tracked_entity_ll_item"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
                     >
 
-                    <TextView
-                        android:id="@+id/item_tracked_entity_tv_label"
-                        fontPath="fonts/Montserrat-Regular.ttf"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:text="Label"
-                        android:textColor="#6A89DF"
-                        android:textSize="16sp"
+                        >
+
+                        <TextView
+                            android:id="@+id/item_tracked_entity_tv_label"
+                            fontPath="fonts/Montserrat-Regular.ttf"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="15dp"
+                            android:text="Label"
+                            android:textColor="#6A89DF"
+                            android:textSize="16sp"
+                            />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/item_tracked_entity_tv_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:background="@android:color/transparent"
+                        android:gravity="center_vertical"
+                        android:hint="Empty"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:textColor="@android:color/black"
+                        android:textCursorDrawable="@null"
+                        android:textSize="14sp"
+                        android:theme="@style/EditText"
                         />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/item_tracked_entity_tv_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:background="@android:color/transparent"
-                    android:gravity="center_vertical"
-                    android:hint="Empty"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:textColor="@android:color/black"
-                    android:textCursorDrawable="@null"
-                    android:textSize="14sp"
-                    android:theme="@style/EditText"
+                <ImageView
+                    android:id="@+id/item_tracked_entity_iv_need_sync"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/ic_sync"
                     />
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
         <!-- Surface View End -->
     </com.daimajia.swipe.SwipeLayout>

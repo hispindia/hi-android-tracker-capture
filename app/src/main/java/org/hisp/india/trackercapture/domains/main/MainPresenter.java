@@ -17,7 +17,7 @@ import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
-import org.hisp.india.trackercapture.services.sync.SyncService;
+import org.hisp.india.trackercapture.services.sync.SyncQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.RealmHelper;
 
@@ -49,8 +49,6 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     protected AccountService accountService;
     @Inject
     protected TrackedEntityInstanceService trackedEntityInstanceService;
-    @Inject
-    protected SyncService syncService;
 
     private Subscription subscription;
     private int orgUnitTotalPages;
@@ -106,7 +104,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     }
 
     public void fetchingAllOrgs() {
-        RSync orgSync = syncService.getSyncRowByKey(SyncKey.ROrganizationUnit);
+        RSync orgSync = SyncQuery.getSyncRowByKey(SyncKey.ROrganizationUnit);
         if (orgSync == null || !orgSync.isStatus()) {
             RxScheduler.onStop(subscription);
             List<ROrganizationUnit> currentOrgForUser = OrganizationQuery.getUserOrganizations();

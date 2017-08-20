@@ -12,5 +12,7 @@ public interface SyncQueueView extends MvpView {
 
     Navigator getNavigator();
 
-    void updateSyncQueue();
+    void syncSucceed();
+
+    void syncError(String e);
 }

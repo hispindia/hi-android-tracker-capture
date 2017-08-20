@@ -14,7 +14,6 @@ import io.realm.RealmObject;
 
 public class RTaskEnrollment extends RealmObject implements Serializable {
 
-
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
     @SerializedName("program")

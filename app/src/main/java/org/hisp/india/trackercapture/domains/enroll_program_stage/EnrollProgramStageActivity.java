@@ -42,10 +42,9 @@ import ru.terrakok.cicerone.commands.Forward;
 
 @EActivity(R.layout.activity_enroll_program_stage)
 public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageView, EnrollProgramStagePresenter>
-        implements
-        EnrollProgramStageView {
+        implements EnrollProgramStageView {
     public static final int ENROLL_REQUEST_CODE = 1;
-    public static final String ENROLL_REQUEST_DATA = "BundleData";
+    public static final String ENROLL_REQUEST_DATA = "ENROLL_REQUEST_DATA";
     private static final String TAG = EnrollProgramStageActivity.class.getSimpleName();
     @ViewById(R.id.activity_enroll_program_stage_toolbar)
     protected NToolbar toolbar;

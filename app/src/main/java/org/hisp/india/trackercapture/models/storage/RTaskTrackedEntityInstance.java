@@ -20,6 +20,10 @@ public class RTaskTrackedEntityInstance extends RealmObject implements Serializa
     @SerializedName("attributes")
     private RealmList<RTaskAttribute> attributeRequestList;
 
+    public RTaskTrackedEntityInstance() {
+        attributeRequestList = new RealmList<>();
+    }
+
     public static RTaskTrackedEntityInstance create(String trackedEntityId, String orgUnitId,
                                                     List<RTaskAttribute> attributeRequestList) {
         RTaskTrackedEntityInstance trackedEntityInstance = new RTaskTrackedEntityInstance();
@@ -49,8 +53,7 @@ public class RTaskTrackedEntityInstance extends RealmObject implements Serializa
         return attributeRequestList;
     }
 
-    public void setAttributeRequestList(
-            List<RTaskAttribute> attributeRequestList) {
+    public void setAttributeRequestList(List<RTaskAttribute> attributeRequestList) {
         this.attributeRequestList.clear();
         this.attributeRequestList.addAll(attributeRequestList);
     }

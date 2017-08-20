@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 
-import com.nhancv.ntask.NTaskManager;
-
 /**
  * Created by nhancao on 7/13/17.
  */
@@ -18,7 +16,10 @@ public class NConnectivityReceiver extends BroadcastReceiver {
         switch (action) {
             case ConnectivityManager.CONNECTIVITY_ACTION:
                 if (isConnected(context)) {
-                    NTaskManager.restart();
+                    //@nhancv TODO: 8/20/17 do something when network connected
+
+
+
                 }
                 break;
         }

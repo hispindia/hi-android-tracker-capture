@@ -82,7 +82,7 @@
                     />
 
                 <RelativeLayout
-                    android:id="@+id/dialog_sync_queue_rl_delete"
+                    android:id="@+id/dialog_sync_queue_rl_sync"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -95,8 +95,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginBottom="11dp"
                         android:layout_marginTop="11dp"
-                        android:text="Delete"
-                        android:textColor="#e9191d"
+                        android:text="Sync"
+                        android:textColor="#23ba09"
                         android:textSize="16.3dp"
                         />
                 </RelativeLayout>

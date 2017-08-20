@@ -2,7 +2,7 @@ package org.hisp.india.trackercapture.models.request;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.hisp.india.trackercapture.models.base.Event;
+import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 
 import java.util.List;
 
@@ -12,13 +12,13 @@ import java.util.List;
 
 public class EventRequest {
     @SerializedName("events")
-    private List<Event> events;
+    private List<RTaskEvent> events;
 
-    public EventRequest(List<Event> events) {
+    public EventRequest(List<RTaskEvent> events) {
         this.events = events;
     }
 
-    public List<Event> getEvents() {
+    public List<RTaskEvent> getEvents() {
         return events;
     }
 }

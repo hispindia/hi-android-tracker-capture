@@ -12,14 +12,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.nhancv.ntask.RTask;
-
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.R;
+import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 
 /**
  * Created by nhancao on 7/13/17.
@@ -37,8 +36,11 @@ public class SyncQueueDialog extends android.support.v4.app.DialogFragment {
 
     private DialogInterface dialogInterface;
 
-    public static SyncQueueDialog newInstance(RTask rTask) {
-        return SyncQueueDialog_.builder().taskId(rTask.getId()).detail(rTask.getItemContent()).build();
+    public static SyncQueueDialog newInstance(RTaskRequest rTask) {
+        return SyncQueueDialog_.builder()
+                               .taskId(rTask.getUuid())
+                               .detail(rTask.toString())
+                               .build();
     }
 
     @AfterViews
@@ -82,10 +84,10 @@ public class SyncQueueDialog extends android.support.v4.app.DialogFragment {
         dismiss();
     }
 
-    @Click(R.id.dialog_sync_queue_rl_delete)
-    void rlDeleteClick() {
+    @Click(R.id.dialog_sync_queue_rl_sync)
+    void rlSyncClick() {
         if (dialogInterface != null) {
-            dialogInterface.onDeleteClick(this, taskId);
+            dialogInterface.onSyncClick(this, taskId);
             dismiss();
         }
     }
@@ -100,7 +102,7 @@ public class SyncQueueDialog extends android.support.v4.app.DialogFragment {
     }
 
     public interface DialogInterface {
-        void onDeleteClick(DialogFragment dialogFragment, String taskId);
+        void onSyncClick(DialogFragment dialogFragment, String taskId);
     }
 
 }

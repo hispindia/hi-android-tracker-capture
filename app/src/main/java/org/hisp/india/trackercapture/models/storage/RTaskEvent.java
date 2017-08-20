@@ -38,6 +38,10 @@ public class RTaskEvent extends RealmObject implements Serializable {
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
 
+    public RTaskEvent() {
+        dataValues = new RealmList<>();
+    }
+
     public static RTaskEvent create(RProgramStage programStage) {
         RTaskEvent taskEvent = new RTaskEvent();
         taskEvent.setDueDate(programStage.getDueDate());

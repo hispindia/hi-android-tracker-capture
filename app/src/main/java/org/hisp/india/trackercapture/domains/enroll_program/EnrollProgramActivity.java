@@ -70,7 +70,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
                 finish();
 
                 EnrollProgramStageActivity_.intent(this)
-                                           .tmEnrollProgramJson(tmEnrollProgramJson)
+                                           .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
                                            .start();
             }
         }
@@ -187,7 +187,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
         if (checkForm) {
             //@nhancv TODO: 8/18/17 Generate RTask model
-            this.tmEnrollProgram
+            tmEnrollProgram
                     .setTrackedEntityInstance(taskAttributeList)
                     .setEnrollment(adapter.getEnrollmentDateValue(),
                                    adapter.getIncidentDateValue());
