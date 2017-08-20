@@ -17,14 +17,13 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity_;
-import org.hisp.india.trackercapture.models.request.AttributeRequest;
-import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
-import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
-import org.hisp.india.trackercapture.models.tmp.ItemModel;
+import org.hisp.india.trackercapture.models.storage.RTaskAttribute;
+import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
+import org.hisp.india.trackercapture.models.tmp.TMItem;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.AppUtils;
@@ -54,19 +53,14 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     @App
     protected MainApplication application;
     @Extra
-    protected String organizationUnitId;
-    @Extra
-    protected String programId;
-    @Extra
-    protected String programName;
+    protected String tmEnrollProgramJson;
+    protected TMEnrollProgram tmEnrollProgram;
+
     @Inject
     protected EnrollProgramPresenter presenter;
 
     private EnrollProgramAdapter adapter;
     private RProgram programDetail;
-
-    private EnrollmentRequest enrollmentRequest;
-    private TrackedEntityInstanceRequest trackedEntityInstanceRequest;
 
     private Navigator navigator = command -> {
         if (command instanceof Back) {
@@ -74,12 +68,9 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         } else if (command instanceof Forward) {
             if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE)) {
                 finish();
+
                 EnrollProgramStageActivity_.intent(this)
-                                           .organizationUnitId(organizationUnitId)
-                                           .programId(programId)
-                                           .programName(programName)
-                                           .enrollmentRequest(enrollmentRequest)
-                                           .trackedEntityInstanceRequest(trackedEntityInstanceRequest)
+                                           .tmEnrollProgramJson(tmEnrollProgramJson)
                                            .start();
             }
         }
@@ -95,6 +86,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
     @AfterViews
     void init() {
+        tmEnrollProgram = TMEnrollProgram.fromJson(tmEnrollProgramJson);
+
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
@@ -104,9 +97,17 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rvProfile.setHasFixedSize(true);
         rvProfile.setLayoutManager(llm);
-        adapter = new EnrollProgramAdapter(this, organizationUnitId, programId, programName, this::btRegisterClick);
+
+
+        adapter = new EnrollProgramAdapter(this,
+                                           tmEnrollProgram.getOrganizationUnitId(),
+                                           tmEnrollProgram.getProgramId(),
+                                           tmEnrollProgram.getProgram().getDisplayName(),
+                                           this::btRegisterClick);
         rvProfile.setAdapter(adapter);
-        rvProfile.post(() -> presenter.getProgramDetail(programId));
+        rvProfile.post(() -> {
+            getProgramDetail(tmEnrollProgram.getProgram());
+        });
 
     }
 
@@ -137,19 +138,19 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             Toast.makeText(application, "Program detail is null", Toast.LENGTH_SHORT).show();
         } else {
             this.programDetail = programDetail;
-            List<ItemModel> itemModels = new ArrayList<>();
+            List<TMItem> itemModels = new ArrayList<>();
             if (programDetail.isDisplayIncidentDate()) {
-                itemModels.add(ItemModel.createIncidentDate(programDetail.getIncidentDateLabel(),
-                                                            programDetail.isSelectIncidentDatesInFuture()));
+                itemModels.add(TMItem.createIncidentDate(programDetail.getIncidentDateLabel(),
+                                                         programDetail.isSelectIncidentDatesInFuture()));
             }
-            itemModels.add(ItemModel.createEnrollmentDate(programDetail.getEnrollmentDateLabel(),
-                                                          programDetail.isSelectEnrollmentDatesInFuture()));
+            itemModels.add(TMItem.createEnrollmentDate(programDetail.getEnrollmentDateLabel(),
+                                                       programDetail.isSelectEnrollmentDatesInFuture()));
 
             for (RProgramTrackedEntityAttribute rProgramTrackedEntityAttribute : programDetail
                     .getProgramTrackedEntityAttributes()) {
-                itemModels.add(ItemModel.createRegisterFieldItem(rProgramTrackedEntityAttribute));
+                itemModels.add(TMItem.createRegisterFieldItem(rProgramTrackedEntityAttribute));
             }
-            itemModels.add(ItemModel.createRegisterButton());
+            itemModels.add(TMItem.createRegisterButton());
 
             rvProfile.setItemViewCacheSize(itemModels.size());
             adapter.setModelList(itemModels);
@@ -172,33 +173,27 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     void btRegisterClick() {
 
         boolean checkForm = true;
-        List<AttributeRequest> attributeRequestList = new ArrayList<>();
+        List<RTaskAttribute> taskAttributeList = new ArrayList<>();
         for (RProgramTrackedEntityAttribute programTrackedEntityAttribute : adapter
                 .getProgramTrackedEntityAttributeList()) {
             if (!TextUtils.isEmpty(programTrackedEntityAttribute.getValue())) {
-                attributeRequestList
-                        .add(new AttributeRequest(programTrackedEntityAttribute.getTrackedEntityAttribute().getId(),
-                                                  programTrackedEntityAttribute.getValue()));
+                taskAttributeList
+                        .add(RTaskAttribute.create(programTrackedEntityAttribute.getTrackedEntityAttribute().getId(),
+                                                   programTrackedEntityAttribute.getValue()));
             } else if (programTrackedEntityAttribute.isMandatory()) {
                 checkForm = false;
             }
         }
 
         if (checkForm) {
-            trackedEntityInstanceRequest =
-                    new TrackedEntityInstanceRequest(programDetail.getTrackedEntity().getId(),
-                                                     organizationUnitId,
-                                                     attributeRequestList);
+            //@nhancv TODO: 8/18/17 Generate RTask model
+            this.tmEnrollProgram
+                    .setTrackedEntityInstance(taskAttributeList)
+                    .setEnrollment(adapter.getEnrollmentDateValue(),
+                                   adapter.getIncidentDateValue());
 
-            enrollmentRequest = new EnrollmentRequest(programId,
-                                                      organizationUnitId,
-                                                      adapter.getEnrollmentDateValue(),
-                                                      adapter.getIncidentDateValue());
             presenter.gotoProgramStage();
         } else {
-            enrollmentRequest = null;
-            trackedEntityInstanceRequest = null;
-
             Toast.makeText(application, "Required fields are missing.", Toast.LENGTH_SHORT).show();
         }
 

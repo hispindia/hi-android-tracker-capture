@@ -22,8 +22,8 @@ import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
-import org.hisp.india.trackercapture.models.tmp.HeaderDateModel;
-import org.hisp.india.trackercapture.models.tmp.ItemModel;
+import org.hisp.india.trackercapture.models.tmp.TMHeaderDate;
+import org.hisp.india.trackercapture.models.tmp.TMItem;
 import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
@@ -34,10 +34,10 @@ import org.hisp.india.trackercapture.widgets.option.tracked_entity_instance.Trac
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hisp.india.trackercapture.models.tmp.ItemModel.ENROLLMENT_DATE;
-import static org.hisp.india.trackercapture.models.tmp.ItemModel.FIELD_LIST;
-import static org.hisp.india.trackercapture.models.tmp.ItemModel.INCIDENT_DATE;
-import static org.hisp.india.trackercapture.models.tmp.ItemModel.REGISTER_BUTTON;
+import static org.hisp.india.trackercapture.models.tmp.TMItem.ENROLLMENT_DATE;
+import static org.hisp.india.trackercapture.models.tmp.TMItem.FIELD_LIST;
+import static org.hisp.india.trackercapture.models.tmp.TMItem.INCIDENT_DATE;
+import static org.hisp.india.trackercapture.models.tmp.TMItem.REGISTER_BUTTON;
 
 /**
  * Created by nhancao on 7/1/17.
@@ -50,7 +50,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String orgUnitId;
     private String programId;
     private EnrollProgramActivity activity;
-    private List<ItemModel> modelList;
+    private List<TMItem> modelList;
     private EnrollProgramCallBack enrollProgramCallBack;
 
     public EnrollProgramAdapter(EnrollProgramActivity activity, String orgUnitId, String programId,
@@ -64,7 +64,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public String getIncidentDateValue() {
-        for (ItemModel itemModel : modelList) {
+        for (TMItem itemModel : modelList) {
             if (itemModel.getType() == INCIDENT_DATE) {
                 return itemModel.getHeaderDateModel().getValue();
             }
@@ -73,7 +73,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public String getEnrollmentDateValue() {
-        for (ItemModel itemModel : modelList) {
+        for (TMItem itemModel : modelList) {
             if (itemModel.getType() == ENROLLMENT_DATE) {
                 return itemModel.getHeaderDateModel().getValue();
             }
@@ -92,14 +92,14 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         return res;
     }
 
-    public void setModelList(List<ItemModel> modelList) {
+    public void setModelList(List<TMItem> modelList) {
         this.modelList = modelList;
         notifyDataSetChanged();
     }
 
     public List<RProgramTrackedEntityAttribute> getProgramTrackedEntityAttributeList() {
         List<RProgramTrackedEntityAttribute> res = new ArrayList<>();
-        for (ItemModel itemModel : modelList) {
+        for (TMItem itemModel : modelList) {
             if (itemModel.getType() == FIELD_LIST) {
                 res.add(itemModel.getProgramTrackedEntityAttribute());
             }
@@ -170,7 +170,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         return getItem(position).getType();
     }
 
-    public ItemModel getItem(int position) {
+    public TMItem getItem(int position) {
         return modelList.get(position);
     }
 
@@ -187,7 +187,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         holder.tvValue.setVisibility(View.VISIBLE);
         holder.etValue.setVisibility(View.GONE);
 
-        HeaderDateModel model = getItem(holder.ref).getHeaderDateModel();
+        TMHeaderDate model = getItem(holder.ref).getHeaderDateModel();
 
         String label = model.getLabel() + "*";
         SpannableString completedString = new SpannableString(label);
@@ -203,7 +203,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                 DatePickerDialog datePicker = DatePickerDialog.newInstance(model.isAllowFutureDate());
                 datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
                     holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-                    ItemModel itemModel = getItem(holder.ref);
+                    TMItem itemModel = getItem(holder.ref);
                     itemModel.getHeaderDateModel().setValue(holder.tvValue.getText().toString());
                 });
                 datePicker.show(activity.getSupportFragmentManager());
@@ -242,7 +242,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.etValue.addTextChangedListener(new NTextChange(new NTextChange.AbsTextListener() {
                 @Override
                 public void after(Editable editable) {
-                    ItemModel itemModel = getItem(holder.ref);
+                    TMItem itemModel = getItem(holder.ref);
                     itemModel.getProgramTrackedEntityAttribute().setValue(editable.toString());
                     itemModel.getProgramTrackedEntityAttribute().setValueDisplay(editable.toString());
                 }
@@ -333,7 +333,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                         .newInstance(orgUnitId, activity.getTrackedEntityInstanceService(),
                                      model -> {
                                          holder.tvValue.setText(model.getValue());
-                                         ItemModel itemModel = getItem(holder.ref);
+                                         TMItem itemModel = getItem(holder.ref);
                                          itemModel.getProgramTrackedEntityAttribute()
                                                   .setValueDisplay(model.getValue());
                                      }).show(activity.getSupportFragmentManager());
@@ -407,7 +407,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         OptionDialog.newInstance(optionList, model -> {
             holder.tvValue.setText(model.getDisplayName());
 
-            ItemModel itemModel = getItem(holder.ref);
+            TMItem itemModel = getItem(holder.ref);
             itemModel.getProgramTrackedEntityAttribute().setValueDisplay(model.getDisplayName());
 
             OrgValueType orgValueType = OrgValueType.getType(holder.tvLabel.getText().toString());
@@ -442,7 +442,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .newInstance(item.isAllowFutureDate());
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> {
             holder.tvValue.setText(AppUtils.getDateFormatted(year, month + 1, dayOfMonth));
-            ItemModel itemModel = getItem(holder.ref);
+            TMItem itemModel = getItem(holder.ref);
             itemModel.getProgramTrackedEntityAttribute().setValue(holder.tvValue.getText().toString());
             itemModel.getProgramTrackedEntityAttribute().setValueDisplay(holder.tvValue.getText().toString());
         });

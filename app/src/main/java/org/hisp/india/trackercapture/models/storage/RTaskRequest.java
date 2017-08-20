@@ -5,6 +5,7 @@ import org.hisp.india.trackercapture.utils.RealmHelper;
 import java.util.List;
 import java.util.UUID;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -16,16 +17,20 @@ public class RTaskRequest extends RealmObject {
 
     @PrimaryKey
     private String uuid;
-    private List<RTaskEvent> eventList;
+    private RealmList<RTaskEvent> eventList;
     private RTaskEnrollment enrollment;
     private RTaskTrackedEntityInstance trackedEntityInstance;
     private String createTime;
     private String updateTime;
     private String lastSyncTime;
     private boolean lastSyncStatus;
-    private boolean hasSynced;
+    private boolean needSync;
+    private boolean hadSynced;
     private String lastError;
 
+    public RTaskRequest() {
+        setUuid(UUID.randomUUID().toString());
+    }
 
     public static RTaskRequest create(RTaskTrackedEntityInstance trackedEntityInstance,
                                       RTaskEnrollment enrollment,
@@ -51,7 +56,8 @@ public class RTaskRequest extends RealmObject {
     }
 
     public void setEventList(List<RTaskEvent> eventList) {
-        this.eventList = eventList;
+        this.eventList.clear();
+        this.eventList.addAll(eventList);
     }
 
     public RTaskEnrollment getEnrollment() {
@@ -103,12 +109,20 @@ public class RTaskRequest extends RealmObject {
         this.lastSyncStatus = lastSyncStatus;
     }
 
-    public boolean isHasSynced() {
-        return hasSynced;
+    public boolean isNeedSync() {
+        return needSync;
     }
 
-    public void setHasSynced(boolean hasSynced) {
-        this.hasSynced = hasSynced;
+    public void setNeedSync(boolean needSync) {
+        this.needSync = needSync;
+    }
+
+    public boolean isHadSynced() {
+        return hadSynced;
+    }
+
+    public void setHadSynced(boolean hadSynced) {
+        this.hadSynced = hadSynced;
     }
 
     public String getLastError() {

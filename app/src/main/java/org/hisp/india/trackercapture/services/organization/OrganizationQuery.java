@@ -157,12 +157,12 @@ public class OrganizationQuery {
     /**
      * Get organization from local by id
      */
-    public static List<ROrganizationUnit> getOrganisationUnitId(final String id) {
+    public static ROrganizationUnit getOrganisationUnitId(final String id) {
         return query(realm -> {
-            RealmResults<ROrganizationUnit> realmResults = realm.where(ROrganizationUnit.class)
-                                                                .equalTo("displayName", id)
-                                                                .findAll();
-            return realm.copyFromRealm(realmResults);
+            ROrganizationUnit res = realm.where(ROrganizationUnit.class)
+                                         .equalTo("id", id)
+                                         .findFirst();
+            return realm.copyFromRealm(res);
         });
     }
 

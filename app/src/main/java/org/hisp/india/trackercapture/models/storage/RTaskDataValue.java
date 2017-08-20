@@ -2,6 +2,8 @@ package org.hisp.india.trackercapture.models.storage;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -9,7 +11,7 @@ import io.realm.annotations.PrimaryKey;
  * Created by nhancao on 8/17/17.
  */
 
-public class RTaskDataValue extends RealmObject {
+public class RTaskDataValue extends RealmObject implements Serializable {
 
     @PrimaryKey
     @SerializedName("dataElement")

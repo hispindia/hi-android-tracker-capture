@@ -1,23 +1,20 @@
 package org.hisp.india.trackercapture.domains.enroll_program_stage;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
-import com.nhancv.ntask.NTaskManager;
-import com.nhancv.ntask.RTask;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.hisp.india.core.services.schedulers.RxScheduler;
-import org.hisp.india.trackercapture.models.base.Event;
-import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
-import org.hisp.india.trackercapture.models.request.TaskRequest;
-import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
+import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
+import org.hisp.india.trackercapture.models.storage.RTaskEvent;
+import org.hisp.india.trackercapture.models.storage.RTaskRequest;
+import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.task.BusProgress;
 import org.hisp.india.trackercapture.services.task.TaskService;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -94,14 +91,16 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
         }
     }
 
-    public void registerProgram(TrackedEntityInstanceRequest trackedEntityInstanceRequest,
-                                EnrollmentRequest enrollmentRequest, List<Event> eventList) {
-        System.out.println(trackedEntityInstanceRequest.getAttributeRequestList());
-        NTaskManager
-                .postTask(RTask.build(UUID.randomUUID().toString(), TAG, new TaskRequest(trackedEntityInstanceRequest,
-                                                                                         enrollmentRequest,
-                                                                                         eventList).toString()));
+    public void registerProgram(RTaskTrackedEntityInstance trackedEntityInstance,
+                                RTaskEnrollment enrollment, List<RTaskEvent> eventList) {
+        System.out.println(trackedEntityInstance.getAttributeRequestList());
+//        NTaskManager
+//                .postTask(RTask.build(UUID.randomUUID().toString(), TAG, new TaskRequest(trackedEntityInstanceRequest,
+//                                                                                         enrollmentRequest,
+//                                                                                         eventList).toString()));
 
+        RTaskRequest taskRequest = RTaskRequest.create(trackedEntityInstance, enrollment, eventList);
+        taskRequest.save();
     }
 
     public void openProgramStage(RProgramStage programStage) {

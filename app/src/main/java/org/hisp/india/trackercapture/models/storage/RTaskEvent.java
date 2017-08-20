@@ -6,19 +6,21 @@ import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
  * Created by nhancao on 8/17/17.
  */
 
-public class RTaskEvent extends RealmObject {
+public class RTaskEvent extends RealmObject implements Serializable {
 
     @SerializedName("dataValues")
-    private List<RTaskDataValue> dataValues;
+    private RealmList<RTaskDataValue> dataValues;
     @SerializedName("dueDate")
     private String dueDate;
     @SerializedName("eventDate")
@@ -63,7 +65,8 @@ public class RTaskEvent extends RealmObject {
     }
 
     public void setDataValues(List<RTaskDataValue> dataValues) {
-        this.dataValues = dataValues;
+        this.dataValues.clear();
+        this.dataValues.addAll(dataValues);
     }
 
     public String getDueDate() {

@@ -57,10 +57,10 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
         router.exit();
     }
 
-    public void getProgramDetail(String programId) {
+    public void getProgramDetail(RProgram _program) {
         if (isViewAttached()) {
             Observable
-                    .defer(() -> Observable.just(ProgramQuery.getProgram(programId))
+                    .defer(() -> Observable.just(_program)
                                            .delay(100, TimeUnit.MILLISECONDS)
                                            .compose(RxScheduler.applyLogicSchedulers())
                                            .doOnSubscribe(() -> getView().showLoading())

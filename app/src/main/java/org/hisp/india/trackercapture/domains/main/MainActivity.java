@@ -34,7 +34,6 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program.EnrollProgramActivity_;
-import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity_;
 import org.hisp.india.trackercapture.domains.login.LoginActivity_;
 import org.hisp.india.trackercapture.domains.menu.DrawerAdapter;
 import org.hisp.india.trackercapture.domains.menu.DrawerItem;
@@ -50,6 +49,7 @@ import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.storage.RUser;
+import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
@@ -107,27 +107,26 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     private Navigator navigator = command -> {
         if (command instanceof Replace) {
+
             if (((Replace) command).getScreenKey().equals(Screens.LOGIN_SCREEN)) {
                 LoginActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
                               .start();
             }
+
         } else if (command instanceof Forward) {
             if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM)) {
+
+                TMEnrollProgram tmEnrollProgram = new TMEnrollProgram(organizationUnit, program);
                 EnrollProgramActivity_.intent(this)
-                                      .organizationUnitId(organizationUnit.getId())
-                                      .programId(program.getId())
-                                      .programName(program.getDisplayName())
+                                      .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
                                       .start();
-            } else if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE)) {
-                EnrollProgramStageActivity_.intent(this)
-                                           .organizationUnitId(organizationUnit.getId())
-                                           .programId(program.getId())
-                                           .programName(program.getDisplayName())
-                                           .start();
+
             } else if (((Forward) command).getScreenKey().equals(Screens.TRACKED_ENTITY)) {
+
                 TrackedEntityActivity_.intent(this)
                                       .rowModel((RowModel) ((Forward) command).getTransitionData())
                                       .start();
+
             }
         }
     };

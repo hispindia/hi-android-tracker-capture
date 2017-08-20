@@ -4,13 +4,15 @@ import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 
 /**
  * Created by nhancao on 8/17/17.
  */
 
-public class RTaskEnrollment extends RealmObject {
+public class RTaskEnrollment extends RealmObject implements Serializable {
 
 
     @SerializedName("trackedEntityInstance")

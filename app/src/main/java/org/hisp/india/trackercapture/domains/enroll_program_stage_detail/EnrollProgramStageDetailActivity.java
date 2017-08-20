@@ -23,6 +23,7 @@ import org.hisp.india.trackercapture.models.base.StageDetail;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
 import org.hisp.india.trackercapture.models.storage.RProgramStageDataElement;
+import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
 import org.hisp.india.trackercapture.widgets.NToolbar;
@@ -64,6 +65,9 @@ public class EnrollProgramStageDetailActivity
 
     @App
     protected MainApplication application;
+    @Extra
+    protected String tmEnrollProgramJson;
+    protected TMEnrollProgram tmEnrollProgram;
     @Extra
     protected String programStageStr;
     @Inject

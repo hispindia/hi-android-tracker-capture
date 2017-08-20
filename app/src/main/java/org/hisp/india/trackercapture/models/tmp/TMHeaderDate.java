@@ -4,16 +4,16 @@ package org.hisp.india.trackercapture.models.tmp;
  * Created by nhancao on 6/27/17.
  */
 
-public class HeaderDateModel {
+public class TMHeaderDate {
     private String label;
     private boolean isAllowFutureDate;
     private String value;
 
-    public HeaderDateModel(String label) {
+    public TMHeaderDate(String label) {
         this.label = label;
     }
 
-    public HeaderDateModel(String label, boolean isAllowFutureDate) {
+    public TMHeaderDate(String label, boolean isAllowFutureDate) {
         this.label = label;
         this.isAllowFutureDate = isAllowFutureDate;
     }

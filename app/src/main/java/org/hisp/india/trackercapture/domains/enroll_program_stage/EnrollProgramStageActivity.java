@@ -19,13 +19,14 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program_stage_detail.EnrollProgramStageDetailActivity_;
-import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.base.StageDetail;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
-import org.hisp.india.trackercapture.models.request.EnrollmentRequest;
-import org.hisp.india.trackercapture.models.request.TrackedEntityInstanceRequest;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
+import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
+import org.hisp.india.trackercapture.models.storage.RTaskEvent;
+import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
+import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
@@ -69,15 +70,21 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @App
     protected MainApplication application;
     @Extra
+    protected String tmEnrollProgramJson;
+    protected TMEnrollProgram tmEnrollProgram;
+
+    @Extra
     protected String organizationUnitId;
     @Extra
     protected String programId;
     @Extra
     protected String programName;
+
     @Extra
-    protected EnrollmentRequest enrollmentRequest;
+    protected RTaskTrackedEntityInstance trackedEntityInstance;
     @Extra
-    protected TrackedEntityInstanceRequest trackedEntityInstanceRequest;
+    protected RTaskEnrollment enrollment;
+
     @Inject
     protected EnrollProgramStagePresenter presenter;
 
@@ -108,6 +115,8 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
 
     @AfterViews
     void init() {
+        tmEnrollProgram = TMEnrollProgram.fromJson(tmEnrollProgramJson);
+
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
@@ -120,7 +129,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             @Override
             public void toolbarBackupClick() {
                 //register program
-                presenter.registerProgram(trackedEntityInstanceRequest, enrollmentRequest,
+                presenter.registerProgram(trackedEntityInstance, enrollment,
                                           getEventList(adapter.getProgramStageList()));
             }
         });
@@ -169,10 +178,10 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             tvIncidentDateLabel.setText(programDetail.getIncidentDateLabel());
             tvEnrollmentDateLabel.setText(programDetail.getEnrollmentDateLabel());
 
-            tvIncidentDateValue.setText(enrollmentRequest.getIncidentDate());
-            tvEnrollmentDateValue.setText(enrollmentRequest.getEnrollmentDate());
+            tvIncidentDateValue.setText(enrollment.getIncidentDate());
+            tvEnrollmentDateValue.setText(enrollment.getEnrollmentDate());
 
-            adapter.setEnrollmentDate(enrollmentRequest.getEnrollmentDate());
+            adapter.setEnrollmentDate(enrollment.getEnrollmentDate());
             adapter.setProgramStageList(programDetail.getProgramStages());
             lvStage.post(() -> AppUtils.refreshListViewAsNonScroll(lvStage));
             vRoot.setVisibility(View.VISIBLE);
@@ -192,9 +201,9 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @CheckedChange({R.id.fragment_enroll_program_stage_cb_status})
     void cbStastusChecked(boolean isChecked) {
         if (isChecked) {
-            enrollmentRequest.setStatus(ProgramStatus.COMPLETED.name());
+            enrollment.setStatus(ProgramStatus.COMPLETED.name());
         } else {
-            enrollmentRequest.setStatus(ProgramStatus.ACTIVE.name());
+            enrollment.setStatus(ProgramStatus.ACTIVE.name());
         }
     }
 
@@ -208,10 +217,10 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         }
     }
 
-    public List<Event> getEventList(List<RProgramStage> programStageList) {
-        List<Event> eventList = new ArrayList<>();
+    public List<RTaskEvent> getEventList(List<RProgramStage> programStageList) {
+        List<RTaskEvent> eventList = new ArrayList<>();
         for (RProgramStage rProgramStage : programStageList) {
-            eventList.add(new Event(rProgramStage));
+            eventList.add(RTaskEvent.create(rProgramStage));
         }
         return eventList;
     }

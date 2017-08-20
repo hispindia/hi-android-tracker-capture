@@ -2,13 +2,15 @@ package org.hisp.india.trackercapture.models.storage;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 
 /**
  * Created by nhancao on 8/17/17.
  */
 
-public class RTaskAttribute extends RealmObject {
+public class RTaskAttribute extends RealmObject implements Serializable {
 
     @SerializedName("attribute")
     private String attributeId;
@@ -37,4 +39,5 @@ public class RTaskAttribute extends RealmObject {
     public void setValue(String value) {
         this.value = value;
     }
+
 }

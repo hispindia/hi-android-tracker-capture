@@ -2,21 +2,23 @@ package org.hisp.india.trackercapture.models.storage;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 
 /**
  * Created by nhancao on 8/17/17.
  */
 
-public class RTaskTrackedEntityInstance extends RealmObject {
+public class RTaskTrackedEntityInstance extends RealmObject implements Serializable {
     @SerializedName("trackedEntity")
     private String trackedEntityId;
     @SerializedName("orgUnit")
     private String orgUnitId;
     @SerializedName("attributes")
-    private List<RTaskAttribute> attributeRequestList;
+    private RealmList<RTaskAttribute> attributeRequestList;
 
     public static RTaskTrackedEntityInstance create(String trackedEntityId, String orgUnitId,
                                                     List<RTaskAttribute> attributeRequestList) {
@@ -49,7 +51,8 @@ public class RTaskTrackedEntityInstance extends RealmObject {
 
     public void setAttributeRequestList(
             List<RTaskAttribute> attributeRequestList) {
-        this.attributeRequestList = attributeRequestList;
+        this.attributeRequestList.clear();
+        this.attributeRequestList.addAll(attributeRequestList);
     }
 
 }
