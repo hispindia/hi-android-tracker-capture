@@ -41,7 +41,6 @@ buildscript {
         navigatorVersion = '1.0.2'
         toastyVersion = '1.1.5'
         realmBrowserVersion = '1.2.3'
-        ntaskVersion = '2.7'
 
         //Configuration.
         config = [
@@ -95,7 +94,6 @@ buildscript {
                 toasty                   : "com.github.GrenderG:Toasty:${toastyVersion}",
                 //Realm browser
                 realmBrowser             : "com.github.nhancv:nc-android-realm-browser:${realmBrowserVersion}",
-                ntask                    : "com.github.nhancv:nc-android-ntask:${ntaskVersion}"
         ]
     }
 

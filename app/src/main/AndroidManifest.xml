@@ -85,7 +85,6 @@
             >
         </activity>
 
-        <service android:name=".services.task.TaskService" />
         <receiver android:name=".services.sync.NConnectivityReceiver">
             <intent-filter>
                 <action
