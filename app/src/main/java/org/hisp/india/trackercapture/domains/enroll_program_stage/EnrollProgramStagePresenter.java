@@ -3,25 +3,21 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.greenrobot.eventbus.Subscribe;
-import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
 import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
 import org.hisp.india.trackercapture.navigator.Screens;
-import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.task.BusProgress;
 import org.hisp.india.trackercapture.services.task.TaskService;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
-import rx.Observable;
 
 /**
  * Created by nhancao on 5/5/17.
@@ -76,19 +72,6 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
 
     public void onBackCommandClick() {
         router.exit();
-    }
-
-    public void getProgramDetail(String programId) {
-        if (isViewAttached()) {
-            Observable
-                    .defer(() -> Observable.just(ProgramQuery.getProgram(programId))
-                                           .delay(500, TimeUnit.MILLISECONDS)
-                                           .compose(RxScheduler.applyLogicSchedulers())
-                                           .doOnSubscribe(() -> getView().showLoading())
-                                           .doOnTerminate(() -> getView().hideLoading()))
-                    .subscribe(program -> getView().getProgramDetail(program));
-
-        }
     }
 
     public void registerProgram(RTaskTrackedEntityInstance trackedEntityInstance,

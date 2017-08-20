@@ -2,21 +2,16 @@ package org.hisp.india.trackercapture.domains.enroll_program;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
-import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
-import rx.Observable;
-import rx.Subscription;
 
 /**
  * Created by nhancao on 5/5/17.
@@ -29,7 +24,6 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
     private Router router;
     private EnrollmentService enrollmentService;
     private TrackedEntityInstanceService trackedEntityInstanceService;
-    private Subscription subscription;
 
     @Inject
     public EnrollProgramPresenter(Router router, NavigatorHolder navigatorHolder,
@@ -55,19 +49,6 @@ public class EnrollProgramPresenter extends MvpBasePresenter<EnrollProgramView> 
 
     public void onBackCommandClick() {
         router.exit();
-    }
-
-    public void getProgramDetail(RProgram _program) {
-        if (isViewAttached()) {
-            Observable
-                    .defer(() -> Observable.just(_program)
-                                           .delay(100, TimeUnit.MILLISECONDS)
-                                           .compose(RxScheduler.applyLogicSchedulers())
-                                           .doOnSubscribe(() -> getView().showLoading())
-                                           .doOnTerminate(() -> getView().hideLoading()))
-                    .subscribe(program -> getView().getProgramDetail(program));
-
-        }
     }
 
     public void saveProgram(RProgram program) {

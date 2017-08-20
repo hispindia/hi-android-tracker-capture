@@ -25,7 +25,6 @@ import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
 import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 import org.hisp.india.trackercapture.models.storage.RTaskEvent;
-import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
 import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.utils.AppUtils;
@@ -73,18 +72,6 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     protected String tmEnrollProgramJson;
     protected TMEnrollProgram tmEnrollProgram;
 
-    @Extra
-    protected String organizationUnitId;
-    @Extra
-    protected String programId;
-    @Extra
-    protected String programName;
-
-    @Extra
-    protected RTaskTrackedEntityInstance trackedEntityInstance;
-    @Extra
-    protected RTaskEnrollment enrollment;
-
     @Inject
     protected EnrollProgramStagePresenter presenter;
 
@@ -129,7 +116,8 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             @Override
             public void toolbarBackupClick() {
                 //register program
-                presenter.registerProgram(trackedEntityInstance, enrollment,
+                presenter.registerProgram(tmEnrollProgram.getTaskRequest().getTrackedEntityInstance(),
+                                          tmEnrollProgram.getTaskRequest().getEnrollment(),
                                           getEventList(adapter.getProgramStageList()));
             }
         });
@@ -138,7 +126,9 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         adapter.setItemClickListener(model -> presenter.openProgramStage(model));
 
         lvStage.setAdapter(adapter);
-        lvStage.post(() -> presenter.getProgramDetail(programId));
+        lvStage.post(() -> {
+            getProgramDetail(tmEnrollProgram.getProgram());
+        });
 
     }
 
@@ -178,6 +168,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             tvIncidentDateLabel.setText(programDetail.getIncidentDateLabel());
             tvEnrollmentDateLabel.setText(programDetail.getEnrollmentDateLabel());
 
+            RTaskEnrollment enrollment = tmEnrollProgram.getTaskRequest().getEnrollment();
             tvIncidentDateValue.setText(enrollment.getIncidentDate());
             tvEnrollmentDateValue.setText(enrollment.getEnrollmentDate());
 
@@ -201,9 +192,9 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @CheckedChange({R.id.fragment_enroll_program_stage_cb_status})
     void cbStastusChecked(boolean isChecked) {
         if (isChecked) {
-            enrollment.setStatus(ProgramStatus.COMPLETED.name());
+            tmEnrollProgram.getTaskRequest().getEnrollment().setStatus(ProgramStatus.COMPLETED.name());
         } else {
-            enrollment.setStatus(ProgramStatus.ACTIVE.name());
+            tmEnrollProgram.getTaskRequest().getEnrollment().setStatus(ProgramStatus.ACTIVE.name());
         }
     }
 
