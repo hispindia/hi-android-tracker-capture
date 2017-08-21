@@ -11,6 +11,7 @@ import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.App;
 import org.androidannotations.annotations.CheckedChange;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
@@ -18,6 +19,7 @@ import org.androidannotations.annotations.ViewById;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
+import org.hisp.india.trackercapture.domains.enroll_program.EnrollProgramActivity_;
 import org.hisp.india.trackercapture.domains.enroll_program_stage_detail.EnrollProgramStageDetailActivity_;
 import org.hisp.india.trackercapture.models.base.StageDetail;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
@@ -80,10 +82,16 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         if (command instanceof Back) {
             finish();
         } else if (command instanceof Forward) {
-            if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE_DETAIL)) {
+            if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM)) {
+                finish();
+                EnrollProgramActivity_.intent(this)
+                                      .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
+                                      .fromScreenName(Screens.ENROLL_PROGRAM_STAGE)
+                                      .start();
+
+            } else if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE_DETAIL)) {
 
                 RProgramStage programStage = (RProgramStage) ((Forward) command).getTransitionData();
-
                 EnrollProgramStageDetailActivity_.intent(this)
                                                  .programStageStr(programStage.toString())
                                                  .startForResult(ENROLL_REQUEST_CODE);
@@ -122,12 +130,12 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         });
 
         adapter = new EnrollProgramStageAdapter();
-        adapter.setItemClickListener(model -> presenter.openProgramStage(model));
+        adapter.setItemClickListener(model -> {
+            presenter.openProgramStage(model);
+        });
 
         lvStage.setAdapter(adapter);
-        lvStage.post(() -> {
-            getProgramDetail(tmEnrollProgram.getProgram());
-        });
+        lvStage.post(() -> getProgramDetail(tmEnrollProgram.getProgram()));
 
     }
 
@@ -175,6 +183,8 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             adapter.setProgramStageList(programDetail.getProgramStages());
             lvStage.post(() -> AppUtils.refreshListViewAsNonScroll(lvStage));
             vRoot.setVisibility(View.VISIBLE);
+
+            adapter.populateData(tmEnrollProgram.getTaskRequest());
         }
     }
 
@@ -189,7 +199,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     }
 
     @CheckedChange({R.id.fragment_enroll_program_stage_cb_status})
-    void cbStastusChecked(boolean isChecked) {
+    protected void cbStastusChecked(boolean isChecked) {
         if (isChecked) {
             tmEnrollProgram.getTaskRequest().getEnrollment().setStatus(ProgramStatus.COMPLETED.name());
         } else {
@@ -198,13 +208,17 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     }
 
     @OnActivityResult(ENROLL_REQUEST_CODE)
-    void onResult(int resultCode, Intent data) {
-
+    protected void onResult(int resultCode, Intent data) {
         String stageDetailStr = data.getStringExtra(ENROLL_REQUEST_DATA);
         if (stageDetailStr != null) {
             StageDetail stageDetail = StageDetail.fromJson(stageDetailStr);
             adapter.updateProgramStageDataElement(stageDetail);
         }
+    }
+
+    @Click(R.id.fragment_enroll_program_stage_v_basic_info)
+    protected void vBasicInfoClick() {
+        navigator.applyCommand(new Forward(Screens.ENROLL_PROGRAM, null));
     }
 
     public List<RTaskEvent> getEventList(List<RProgramStage> programStageList) {
@@ -214,6 +228,5 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         }
         return eventList;
     }
-
 
 }

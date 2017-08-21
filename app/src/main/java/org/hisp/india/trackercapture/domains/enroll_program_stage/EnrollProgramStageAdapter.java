@@ -9,6 +9,9 @@ import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.StageDetail;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
 import org.hisp.india.trackercapture.models.storage.RProgramStageDataElement;
+import org.hisp.india.trackercapture.models.storage.RTaskDataValue;
+import org.hisp.india.trackercapture.models.storage.RTaskEvent;
+import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.ItemClickListener;
 import org.joda.time.DateTime;
@@ -48,6 +51,40 @@ public class EnrollProgramStageAdapter extends BaseAdapter {
         this.programStageList = programStageList;
         calculateDueDate();
         notifyDataSetChanged();
+    }
+
+    public void populateData(RTaskRequest taskRequest) {
+        if (programStageList == null) return;
+
+        for (RProgramStage rProgramStage : programStageList) {
+            //@nhancv TODO: 8/22/17 set value to program stage from task event
+            for (RTaskEvent taskEvent : taskRequest.getEventList()) {
+                if (taskEvent.getProgramStageId() != null &&
+                    taskEvent.getProgramStageId().equals(rProgramStage.getId())) {
+                    rProgramStage.setDueDate(taskEvent.getDueDate());
+                    rProgramStage.setEventDate(taskEvent.getEventDate());
+                    rProgramStage.setStatus(taskEvent.getStatus());
+
+                    //@nhancv TODO: 8/22/17 set data element
+                    for (RProgramStageDataElement rProgramStageDataElement : rProgramStage
+                            .getProgramStageDataElements()) {
+                        for (RTaskDataValue dataValue : taskEvent.getDataValues()) {
+                            if (dataValue.getDataElementId() != null &&
+                                dataValue.getDataElementId()
+                                         .equals(rProgramStageDataElement
+                                                         .getDataElement()
+                                                         .getId())) {
+                                rProgramStageDataElement.setValue(dataValue.getValue());
+                                rProgramStageDataElement.setValueDisplay(dataValue.getValue());
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
     }
 
     public void calculateDueDate() {

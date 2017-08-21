@@ -46,7 +46,7 @@ public class RTaskEvent extends RealmObject implements Serializable {
         RTaskEvent taskEvent = new RTaskEvent();
         taskEvent.setDueDate(programStage.getDueDate());
         taskEvent.setEventDate(programStage.getEventDate());
-        taskEvent.setProgramId(programStage.getId());
+        taskEvent.setProgramStageId(programStage.getId());
         taskEvent.setStatus(TextUtils.isEmpty(programStage.getStatus()) ? ProgramStatus.SCHEDULE.name() :
                             programStage.getStatus());
         taskEvent.setDataValues(taskEvent.getDataValueList(programStage.getProgramStageDataElements()));
@@ -66,6 +66,10 @@ public class RTaskEvent extends RealmObject implements Serializable {
 
     public List<RTaskDataValue> getDataValues() {
         return dataValues;
+    }
+
+    public void setDataValues(RealmList<RTaskDataValue> dataValues) {
+        this.dataValues = dataValues;
     }
 
     public void setDataValues(List<RTaskDataValue> dataValues) {

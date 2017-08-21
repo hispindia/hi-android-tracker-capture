@@ -22,6 +22,8 @@ import org.hisp.india.trackercapture.models.e_num.ValueType;
 import org.hisp.india.trackercapture.models.storage.ROption;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
+import org.hisp.india.trackercapture.models.storage.RTaskAttribute;
+import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 import org.hisp.india.trackercapture.models.tmp.TMHeaderDate;
 import org.hisp.india.trackercapture.models.tmp.TMItem;
 import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
@@ -61,6 +63,34 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.activity = activity;
         this.modelList = new ArrayList<>();
         this.enrollProgramCallBack = enrollProgramCallBack;
+    }
+
+    public void populateData(RTaskRequest taskRequest) {
+
+        for (TMItem itemModel : modelList) {
+            if (taskRequest.getEnrollment() != null) {
+                //@nhancv TODO: 8/22/17 set incident date
+                if (itemModel.getType() == INCIDENT_DATE) {
+                    itemModel.getHeaderDateModel().setValue(taskRequest.getEnrollment().getIncidentDate());
+                }
+                //@nhancv TODO: 8/22/17 set enrollment date
+                else if (itemModel.getType() == ENROLLMENT_DATE) {
+                    itemModel.getHeaderDateModel().setValue(taskRequest.getEnrollment().getEnrollmentDate());
+                }
+            }
+            //@nhancv TODO: 8/22/17 set value to attribute
+            if (itemModel.getType() == FIELD_LIST && taskRequest.getTrackedEntityInstance() != null) {
+                for (RTaskAttribute attribute : taskRequest.getTrackedEntityInstance().getAttributeRequestList()) {
+                    if (itemModel.getProgramTrackedEntityAttribute().getTrackedEntityAttribute().getId()
+                                 .equals(attribute.getAttributeId())) {
+                        itemModel.getProgramTrackedEntityAttribute().setValue(attribute.getValue());
+                        itemModel.getProgramTrackedEntityAttribute().setValueDisplay(attribute.getValue());
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 
     public String getIncidentDateValue() {
@@ -194,7 +224,10 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         completedString.setSpan(new ForegroundColorSpan(Color.RED), label.length() - 1, label.length(),
                                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
+        TMHeaderDate item = getItem(holder.ref).getHeaderDateModel();
+
         holder.tvLabel.setText(completedString);
+        holder.tvValue.setText(item.getValue());
         holder.tvValue.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 v.clearFocus();
@@ -212,6 +245,10 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private void handleFieldListViewHolder(int position, FieldListViewHolder holder) {
+        if (position == modelList.size() - 1) {
+            holder.vEndLine.setVisibility(View.GONE);
+        }
+
         holder.ref = position;
 
         RProgramTrackedEntityAttribute item = getItem(holder.ref).getProgramTrackedEntityAttribute();
@@ -457,6 +494,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
         private TextView tvLabel;
         private EditText etValue;
         private TextView tvValue;
+        private View vEndLine;
         private int ref;
 
         public FieldListViewHolder(View itemView) {
@@ -464,6 +502,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
             tvLabel = (TextView) itemView.findViewById(R.id.item_enroll_profile_tv_label);
             etValue = (EditText) itemView.findViewById(R.id.item_enroll_profile_et_value);
             tvValue = (TextView) itemView.findViewById(R.id.item_enroll_profile_tv_value);
+            vEndLine = itemView.findViewById(R.id.item_enroll_profile_v_end_line);
         }
     }
 

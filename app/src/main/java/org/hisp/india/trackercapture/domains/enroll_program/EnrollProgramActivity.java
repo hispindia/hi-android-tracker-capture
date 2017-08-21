@@ -53,6 +53,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     @App
     protected MainApplication application;
     @Extra
+    protected String fromScreenName;
+    @Extra
     protected String tmEnrollProgramJson;
     protected TMEnrollProgram tmEnrollProgram;
 
@@ -91,7 +93,13 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
-        toolbar.applyEnrollProgramUi(this, "Enroll", () -> presenter.onBackCommandClick());
+        toolbar.applyEnrollProgramUi(this, "Enroll", () -> {
+            if (fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
+                btRegisterClick();
+            } else {
+                presenter.onBackCommandClick();
+            }
+        });
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -149,11 +157,16 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
                     .getProgramTrackedEntityAttributes()) {
                 itemModels.add(TMItem.createRegisterFieldItem(rProgramTrackedEntityAttribute));
             }
-            itemModels.add(TMItem.createRegisterButton());
+
+            if (!fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
+                itemModels.add(TMItem.createRegisterButton());
+            }
 
             rvProfile.setItemViewCacheSize(itemModels.size());
             adapter.setModelList(itemModels);
             vRoot.setVisibility(View.VISIBLE);
+
+            adapter.populateData(tmEnrollProgram.getTaskRequest());
         }
     }
 
