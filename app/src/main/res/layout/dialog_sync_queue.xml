@@ -100,6 +100,32 @@
                         android:textSize="16.3dp"
                         />
                 </RelativeLayout>
+
+                <View
+                    android:layout_width="0.5dp"
+                    android:layout_height="match_parent"
+                    android:background="#6593A3"
+                    />
+
+                <RelativeLayout
+                    android:id="@+id/dialog_sync_queue_rl_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    >
+
+                    <TextView
+                        fontPath="fonts/Montserrat-SemiBold.ttf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="11dp"
+                        android:layout_marginTop="11dp"
+                        android:text="Edit"
+                        android:textColor="#f44268"
+                        android:textSize="16.3dp"
+                        />
+                </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

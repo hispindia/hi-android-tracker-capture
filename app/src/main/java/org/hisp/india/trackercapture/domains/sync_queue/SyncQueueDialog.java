@@ -80,7 +80,7 @@ public class SyncQueueDialog extends android.support.v4.app.DialogFragment {
     }
 
     @Click(R.id.dialog_sync_queue_rl_close)
-    void rlCloseClick() {
+    protected void rlCloseClick() {
         dismiss();
     }
 
@@ -88,6 +88,14 @@ public class SyncQueueDialog extends android.support.v4.app.DialogFragment {
     void rlSyncClick() {
         if (dialogInterface != null) {
             dialogInterface.onSyncClick(this, taskId);
+            dismiss();
+        }
+    }
+
+    @Click(R.id.dialog_sync_queue_rl_edit)
+    protected void rlEditClick() {
+        if (dialogInterface != null) {
+            dialogInterface.onEditClick(this, taskId);
             dismiss();
         }
     }
@@ -103,6 +111,8 @@ public class SyncQueueDialog extends android.support.v4.app.DialogFragment {
 
     public interface DialogInterface {
         void onSyncClick(DialogFragment dialogFragment, String taskId);
+
+        void onEditClick(DialogFragment dialogFragment, String taskId);
     }
 
 }

@@ -100,9 +100,7 @@ public class SyncQueueAdapter extends BaseSwipeAdapter {
         tvValue.setText(task.getUpdateTime());
         ivNeedSync.setVisibility(task.isNeedSync() ? View.VISIBLE : View.INVISIBLE);
 
-        llItem.setOnClickListener(v -> {
-            callback.onClick(item);
-        });
+        llItem.setOnClickListener(v -> callback.onClick(item));
     }
 
     public interface SyncQueueAdapterCallback {

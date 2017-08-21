@@ -28,6 +28,17 @@ public class TMEnrollProgram {
     private RProgram program;
     private ROrganizationUnit organizationUnit;
 
+
+    public TMEnrollProgram(RTaskRequest taskRequest) {
+        RTaskEnrollment enrollment = taskRequest.getEnrollment();
+        if (enrollment != null) {
+            this.organizationUnitId = enrollment.getOrgUnitId();
+            this.programId = enrollment.getProgramId();
+        }
+        this.taskRequest = taskRequest;
+        reloadCache();
+    }
+
     public TMEnrollProgram(ROrganizationUnit organizationUnit, RProgram program) {
         this.organizationUnit = organizationUnit;
         this.program = program;

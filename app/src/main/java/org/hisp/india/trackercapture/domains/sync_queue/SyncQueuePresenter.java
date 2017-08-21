@@ -5,6 +5,7 @@ import android.util.Log;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.trackercapture.models.storage.RTaskRequest;
+import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.sync.SyncCallback;
 import org.hisp.india.trackercapture.services.sync.SyncService;
 
@@ -66,6 +67,10 @@ public class SyncQueuePresenter extends MvpBasePresenter<SyncQueueView> {
                 }
             }
         });
+    }
+
+    public void editProgram(String taskId) {
+        router.navigateTo(Screens.ENROLL_PROGRAM_STAGE, taskId);
     }
 
     public void onBackCommandClick() {
