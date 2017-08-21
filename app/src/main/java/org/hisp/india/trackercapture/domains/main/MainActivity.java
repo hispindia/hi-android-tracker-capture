@@ -116,7 +116,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         } else if (command instanceof Forward) {
             if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM)) {
 
-                TMEnrollProgram tmEnrollProgram = new TMEnrollProgram(organizationUnit, program);
+                TMEnrollProgram tmEnrollProgram = new TMEnrollProgram(organizationUnit.getId(), program.getId());
                 EnrollProgramActivity_.intent(this)
                                       .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
                                       .start();

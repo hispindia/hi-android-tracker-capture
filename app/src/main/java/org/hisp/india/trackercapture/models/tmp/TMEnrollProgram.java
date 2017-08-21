@@ -2,13 +2,11 @@ package org.hisp.india.trackercapture.models.tmp;
 
 import com.google.gson.Gson;
 
-import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RTaskAttribute;
 import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
-import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 
 import java.util.List;
@@ -25,10 +23,6 @@ public class TMEnrollProgram {
     private RTaskRequest taskRequest;
 
     /////////////////////////
-    private RProgram program;
-    private ROrganizationUnit organizationUnit;
-
-
     public TMEnrollProgram(RTaskRequest taskRequest) {
         RTaskEnrollment enrollment = taskRequest.getEnrollment();
         if (enrollment != null) {
@@ -36,17 +30,12 @@ public class TMEnrollProgram {
             this.programId = enrollment.getProgramId();
         }
         this.taskRequest = taskRequest;
-        reloadCache();
     }
 
-    public TMEnrollProgram(ROrganizationUnit organizationUnit, RProgram program) {
-        this.organizationUnit = organizationUnit;
-        this.program = program;
+    public TMEnrollProgram(String organizationUnitId, String programId) {
+        this.organizationUnitId = organizationUnitId;
+        this.programId = programId;
         this.taskRequest = new RTaskRequest();
-
-        //////////////////////
-        this.organizationUnitId = organizationUnit.getId();
-        this.programId = program.getId();
     }
 
     public static String toJson(TMEnrollProgram tmEnrollProgram) {
@@ -81,15 +70,6 @@ public class TMEnrollProgram {
         this.taskRequest = taskRequest;
     }
 
-    public RProgram getProgram() {
-        return program;
-    }
-
-    public void reloadCache() {
-        this.program = ProgramQuery.getProgram(programId);
-        this.organizationUnit = OrganizationQuery.getOrganisationUnitId(organizationUnitId);
-    }
-
     public TMEnrollProgram setEnrollment(String enrollmentDateValue, String incidentDateValue) {
         this.taskRequest.setEnrollment(RTaskEnrollment.create(programId,
                                                               organizationUnitId,
@@ -98,12 +78,19 @@ public class TMEnrollProgram {
         return this;
     }
 
-    public TMEnrollProgram setTrackedEntityInstance(List<RTaskAttribute> taskAttributeList) {
-        this.taskRequest.setTrackedEntityInstance(RTaskTrackedEntityInstance.create(program.getTrackedEntity().getId(),
-                                                                                    organizationUnitId,
-                                                                                    taskAttributeList
-                                                                                   ));
+    public RProgram getProgram() {
+        return ProgramQuery.getProgram(programId);
+    }
 
+    public TMEnrollProgram setTrackedEntityInstance(List<RTaskAttribute> taskAttributeList) {
+        RProgram program = getProgram();
+        if (program != null) {
+            this.taskRequest
+                    .setTrackedEntityInstance(RTaskTrackedEntityInstance.create(program.getTrackedEntity().getId(),
+                                                                                organizationUnitId,
+                                                                                taskAttributeList
+                                                                               ));
+        }
         return this;
     }
 }

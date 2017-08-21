@@ -99,15 +99,14 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         rvProfile.setLayoutManager(llm);
 
 
+        RProgram program = tmEnrollProgram.getProgram();
         adapter = new EnrollProgramAdapter(this,
                                            tmEnrollProgram.getOrganizationUnitId(),
                                            tmEnrollProgram.getProgramId(),
-                                           tmEnrollProgram.getProgram().getDisplayName(),
+                                           program.getDisplayName(),
                                            this::btRegisterClick);
         rvProfile.setAdapter(adapter);
-        rvProfile.post(() -> {
-            getProgramDetail(tmEnrollProgram.getProgram());
-        });
+        rvProfile.post(() -> getProgramDetail(program));
 
     }
 
