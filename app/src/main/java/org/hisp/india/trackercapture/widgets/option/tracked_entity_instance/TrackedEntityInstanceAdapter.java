@@ -4,11 +4,9 @@ import android.content.Context;
 import android.widget.Filter;
 
 import org.hisp.india.trackercapture.models.base.Attribute;
-import org.hisp.india.trackercapture.models.base.Model;
 import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.option.OptionAdapter;
-import org.w3c.dom.Attr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +33,15 @@ public abstract class TrackedEntityInstanceAdapter extends OptionAdapter<Tracked
                 } else {
                     List<TrackedEntityInstance> resultsData = new ArrayList<>();
                     String searchStr = constraint.toString();
+
+
                     for (TrackedEntityInstance item : originalList) {
-                        if (AppUtils.isContainText(searchStr, item.getDisplayName())) {
+                        String search = "";
+                        for (Attribute attribute : item.getAttributePreview()) {
+                            search += String.format("%s ", attribute.getValue());
+                        }
+
+                        if (AppUtils.isContainText(searchStr, search)) {
                             resultsData.add(item);
                         }
                     }

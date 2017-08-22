@@ -61,7 +61,6 @@
                     >
 
                     <LinearLayout
-                        android:id="@+id/item_tracked_entity_ll_item_id"
                         android:layout_width="80dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
@@ -81,7 +80,6 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/item_tracked_entity_ll_item_enroll_date"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -90,7 +88,6 @@
                         >
 
                         <TextView
-                            android:id="@+id/item_tracked_entity_tv_label_enroll_date"
                             fontPath="fonts/Montserrat-Regular.ttf"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -102,7 +99,6 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/item_tracked_entity_ll_item_incident_date"
                         android:layout_width="80dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"

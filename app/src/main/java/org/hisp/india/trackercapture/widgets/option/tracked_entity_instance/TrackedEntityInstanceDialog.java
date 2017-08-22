@@ -58,6 +58,7 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
     protected AVLoadingIndicatorView vLoadingIndicator;
     @ViewById(R.id.dialog_tracked_entity_instance_tv_empty)
     protected TextView tvEmpty;
+
     @FragmentArg
     protected String orgUnitId;
     private ItemClickListener<TrackedEntityInstance> onItemClickListener;
@@ -113,18 +114,51 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
     @AfterViews
     void init() {
 
-        adapter = new TrackedEntityInstanceAdapter(getContext(), R.layout.item_dialog_option) {
+        adapter = new TrackedEntityInstanceAdapter(getContext(), R.layout.item_dialog_tei_option) {
             @Override
             protected void convert(BaseAdapterHelper helper, TrackedEntityInstance item) {
-                TextView tvDisplay = helper.getView(R.id.item_dialog_option_title);
+                TextView tvLabel1 = helper.getView(R.id.item_dialog_tei_option_label1);
+                TextView tvLabel2 = helper.getView(R.id.item_dialog_tei_option_label2);
+                TextView tvLabel3 = helper.getView(R.id.item_dialog_tei_option_label3);
 
-                String display = "";
-                for (Attribute attribute : item.getAttributePreview()) {
-                    display += String.format("%s: %s\n", attribute.getDisplayName(), attribute.getValue());
+                TextView tvAtt1 = helper.getView(R.id.item_dialog_tei_option_att1);
+                TextView tvAtt2 = helper.getView(R.id.item_dialog_tei_option_att2);
+                TextView tvAtt3 = helper.getView(R.id.item_dialog_tei_option_att3);
+
+                List<Attribute> attributePreviewList = item.getAttributePreview();
+                if (attributePreviewList.size() > 0) {
+                    Attribute attribute = attributePreviewList.get(0);
+                    tvLabel1.setText(attribute.getDisplayName());
+                    tvAtt1.setText(AppUtils.highlightText(etSearch.getText().toString(),
+                                                          attribute.getValue(),
+                                                          Color.parseColor("#7A7986")));
+
+                    tvLabel2.setVisibility(View.GONE);
+                    tvAtt2.setVisibility(View.GONE);
+                    tvLabel3.setVisibility(View.GONE);
+                    tvAtt3.setVisibility(View.GONE);
                 }
+                if (attributePreviewList.size() > 1) {
+                    tvLabel2.setVisibility(View.VISIBLE);
+                    tvAtt2.setVisibility(View.VISIBLE);
+                    Attribute attribute = attributePreviewList.get(1);
+                    tvLabel2.setText(attribute.getDisplayName());
+                    tvAtt2.setText(AppUtils.highlightText(etSearch.getText().toString(),
+                                                          attribute.getValue(),
+                                                          Color.parseColor("#7A7986")));
 
-                tvDisplay.setText(AppUtils.highlightText(etSearch.getText().toString(), display,
-                                                         Color.parseColor("#7A7986")));
+                    tvLabel3.setVisibility(View.GONE);
+                    tvAtt3.setVisibility(View.GONE);
+                }
+                if (attributePreviewList.size() > 2) {
+                    tvLabel3.setVisibility(View.VISIBLE);
+                    tvAtt3.setVisibility(View.VISIBLE);
+                    Attribute attribute = attributePreviewList.get(2);
+                    tvLabel3.setText(attribute.getDisplayName());
+                    tvAtt3.setText(AppUtils.highlightText(etSearch.getText().toString(),
+                                                          attribute.getValue(),
+                                                          Color.parseColor("#7A7986")));
+                }
 
                 helper.getView().setOnClickListener(view -> {
                     showDialogInfo(item);
