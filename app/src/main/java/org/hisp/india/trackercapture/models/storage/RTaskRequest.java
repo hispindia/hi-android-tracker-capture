@@ -157,7 +157,7 @@ public class RTaskRequest extends RealmObject {
     public void updateSyncStatus(boolean isSucceed, String errorMsg) {
         setLastSyncStatus(isSucceed);
         setNeedSync(!isSucceed);
-        setHadSynced(isSucceed);
+        if (!isHadSynced() && isSucceed) setHadSynced(isSucceed);
         setLastSyncTime(new DateTime().toString());
         setLastError(errorMsg);
     }

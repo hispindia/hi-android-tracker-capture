@@ -14,6 +14,8 @@ import io.realm.RealmObject;
 
 public class RTaskEnrollment extends RealmObject implements Serializable {
 
+    @SerializedName("enrollment")
+    private String enrollmentId;
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
     @SerializedName("program")
@@ -83,5 +85,13 @@ public class RTaskEnrollment extends RealmObject implements Serializable {
 
     public void setIncidentDate(String incidentDate) {
         this.incidentDate = incidentDate;
+    }
+
+    public String getEnrollmentId() {
+        return enrollmentId;
+    }
+
+    public void setEnrollmentId(String enrollmentId) {
+        this.enrollmentId = enrollmentId;
     }
 }

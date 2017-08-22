@@ -50,7 +50,14 @@ public class DefaultSyncService implements SyncService {
             Log.e(TAG, "syncEnrollProgram: task is null");
             return;
         }
+        if (!taskRequest.isHadSynced()) {
+            registerProgram(taskRequest, syncCallback);
+        } else {
+            updateProgram(taskRequest, syncCallback);
+        }
+    }
 
+    public void registerProgram(RTaskRequest taskRequest, SyncCallback<RTaskRequest> syncCallback) {
         RxScheduler.onStop(subscription);
         subscription = trackedEntityInstanceService
                 .postTrackedEntityInstances(taskRequest.getTrackedEntityInstance())
@@ -58,6 +65,8 @@ public class DefaultSyncService implements SyncService {
                 .flatMap(baseResponse -> {
                     String trackedEntityInstanceId = baseResponse.getResponse().getReference();
                     if (trackedEntityInstanceId != null) {
+                        taskRequest.getTrackedEntityInstance()
+                                   .setTrackedEntityInstanceId(trackedEntityInstanceId);
                         taskRequest.getEnrollment()
                                    .setTrackedEntityInstanceId(trackedEntityInstanceId);
                         return enrollmentService.postEnrollments(taskRequest.getEnrollment())
@@ -71,14 +80,14 @@ public class DefaultSyncService implements SyncService {
                             .getResponse().getImportSummaries();
 
                     if (importSummaries != null && importSummaries.size() > 0) {
-
+                        String trackedEntityInstanceId = taskRequest.getEnrollment().getTrackedEntityInstanceId();
+                        String enrollmentId = importSummaries.get(0).getReference();
+                        taskRequest.getEnrollment().setEnrollmentId(enrollmentId);
                         for (RTaskEvent event : taskRequest.getEventList()) {
-                            event.setEnrollmentId(
-                                    importSummaries.get(0).getReference());
+                            event.setEnrollmentId(enrollmentId);
                             event.setOrgUnitId(taskRequest.getEnrollment().getOrgUnitId());
                             event.setProgramId(taskRequest.getEnrollment().getProgramId());
-                            event.setTrackedEntityInstanceId(
-                                    taskRequest.getEnrollment().getTrackedEntityInstanceId());
+                            event.setTrackedEntityInstanceId(trackedEntityInstanceId);
                         }
 
                         EventRequest eventRequest = new EventRequest(taskRequest.getEventList());
@@ -91,11 +100,78 @@ public class DefaultSyncService implements SyncService {
                 })
                 .compose(RxScheduler.applyIoSchedulers())
                 .subscribe(baseResponse -> {
+                               taskRequest.updateSyncStatus(true, null);
+                               taskRequest.save();
+
                                syncCallback.succeed(taskRequest);
                            },
                            throwable -> {
+                               taskRequest.updateSyncStatus(false, throwable.toString());
+                               taskRequest.save();
+
                                syncCallback.error(taskRequest, throwable.toString());
                            });
+
     }
+
+    public void updateProgram(RTaskRequest taskRequest, SyncCallback<RTaskRequest> syncCallback) {
+
+        RxScheduler.onStop(subscription);
+        subscription = trackedEntityInstanceService
+                .putTrackedEntityInstances(taskRequest.getTrackedEntityInstance())
+                .observeOn(Schedulers.computation())
+                .flatMap(baseResponse -> {
+                    String trackedEntityInstanceId = baseResponse.getResponse().getReference();
+                    if (trackedEntityInstanceId != null) {
+                        taskRequest.getTrackedEntityInstance()
+                                   .setTrackedEntityInstanceId(trackedEntityInstanceId);
+                        taskRequest.getEnrollment()
+                                   .setTrackedEntityInstanceId(trackedEntityInstanceId);
+                        return enrollmentService.putEnrollments(taskRequest.getEnrollment())
+                                                .compose(RxScheduler.applyIoSchedulers());
+                    } else {
+                        return Observable.just(baseResponse);
+                    }
+                })
+                .flatMap(enrollmentResponse -> {
+                    List<BaseResponse.Response> importSummaries = enrollmentResponse
+                            .getResponse().getImportSummaries();
+
+                    if (importSummaries != null && importSummaries.size() > 0) {
+                        String trackedEntityInstanceId = taskRequest.getEnrollment().getTrackedEntityInstanceId();
+                        String enrollmentId = importSummaries.get(0).getReference();
+                        taskRequest.getEnrollment().setEnrollmentId(enrollmentId);
+                        for (RTaskEvent event : taskRequest.getEventList()) {
+                            event.setEnrollmentId(enrollmentId);
+                            event.setOrgUnitId(taskRequest.getEnrollment().getOrgUnitId());
+                            event.setProgramId(taskRequest.getEnrollment().getProgramId());
+                            event.setTrackedEntityInstanceId(trackedEntityInstanceId);
+                        }
+
+                        EventRequest eventRequest = new EventRequest(taskRequest.getEventList());
+                        return eventService.putEvents(eventRequest, trackedEntityInstanceId)
+                                           .compose(RxScheduler.applyIoSchedulers());
+
+                    } else {
+                        return Observable.just(enrollmentResponse);
+                    }
+                })
+                .compose(RxScheduler.applyIoSchedulers())
+                .subscribe(baseResponse -> {
+                               taskRequest.updateSyncStatus(true, null);
+                               taskRequest.save();
+
+                               syncCallback.succeed(taskRequest);
+                           },
+                           throwable -> {
+                               taskRequest.updateSyncStatus(false, throwable.toString());
+                               taskRequest.save();
+
+                               syncCallback.error(taskRequest, throwable.toString());
+                           });
+
+
+    }
+
 
 }

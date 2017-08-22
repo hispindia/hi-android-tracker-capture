@@ -4,13 +4,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.BaseSwipeAdapter;
 
 import org.hisp.india.trackercapture.R;
+import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 
 import java.util.ArrayList;
@@ -70,7 +70,7 @@ public class SyncQueueAdapter extends BaseSwipeAdapter {
 
     @Override
     public View generateView(int position, ViewGroup parent) {
-        return LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tracked_entity, parent, false);
+        return LayoutInflater.from(parent.getContext()).inflate(R.layout.item_sync_queue, parent, false);
     }
 
     @Override
@@ -87,19 +87,21 @@ public class SyncQueueAdapter extends BaseSwipeAdapter {
             swipeLayout.close();
         });
 
-        LinearLayout llItem = convertView.findViewById(R.id.item_tracked_entity_ll_item);
-        TextView tvLabel = convertView.findViewById(R.id.item_tracked_entity_tv_label);
-        TextView tvValue = convertView.findViewById(R.id.item_tracked_entity_tv_value);
+        View llItem = convertView.findViewById(R.id.item_tracked_entity_ll_item);
+
+        TextView tvValueId = convertView.findViewById(R.id.item_tracked_entity_tv_value_id);
+        TextView tvValueEnrollDate = convertView.findViewById(R.id.item_tracked_entity_tv_value_enroll_date);
+        TextView tvValueIncidentDate = convertView.findViewById(R.id.item_tracked_entity_tv_value_incident_date);
+
         ImageView ivNeedSync = convertView.findViewById(R.id.item_tracked_entity_iv_need_sync);
 
-        RTaskRequest task = getItem(position);
-
-        String hashId = task.getUuid().substring(
-                task.getUuid().length() - ((task.getUuid().length() > 12) ? 12 : task.getUuid().length()));
-        tvLabel.setText(String.format("Task: %s", hashId));
-        tvValue.setText(task.getUpdateTime());
-        ivNeedSync.setVisibility(task.isNeedSync() ? View.VISIBLE : View.INVISIBLE);
-
+        RTaskEnrollment taskEnrollment = item.getEnrollment();
+        if (taskEnrollment != null) {
+            tvValueId.setText(taskEnrollment.getEnrollmentId() == null ? "n/a" : taskEnrollment.getEnrollmentId());
+            tvValueEnrollDate.setText(taskEnrollment.getEnrollmentDate());
+            tvValueIncidentDate.setText(taskEnrollment.getIncidentDate());
+        }
+        ivNeedSync.setVisibility(item.isNeedSync() ? View.VISIBLE : View.INVISIBLE);
         llItem.setOnClickListener(v -> callback.onClick(item));
     }
 

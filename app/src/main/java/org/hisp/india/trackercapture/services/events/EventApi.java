@@ -5,6 +5,8 @@ import org.hisp.india.trackercapture.models.response.BaseResponse;
 
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -14,6 +16,15 @@ import rx.Observable;
 public interface EventApi {
 
     @POST("api/events?paging=false")
-    Observable<BaseResponse> getEvents(@Body EventRequest eventRequest);
+    Observable<BaseResponse> postEvents(
+            @Body
+                    EventRequest eventRequest);
+
+    @PUT("api/events/{trackedEntityInstanceId}?paging=false")
+    Observable<BaseResponse> putEvents(
+            @Body
+                    EventRequest eventRequest,
+            @Path("trackedEntityInstanceId")
+                    String trackedEntityInstanceId);
 
 }

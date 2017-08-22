@@ -29,6 +29,12 @@ public class DefaultEventService implements EventService {
     @Override
     public Observable<BaseResponse> postEvents(EventRequest eventRequest) {
         return networkProvider
-                .transformResponse(restService.getEvents(eventRequest));
+                .transformResponse(restService.postEvents(eventRequest));
+    }
+
+    @Override
+    public Observable<BaseResponse> putEvents(EventRequest eventRequest, String trackedEntityInstanceId) {
+        return networkProvider
+                .transformResponse(restService.putEvents(eventRequest, trackedEntityInstanceId));
     }
 }

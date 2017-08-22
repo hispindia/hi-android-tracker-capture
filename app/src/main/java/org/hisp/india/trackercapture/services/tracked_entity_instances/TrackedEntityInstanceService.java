@@ -20,6 +20,8 @@ public interface TrackedEntityInstanceService {
 
     Observable<BaseResponse> postTrackedEntityInstances(RTaskTrackedEntityInstance trackedEntityInstanceRequest);
 
+    Observable<BaseResponse> putTrackedEntityInstances(RTaskTrackedEntityInstance trackedEntityInstanceRequest);
+
     Observable<QueryResponse> queryTrackedEntityInstances(String orgUnitId, String programId,
                                                           ProgramStatus programStatus);
 }

@@ -158,7 +158,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
                 itemModels.add(TMItem.createRegisterFieldItem(rProgramTrackedEntityAttribute));
             }
 
-            if (!fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
+            if (fromScreenName == null ||
+                !fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
                 itemModels.add(TMItem.createRegisterButton());
             }
 

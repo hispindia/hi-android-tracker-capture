@@ -44,6 +44,15 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
     }
 
     @Override
+    public Observable<BaseResponse> putTrackedEntityInstances(
+            RTaskTrackedEntityInstance trackedEntityInstanceRequest) {
+        return networkProvider
+                .transformResponse(restService.putTrackedEntityInstances(trackedEntityInstanceRequest,
+                                                                         trackedEntityInstanceRequest
+                                                                                 .getTrackedEntityInstanceId()));
+    }
+
+    @Override
     public Observable<QueryResponse> queryTrackedEntityInstances(String orgUnitId, String programId,
                                                                  ProgramStatus programStatus) {
         return networkProvider

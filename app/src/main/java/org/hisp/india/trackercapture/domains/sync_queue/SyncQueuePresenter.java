@@ -50,9 +50,6 @@ public class SyncQueuePresenter extends MvpBasePresenter<SyncQueueView> {
             @Override
             public void succeed(RTaskRequest item) {
                 Log.e(TAG, "succeed: " + item.getUuid());
-                item.updateSyncStatus(true, null);
-                item.save();
-
                 if (isViewAttached()) {
                     getView().syncSucceed();
                 }

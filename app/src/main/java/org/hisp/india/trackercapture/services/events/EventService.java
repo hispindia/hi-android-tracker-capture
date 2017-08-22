@@ -15,4 +15,6 @@ public interface EventService {
 
     Observable<BaseResponse> postEvents(EventRequest eventRequest);
 
+    Observable<BaseResponse> putEvents(EventRequest eventRequest, String trackedEntityInstanceId);
+
 }

@@ -31,4 +31,11 @@ public class DefaultEnrollmentService implements EnrollmentService {
         return networkProvider
                 .transformResponse(restService.postEnrollments(enrollmentRequest));
     }
+
+    @Override
+    public Observable<BaseResponse> putEnrollments(RTaskEnrollment enrollmentRequest) {
+        return networkProvider
+                .transformResponse(restService.putEnrollments(enrollmentRequest,
+                                                              enrollmentRequest.getEnrollmentId()));
+    }
 }

@@ -71,10 +71,18 @@ public class TMEnrollProgram {
     }
 
     public TMEnrollProgram setEnrollment(String enrollmentDateValue, String incidentDateValue) {
-        this.taskRequest.setEnrollment(RTaskEnrollment.create(programId,
-                                                              organizationUnitId,
-                                                              enrollmentDateValue,
-                                                              incidentDateValue));
+        RTaskEnrollment taskEnrollment = taskRequest.getEnrollment();
+        if (taskEnrollment != null) {
+            taskEnrollment.setProgramId(programId);
+            taskEnrollment.setOrgUnitId(organizationUnitId);
+            taskEnrollment.setEnrollmentDate(enrollmentDateValue);
+            taskEnrollment.setIncidentDate(incidentDateValue);
+        } else {
+            taskRequest.setEnrollment(RTaskEnrollment.create(programId,
+                                                             organizationUnitId,
+                                                             enrollmentDateValue,
+                                                             incidentDateValue));
+        }
         return this;
     }
 
@@ -85,11 +93,20 @@ public class TMEnrollProgram {
     public TMEnrollProgram setTrackedEntityInstance(List<RTaskAttribute> taskAttributeList) {
         RProgram program = getProgram();
         if (program != null) {
-            this.taskRequest
-                    .setTrackedEntityInstance(RTaskTrackedEntityInstance.create(program.getTrackedEntity().getId(),
-                                                                                organizationUnitId,
-                                                                                taskAttributeList
-                                                                               ));
+            RTaskTrackedEntityInstance trackedEntityInstance = taskRequest.getTrackedEntityInstance();
+
+            if (trackedEntityInstance != null) {
+                trackedEntityInstance.setTrackedEntityId(program.getTrackedEntity().getId());
+                trackedEntityInstance.setOrgUnitId(organizationUnitId);
+                trackedEntityInstance.setAttributeRequestList(taskAttributeList);
+            } else {
+                taskRequest
+                        .setTrackedEntityInstance(RTaskTrackedEntityInstance.create(program.getTrackedEntity().getId(),
+                                                                                    organizationUnitId,
+                                                                                    taskAttributeList
+                                                                                   ));
+            }
+
         }
         return this;
     }

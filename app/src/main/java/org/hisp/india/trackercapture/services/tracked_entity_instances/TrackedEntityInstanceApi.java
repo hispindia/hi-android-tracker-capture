@@ -8,6 +8,8 @@ import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -22,14 +24,28 @@ public interface TrackedEntityInstanceApi {
             @Body
                     RTaskTrackedEntityInstance trackedEntityInstanceRequest);
 
+    @PUT("api/trackedEntityInstances/{trackedEntityInstanceId}")
+    Observable<BaseResponse> putTrackedEntityInstances(
+            @Body
+                    RTaskTrackedEntityInstance trackedEntityInstanceRequest,
+            @Path("trackedEntityInstanceId")
+                    String trackedEntityInstanceId);
+
     @GET("api/trackedEntityInstances/query.json?&ouMode=DESCENDANTS&paging=false")
-    Observable<QueryResponse> queryTrackedEntityInstances(@Query("ou") String orgUnitId,
-                                                          @Query("program") String programId,
-                                                          @Query("programStatus") String programStatus);
+    Observable<QueryResponse> queryTrackedEntityInstances(
+            @Query("ou")
+                    String orgUnitId,
+            @Query("program")
+                    String programId,
+            @Query("programStatus")
+                    String programStatus);
 
     @GET("api/trackedEntityInstances?paging=false&fields=[*]")
-    Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(@Query("ou") String orgUnitId,
-                                                                         @Query("program") String programId);
+    Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(
+            @Query("ou")
+                    String orgUnitId,
+            @Query("program")
+                    String programId);
 
 
 }

@@ -5,6 +5,8 @@ import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -17,6 +19,13 @@ public interface EnrollmentApi {
     Observable<BaseResponse> postEnrollments(
             @Body
                     RTaskEnrollment enrollmentRequest);
+
+    @PUT("api/enrollments/{enrollmentId}")
+    Observable<BaseResponse> putEnrollments(
+            @Body
+                    RTaskEnrollment enrollmentRequest,
+            @Path("enrollmentId")
+                    String enrollmentId);
 
 
 }

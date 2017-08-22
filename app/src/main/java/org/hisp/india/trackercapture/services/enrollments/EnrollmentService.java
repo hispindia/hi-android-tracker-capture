@@ -15,4 +15,6 @@ public interface EnrollmentService {
 
     Observable<BaseResponse> postEnrollments(RTaskEnrollment enrollmentRequest);
 
+    Observable<BaseResponse> putEnrollments(RTaskEnrollment enrollmentRequest);
+
 }
