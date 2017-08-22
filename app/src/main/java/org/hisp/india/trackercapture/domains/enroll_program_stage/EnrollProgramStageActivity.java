@@ -123,9 +123,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             @Override
             public void toolbarBackupClick() {
                 //register program
-                presenter.registerProgram(tmEnrollProgram.getTaskRequest().getTrackedEntityInstance(),
-                                          tmEnrollProgram.getTaskRequest().getEnrollment(),
-                                          getEventList(adapter.getProgramStageList()));
+                presenter.registerProgram(tmEnrollProgram, getEventList(adapter.getProgramStageList()));
             }
         });
 
