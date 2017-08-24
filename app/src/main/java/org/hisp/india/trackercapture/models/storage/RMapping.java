@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.storage;
 
+import org.hisp.india.trackercapture.models.base.Attribute;
 import org.hisp.india.trackercapture.models.base.DataElement;
 import org.hisp.india.trackercapture.models.base.Option;
 import org.hisp.india.trackercapture.models.base.OptionSet;
@@ -11,9 +12,13 @@ import org.hisp.india.trackercapture.models.base.ProgramRuleVariable;
 import org.hisp.india.trackercapture.models.base.ProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.base.TrackedEntity;
 import org.hisp.india.trackercapture.models.base.TrackedEntityAttribute;
+import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
 import org.hisp.india.trackercapture.models.base.User;
 import org.hisp.india.trackercapture.models.response.ProgramStage;
 import org.hisp.india.trackercapture.models.response.ProgramStageDataElement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.realm.RealmList;
 
@@ -270,4 +275,64 @@ public class RMapping {
         return model;
     }
 
+    public static RAttribute from(Attribute attribute) {
+        if (attribute == null) return null;
+        RAttribute model = new RAttribute();
+        model.setAttributeId(attribute.getAttributeId());
+        model.setDisplayName(attribute.getDisplayName());
+        model.setValue(attribute.getValue());
+        model.setValueType(attribute.getValueType());
+        return model;
+    }
+
+    public static Attribute from(RAttribute attribute) {
+        if (attribute == null) return null;
+        Attribute model = new Attribute();
+        model.setAttributeId(attribute.getAttributeId());
+        model.setDisplayName(attribute.getDisplayName());
+        model.setValue(attribute.getValue());
+        model.setValueType(attribute.getValueType());
+        return model;
+    }
+
+    public static RTrackedEntityInstance from(TrackedEntityInstance trackedEntityInstance) {
+        if (trackedEntityInstance == null) return null;
+        RTrackedEntityInstance model = new RTrackedEntityInstance();
+        model.setTrackedEntityInstanceId(trackedEntityInstance.getTrackedEntityInstanceId());
+        model.setTrackedEntityId(trackedEntityInstance.getTrackedEntityId());
+        model.setOrgUnitId(trackedEntityInstance.getOrgUnitId());
+        model.setProgramId(trackedEntityInstance.getProgramId());
+
+        RealmList<RAttribute> attributes = new RealmList<>();
+
+        if (trackedEntityInstance.getAttributeList() != null) {
+            for (Attribute attribute : trackedEntityInstance.getAttributeList()) {
+                if (attribute != null) attributes.add(from(attribute));
+            }
+        }
+        model.setAttributeList(attributes);
+
+        return model;
+    }
+
+    public static TrackedEntityInstance from(RTrackedEntityInstance trackedEntityInstance) {
+        if (trackedEntityInstance == null) return null;
+        TrackedEntityInstance model = new TrackedEntityInstance();
+        model.setTrackedEntityInstanceId(trackedEntityInstance.getTrackedEntityInstanceId());
+        model.setTrackedEntityId(trackedEntityInstance.getTrackedEntityId());
+        model.setOrgUnitId(trackedEntityInstance.getOrgUnitId());
+        model.setProgramId(trackedEntityInstance.getProgramId());
+
+        List<Attribute> attributes = new ArrayList<>();
+        if (trackedEntityInstance.getAttributeList() != null) {
+            for (RAttribute attribute : trackedEntityInstance.getAttributeList()) {
+                if (attribute != null) attributes.add(from(attribute));
+            }
+        }
+        model.setAttributeList(attributes);
+
+        return model;
+    }
+
 }
+

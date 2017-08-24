@@ -5,6 +5,9 @@ import org.hisp.india.trackercapture.models.response.BaseResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.response.TrackedEntityInstancesResponse;
 import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
+import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -17,6 +20,8 @@ public interface TrackedEntityInstanceService {
     void setRestService(TrackedEntityInstanceApi trackedEntityInstanceApi);
 
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(String orgUnitId, String programId);
+
+    Observable<List<RTrackedEntityInstance>> getTrackedEntityInstancesLocal(String orgUnitId, String programId);
 
     Observable<BaseResponse> postTrackedEntityInstances(RTaskTrackedEntityInstance trackedEntityInstanceRequest);
 

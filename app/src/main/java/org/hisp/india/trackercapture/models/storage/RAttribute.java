@@ -1,21 +1,18 @@
-package org.hisp.india.trackercapture.models.base;
+package org.hisp.india.trackercapture.models.storage;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by nhancao on 5/9/17.
  */
 
-public class Attribute implements Serializable {
-    @SerializedName("displayName")
-    private String displayName;
-    @SerializedName("attribute")
+public class RAttribute extends RealmObject {
+
+    @PrimaryKey
     private String attributeId;
-    @SerializedName("valueType")
+    private String displayName;
     private String valueType;
-    @SerializedName("value")
     private String value;
 
     public String getDisplayName() {

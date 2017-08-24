@@ -94,7 +94,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
         toolbar.applyEnrollProgramUi(this, "Enroll", () -> {
-            if (fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
+            if (fromScreenName != null &&
+                    fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
                 btRegisterClick();
             } else {
                 presenter.onBackCommandClick();

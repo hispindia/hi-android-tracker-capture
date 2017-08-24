@@ -15,11 +15,14 @@ public class TrackedEntityInstance implements Serializable {
     @SerializedName("trackedEntity")
     private String trackedEntityId;
     @SerializedName("trackedEntityInstance")
-    private String trackedEntityInstanceyId;
+    private String trackedEntityInstanceId;
     @SerializedName("orgUnit")
     private String orgUnitId;
     @SerializedName("attributes")
     private List<Attribute> attributeList;
+
+    @Expose
+    private String programId;
 
     @Expose
     private String displayName;
@@ -32,16 +35,32 @@ public class TrackedEntityInstance implements Serializable {
         return trackedEntityId;
     }
 
-    public String getTrackedEntityInstanceyId() {
-        return trackedEntityInstanceyId;
+    public void setTrackedEntityId(String trackedEntityId) {
+        this.trackedEntityId = trackedEntityId;
+    }
+
+    public String getTrackedEntityInstanceId() {
+        return trackedEntityInstanceId;
+    }
+
+    public void setTrackedEntityInstanceId(String trackedEntityInstanceId) {
+        this.trackedEntityInstanceId = trackedEntityInstanceId;
     }
 
     public String getOrgUnitId() {
         return orgUnitId;
     }
 
+    public void setOrgUnitId(String orgUnitId) {
+        this.orgUnitId = orgUnitId;
+    }
+
     public List<Attribute> getAttributeList() {
         return attributeList;
+    }
+
+    public void setAttributeList(List<Attribute> attributeList) {
+        this.attributeList = attributeList;
     }
 
     public String getDisplayName() {
@@ -80,5 +99,13 @@ public class TrackedEntityInstance implements Serializable {
 
     public List<Attribute> getAttributePreview() {
         return attributePreview;
+    }
+
+    public String getProgramId() {
+        return programId;
+    }
+
+    public void setProgramId(String programId) {
+        this.programId = programId;
     }
 }

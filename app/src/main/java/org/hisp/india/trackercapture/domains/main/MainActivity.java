@@ -393,6 +393,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @Override
     public void syncSuccessful() {
+        hideLoading();
         Toast.makeText(application, "Sync succeed", Toast.LENGTH_SHORT).show();
     }
 

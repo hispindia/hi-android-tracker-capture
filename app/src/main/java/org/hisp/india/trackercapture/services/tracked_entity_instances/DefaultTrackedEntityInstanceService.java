@@ -6,6 +6,9 @@ import org.hisp.india.trackercapture.models.response.BaseResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.response.TrackedEntityInstancesResponse;
 import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
+import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -34,6 +37,12 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
                                                                                 String programId) {
         return networkProvider
                 .transformResponse(restService.getTrackedEntityInstances(orgUnitId, programId));
+    }
+
+    @Override
+    public Observable<List<RTrackedEntityInstance>> getTrackedEntityInstancesLocal(String orgUnitId, String programId) {
+        return Observable.defer(() -> Observable
+                .just(TrackedEntityInstanceQuery.getTrackedEntityInstances(orgUnitId, programId)));
     }
 
     @Override

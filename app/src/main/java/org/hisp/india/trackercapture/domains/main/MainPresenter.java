@@ -4,12 +4,14 @@ import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
+import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.e_num.SyncKey;
 import org.hisp.india.trackercapture.models.response.OrganizationUnitsResponse;
 import org.hisp.india.trackercapture.models.storage.RMapping;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RSync;
+import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
 import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.account.AccountQuery;
@@ -18,9 +20,11 @@ import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter
 import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
 import org.hisp.india.trackercapture.services.sync.SyncQuery;
+import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.RealmHelper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -118,8 +122,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
             getView().showLoading("Retrieve all organization...");
 
             fetchOrganizationUnitsRecursion(1, userOrgKeyMap, organizationUnitsResponse -> {
-                getUserOrganizations();
-                getView().syncSuccessful();
+                syncTrackedEntityInstance(currentOrgForUser);
             });
 
         } else {
@@ -140,21 +143,21 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         RxScheduler.onStop(subscription);
         getView().showLoading("Sync user data ...");
         subscription = accountService.login()
-                                     .map(user -> {
-                                         getView().hideCircleProgressView();
-                                         getView().updateProgressStatus("Save user data ...");
-                                         return user;
-                                     })
-                                     .compose(
-                                             new AuthenticationSuccessFilter(accountService.getCredentials()).execute())
-                                     .compose(RxScheduler.applyIoSchedulers())
-                                     .doOnTerminate(() -> {
-                                         if (isViewAttached()) getView().hideLoading();
-                                     })
-                                     .subscribe(user -> {
-                                         System.gc();
-                                         syncOrganizationData();
-                                     });
+                .map(user -> {
+                    getView().hideCircleProgressView();
+                    getView().updateProgressStatus("Save user data ...");
+                    return user;
+                })
+                .compose(
+                        new AuthenticationSuccessFilter(accountService.getCredentials()).execute())
+                .compose(RxScheduler.applyIoSchedulers())
+                .doOnTerminate(() -> {
+                    if (isViewAttached()) getView().hideLoading();
+                })
+                .subscribe(user -> {
+                    System.gc();
+                    syncOrganizationData();
+                });
     }
 
     public void syncOrganizationData() {
@@ -171,57 +174,89 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         getView().showLoading("Retrieve all organization...");
 
         fetchOrganizationUnitsRecursion(1, userOrgKeyMap, organizationUnitsResponse -> {
-            getUserOrganizations();
-            getView().syncSuccessful();
+            syncTrackedEntityInstance(currentOrgForUser);
         });
+    }
+
+    /*************************************************
+     * For house hold program
+     */
+    public void syncTrackedEntityInstance(List<ROrganizationUnit> currentOrgForUser) {
+        getView().showLoading("Retrieve all organization...");
+        rx.Observable.defer(() -> rx.Observable.from(currentOrgForUser)
+                .flatMap(rOrganizationUnit -> rx.Observable
+                        .from(rOrganizationUnit.getPrograms())
+                        .filter(program -> program.getDisplayName().equals("Household"))
+                        .flatMap(program2 ->
+                                trackedEntityInstanceService
+                                        .getTrackedEntityInstances(rOrganizationUnit.getId(), program2.getId())
+                                        .flatMap(
+                                                trackedEntityInstancesResponse -> {
+                                                    List<RTrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
+                                                    for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstancesResponse.getTrackedEntityInstances()) {
+                                                        trackedEntityInstances.add(RMapping.from(trackedEntityInstance)
+                                                                .setProgramId(program2.getId()));
+
+                                                    }
+                                                    TrackedEntityInstanceQuery.insertOrUpdate(trackedEntityInstances);
+                                                    return rx.Observable.just(trackedEntityInstances);
+                                                })
+                        )
+                ))
+                .compose(RxScheduler.applyIoSchedulers())
+                .subscribe(rTrackedEntityInstances -> {
+                    getUserOrganizations();
+                    getView().syncSuccessful();
+                });
+
+
     }
 
     public void fetchOrganizationUnitsRecursion(int page,
                                                 HashMap<String, Boolean> userOrgKeyMap,
                                                 Action1<? super OrganizationUnitsResponse> onNext) {
         String m = (orgUnitTotalPages <= 0) ? String.format("%s/%s", page, "-") :
-                   String.format("%s/%s", page, orgUnitTotalPages);
+                String.format("%s/%s", page, orgUnitTotalPages);
         getView().hideCircleProgressView();
         getView().updateProgressStatus("Retrieve organization (" + m + ")...");
         organizationService.getOrganizationUnits(page)
-                           .observeOn(Schedulers.io())
-                           .map(organizationUnitsResponse -> {
-                               orgUnitTotalPages = organizationUnitsResponse.getPageResponse().getPageCount();
-                               if (getView() != null) {
-                                   getView().hideCircleProgressView();
-                                   getView().updateProgressStatus(
-                                           String.format("Saving organizations (%s/%s)...", page, orgUnitTotalPages));
-                               }
+                .observeOn(Schedulers.io())
+                .map(organizationUnitsResponse -> {
+                    orgUnitTotalPages = organizationUnitsResponse.getPageResponse().getPageCount();
+                    if (getView() != null) {
+                        getView().hideCircleProgressView();
+                        getView().updateProgressStatus(
+                                String.format("Saving organizations (%s/%s)...", page, orgUnitTotalPages));
+                    }
 
-                               RealmHelper.transaction(realm -> {
-                                   for (OrganizationUnit organizationUnit :
-                                           organizationUnitsResponse.getOrganizationUnits()) {
-                                       if (!userOrgKeyMap.containsKey(organizationUnit.getId())) {
-                                           realm.copyToRealmOrUpdate(RMapping.from(organizationUnit));
-                                       }
-                                   }
+                    RealmHelper.transaction(realm -> {
+                        for (OrganizationUnit organizationUnit :
+                                organizationUnitsResponse.getOrganizationUnits()) {
+                            if (!userOrgKeyMap.containsKey(organizationUnit.getId())) {
+                                realm.copyToRealmOrUpdate(RMapping.from(organizationUnit));
+                            }
+                        }
 
-                                   if (page >= orgUnitTotalPages) {
-                                       //update sync flag
-                                       realm.copyToRealmOrUpdate(
-                                               RSync.create(SyncKey.ROrganizationUnit, true));
-                                   }
-                               });
+                        if (page >= orgUnitTotalPages) {
+                            //update sync flag
+                            realm.copyToRealmOrUpdate(
+                                    RSync.create(SyncKey.ROrganizationUnit, true));
+                        }
+                    });
 
-                               return organizationUnitsResponse;
-                           })
-                           .compose(RxScheduler.applyIoSchedulers())
-                           .subscribe(organizationUnitsResponse -> {
-                               if (page < orgUnitTotalPages) {
-                                   fetchOrganizationUnitsRecursion(page + 1, userOrgKeyMap, onNext);
-                               } else if (isViewAttached()) {
-                                   getView().hideLoading();
-                                   onNext.call(organizationUnitsResponse);
-                               }
-                           }, throwable -> {
-                               if (isViewAttached()) getView().showError(throwable.getMessage());
-                           });
-        ;
+                    return organizationUnitsResponse;
+                })
+                .compose(RxScheduler.applyIoSchedulers())
+                .subscribe(organizationUnitsResponse -> {
+                    if (page < orgUnitTotalPages) {
+                        fetchOrganizationUnitsRecursion(page + 1, userOrgKeyMap, onNext);
+                    } else if (isViewAttached()) {
+                        getView().hideLoading();
+                        onNext.call(organizationUnitsResponse);
+                    }
+                }, throwable -> {
+                    if (isViewAttached()) getView().showError(throwable.getMessage());
+                });
     }
 
 }

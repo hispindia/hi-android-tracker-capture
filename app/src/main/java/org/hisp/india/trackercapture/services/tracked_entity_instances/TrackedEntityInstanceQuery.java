@@ -13,9 +13,12 @@ import io.realm.RealmResults;
 
 public class TrackedEntityInstanceQuery {
 
-    public static List<RTrackedEntityInstance> getAllTrackedEntityInstances() {
+    public static List<RTrackedEntityInstance> getTrackedEntityInstances(String orgId, String programId) {
         return RealmHelper.query(realm -> {
-            RealmResults<RTrackedEntityInstance> programs = realm.where(RTrackedEntityInstance.class).findAll();
+            RealmResults<RTrackedEntityInstance> programs = realm.where(RTrackedEntityInstance.class)
+                    .equalTo("orgUnitId", orgId)
+                    .equalTo("programId", programId)
+                    .findAll();
             return realm.copyFromRealm(programs);
         });
     }

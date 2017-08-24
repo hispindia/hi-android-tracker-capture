@@ -29,7 +29,9 @@ import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.models.base.Attribute;
 import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
+import org.hisp.india.trackercapture.models.storage.RMapping;
 import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.AppUtils;
@@ -81,13 +83,16 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
         if (houseHoldProgram == null) return;
 
         showLoading(true);
-        trackedEntityInstanceService.getTrackedEntityInstances(orgUnitId, houseHoldProgram.getId())
+
+        trackedEntityInstanceService.getTrackedEntityInstancesLocal(orgUnitId, houseHoldProgram.getId())
                                     .compose(RxScheduler.applyIoSchedulers())
-                                    .doOnTerminate(() -> {
-                                        showLoading(false);
-                                    })
-                                    .subscribe(trackedEntityInstancesResponse -> {
-                                        setModelList(trackedEntityInstancesResponse.getTrackedEntityInstances());
+                .doOnTerminate(() -> showLoading(false))
+                .subscribe(rTrackedEntityInstances -> {
+                    List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
+                    for (RTrackedEntityInstance rTrackedEntityInstance : rTrackedEntityInstances) {
+                        trackedEntityInstances.add(RMapping.from(rTrackedEntityInstance));
+                    }
+                    setModelList(trackedEntityInstances);
                                     });
     }
 
