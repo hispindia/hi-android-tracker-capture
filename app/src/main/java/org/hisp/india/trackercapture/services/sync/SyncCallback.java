@@ -8,7 +8,7 @@ public interface SyncCallback<T> {
 
     void succeed(T item);
 
-    void error(T item, String e);
+    void error(String e);
 
 
 }

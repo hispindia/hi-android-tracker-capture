@@ -41,6 +41,9 @@ public class NToolbar extends RelativeLayout {
         if (activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
+
+        toolbarClose.setVisibility(View.GONE);
+        toolbarBackup.setVisibility(View.GONE);
     }
 
     public void applyTemplatelUi(AppCompatActivity activity, String title, TemplateToolbarItemClick itemClick) {
@@ -79,14 +82,17 @@ public class NToolbar extends RelativeLayout {
     }
 
     public void applySyncQueueUi(AppCompatActivity activity, String title,
-                                 DefaultToolbarItemClick itemClick) {
+                                 SyncQueueToolbarItemClick itemClick) {
         //Setup toolbar
         applyCommonUi(activity);
 
         tvTitle.setText(title);
         toolbarClose.setVisibility(View.VISIBLE);
+        toolbarBackup.setVisibility(View.VISIBLE);
 
         toolbarClose.setOnClickListener(v -> itemClick.toolbarCloseClick());
+        toolbarBackup.setOnClickListener(v -> itemClick.toolbarSyncAllClick());
+
 
     }
 
@@ -116,8 +122,22 @@ public class NToolbar extends RelativeLayout {
 
     }
 
+    public void setEnableLeftButton(boolean enable) {
+        toolbarClose.setEnabled(enable);
+    }
+
+    public void setEnableRightButton(boolean enable) {
+        toolbarBackup.setEnabled(enable);
+    }
+
     public interface DefaultToolbarItemClick {
         void toolbarCloseClick();
+    }
+
+    public interface SyncQueueToolbarItemClick {
+        void toolbarCloseClick();
+
+        void toolbarSyncAllClick();
     }
 
     public interface EnrollProgramStageToolbarItemClick extends DefaultToolbarItemClick {

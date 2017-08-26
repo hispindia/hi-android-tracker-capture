@@ -107,7 +107,7 @@
 
                     <LinearLayout
                         android:id="@+id/item_tracked_entity_ll_item_incident_date"
-                        android:layout_width="80dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:orientation="vertical"
@@ -137,7 +137,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="15dp"
-                    android:src="@drawable/ic_sync"
                     />
             </RelativeLayout>
         </LinearLayout>

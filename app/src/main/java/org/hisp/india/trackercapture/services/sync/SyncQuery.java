@@ -23,6 +23,16 @@ public class SyncQuery {
         });
     }
 
+    public static RTaskRequest getNextTaskRequest() {
+        return RealmHelper.query(realm -> {
+            RTaskRequest sync = realm.where(RTaskRequest.class).equalTo("needSync", true).findFirst();
+            if (sync != null) {
+                return realm.copyFromRealm(sync);
+            }
+            return null;
+        });
+    }
+
     public static List<RTaskRequest> getRTaskRequestList() {
         return RealmHelper.query(realm -> realm.copyFromRealm(realm.where(RTaskRequest.class).findAll()));
     }

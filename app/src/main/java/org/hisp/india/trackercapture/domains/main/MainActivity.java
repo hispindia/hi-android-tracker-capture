@@ -51,6 +51,8 @@ import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribu
 import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
+import org.hisp.india.trackercapture.services.sync.AutoSyncService;
+import org.hisp.india.trackercapture.services.sync.SyncBus;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
 
@@ -196,12 +198,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     }
 
     @Override
-    protected void onPause() {
-        DefaultNetworkProvider.PROGRESS_BUS.unregister(this);
-        super.onPause();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         DefaultNetworkProvider.PROGRESS_BUS.register(this);
@@ -212,6 +208,27 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             application.initRealmConfig();
             //Fetching all org from remote and save to local
             presenter.fetchingAllOrgs();
+
+        }
+        AutoSyncService.bus.register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        DefaultNetworkProvider.PROGRESS_BUS.unregister(this);
+        AutoSyncService.bus.unregister(this);
+        super.onPause();
+    }
+
+    @Subscribe
+    public void syncBusSubscribe(SyncBus syncBus) {
+        switch (syncBus.getStatus()) {
+            case ERROR:
+                Toasty.error(this, syncBus.getMessage()).show();
+                break;
+            case SUCCESS:
+                Toasty.info(this, "Register succeed").show();
+                break;
         }
     }
 

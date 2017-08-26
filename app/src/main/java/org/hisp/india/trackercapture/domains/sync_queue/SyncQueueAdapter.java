@@ -101,7 +101,12 @@ public class SyncQueueAdapter extends BaseSwipeAdapter {
             tvValueEnrollDate.setText(taskEnrollment.getEnrollmentDate());
             tvValueIncidentDate.setText(taskEnrollment.getIncidentDate());
         }
-        ivNeedSync.setVisibility(item.isNeedSync() ? View.VISIBLE : View.INVISIBLE);
+        if (item.isNeedSync()) {
+            ivNeedSync.setVisibility(View.VISIBLE);
+            ivNeedSync.setBackgroundResource(item.isLastSyncStatus() ? R.drawable.ic_sync : R.drawable.ic_sync_red);
+        } else {
+            ivNeedSync.setVisibility(View.INVISIBLE);
+        }
         llItem.setOnClickListener(v -> callback.onClick(item));
     }
 

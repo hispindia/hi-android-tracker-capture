@@ -8,7 +8,7 @@ import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 
 public interface SyncService {
 
-    void syncEnrollProgram();
+    void syncUnResolveEnrollProgram(SyncCallback<RTaskRequest> syncCallback);
 
     void syncEnrollProgram(String taskId, SyncCallback<RTaskRequest> syncCallback);
 }

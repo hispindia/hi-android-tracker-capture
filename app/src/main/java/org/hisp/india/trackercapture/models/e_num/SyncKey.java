@@ -5,7 +5,8 @@ package org.hisp.india.trackercapture.models.e_num;
  */
 
 public enum SyncKey {
-    ROrganizationUnit;
+    ROrganizationUnit,
+    RTaskTrackedEntityInstance;
 
 
     public static SyncKey getType(String syncKey) {

@@ -56,9 +56,8 @@ public class SyncQueuePresenter extends MvpBasePresenter<SyncQueueView> {
             }
 
             @Override
-            public void error(RTaskRequest item, String e) {
+            public void error(String e) {
                 Log.e(TAG, "error: " + e);
-                item.updateSyncStatus(false, e);
                 if (isViewAttached()) {
                     getView().syncError(e);
                 }

@@ -122,11 +122,11 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
             getView().showLoading("Retrieve all organization...");
 
             fetchOrganizationUnitsRecursion(1, userOrgKeyMap, organizationUnitsResponse -> {
-                syncTrackedEntityInstance(currentOrgForUser);
+                syncTrackedEntityInstance(currentOrgForUser, false);
             });
 
         } else {
-            getUserOrganizations();
+            syncTrackedEntityInstance(OrganizationQuery.getUserOrganizations(), false);
         }
     }
 
@@ -174,42 +174,58 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         getView().showLoading("Retrieve all organization...");
 
         fetchOrganizationUnitsRecursion(1, userOrgKeyMap, organizationUnitsResponse -> {
-            syncTrackedEntityInstance(currentOrgForUser);
+            syncTrackedEntityInstance(currentOrgForUser, true);
         });
     }
 
     /*************************************************
      * For house hold program
      */
-    public void syncTrackedEntityInstance(List<ROrganizationUnit> currentOrgForUser) {
-        getView().showLoading("Retrieve all organization...");
-        rx.Observable.defer(() -> rx.Observable.from(currentOrgForUser)
-                .flatMap(rOrganizationUnit -> rx.Observable
-                        .from(rOrganizationUnit.getPrograms())
-                        .filter(program -> program.getDisplayName().equals("Household"))
-                        .flatMap(program2 ->
-                                trackedEntityInstanceService
-                                        .getTrackedEntityInstances(rOrganizationUnit.getId(), program2.getId())
-                                        .flatMap(
-                                                trackedEntityInstancesResponse -> {
-                                                    List<RTrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
-                                                    for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstancesResponse.getTrackedEntityInstances()) {
-                                                        trackedEntityInstances.add(RMapping.from(trackedEntityInstance)
-                                                                .setProgramId(program2.getId()));
+    public void syncTrackedEntityInstance(List<ROrganizationUnit> currentOrgForUser, boolean isForceSync) {
+        RSync orgSync = SyncQuery.getSyncRowByKey(SyncKey.RTaskTrackedEntityInstance);
+        if (isForceSync || orgSync == null || !orgSync.isStatus()) {
+            getView().showLoading("Retrieve all organization...");
+            rx.Observable.defer(() -> rx.Observable.from(currentOrgForUser)
+                    .flatMap(rOrganizationUnit -> rx.Observable
+                            .from(rOrganizationUnit.getPrograms())
+                            .filter(program -> program.getDisplayName().equals("Household"))
+                            .flatMap(program2 ->
+                                    trackedEntityInstanceService
+                                            .getTrackedEntityInstances(rOrganizationUnit.getId(), program2.getId())
+                                            .flatMap(
+                                                    trackedEntityInstancesResponse -> {
+                                                        List<RTrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
+                                                        for (TrackedEntityInstance trackedEntityInstance : trackedEntityInstancesResponse.getTrackedEntityInstances()) {
+                                                            trackedEntityInstances.add(RMapping.from(trackedEntityInstance)
+                                                                    .setProgramId(program2.getId()));
 
-                                                    }
-                                                    TrackedEntityInstanceQuery.insertOrUpdate(trackedEntityInstances);
-                                                    return rx.Observable.just(trackedEntityInstances);
-                                                })
-                        )
-                ))
-                .compose(RxScheduler.applyIoSchedulers())
-                .subscribe(rTrackedEntityInstances -> {
-                    getUserOrganizations();
-                    getView().syncSuccessful();
-                });
+                                                        }
+                                                        TrackedEntityInstanceQuery.insertOrUpdate(trackedEntityInstances);
+                                                        return rx.Observable.just(trackedEntityInstances);
+                                                    })))
+                    .map(rTrackedEntityInstances -> {
+                        RealmHelper.transaction(realm -> {
+                            //update sync flag
+                            realm.copyToRealmOrUpdate(
+                                    RSync.create(SyncKey.RTaskTrackedEntityInstance, true));
+                        });
+                        return rTrackedEntityInstances;
+                    }))
+                    .compose(RxScheduler.applyIoSchedulers())
+                    .subscribe(rTrackedEntityInstances -> updateViewSynced(isForceSync));
+        } else {
+            updateViewSynced(isForceSync);
+        }
 
+    }
 
+    private void updateViewSynced(boolean isForceSync) {
+        if (isViewAttached()) {
+            getUserOrganizations();
+            if (isForceSync) {
+                getView().syncSuccessful();
+            }
+        }
     }
 
     public void fetchOrganizationUnitsRecursion(int page,

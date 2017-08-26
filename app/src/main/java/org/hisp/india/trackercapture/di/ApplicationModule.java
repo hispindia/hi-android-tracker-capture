@@ -114,25 +114,26 @@ public class ApplicationModule {
             @Override
             public GsonBuilder createBuilder() {
                 return super.createBuilder()
-                            .setExclusionStrategies(new ExclusionStrategy() {
-                                @Override
-                                public boolean shouldSkipField(FieldAttributes f) {
-                                    return f.getDeclaringClass().equals(RealmObject.class);
-                                }
+                        .setExclusionStrategies(new ExclusionStrategy() {
+                            @Override
+                            public boolean shouldSkipField(FieldAttributes f) {
+                                return f.getDeclaringClass().equals(RealmObject.class);
+                            }
 
-                                @Override
-                                public boolean shouldSkipClass(Class<?> clazz) {
-                                    return false;
-                                }
-                            })
-                            .registerTypeAdapter(new TypeToken<Map<String, String>>() {}.getType(),
-                                                 new MapDeserializer());
+                            @Override
+                            public boolean shouldSkipClass(Class<?> clazz) {
+                                return false;
+                            }
+                        })
+                        .registerTypeAdapter(new TypeToken<Map<String, String>>() {
+                                }.getType(),
+                                new MapDeserializer());
             }
         };
         return networkProvider.addDefaultHeader()
-                              .enableFilter(true)
-                              .addHeader("Authorization", credentials.getApiToken())
-                              .addFilter(new ApiErrorFilter(networkProvider, logService));
+                .enableFilter(true)
+                .addHeader("Authorization", credentials.getApiToken())
+                .addFilter(new ApiErrorFilter(networkProvider, logService));
     }
 
     @Provides
@@ -297,12 +298,15 @@ public class ApplicationModule {
 
     @Provides
     @ApplicationScope
-    public SyncService provideSyncService(TrackedEntityInstanceService trackedEntityInstanceService,
+    public SyncService provideSyncService(NetworkProvider networkProvider,
+                                          TrackedEntityInstanceService trackedEntityInstanceService,
                                           EnrollmentService enrollmentService,
                                           EventService eventService) {
-        return new DefaultSyncService(trackedEntityInstanceService,
-                                      enrollmentService,
-                                      eventService);
+        return new DefaultSyncService(
+                networkProvider,
+                trackedEntityInstanceService,
+                enrollmentService,
+                eventService);
     }
 
 

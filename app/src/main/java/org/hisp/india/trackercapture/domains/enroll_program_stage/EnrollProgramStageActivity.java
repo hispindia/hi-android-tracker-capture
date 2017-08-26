@@ -29,6 +29,7 @@ import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
+import org.hisp.india.trackercapture.services.sync.AutoSyncService;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
 
@@ -187,13 +188,9 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     }
 
     @Override
-    public void registerProgramSuccess() {
-        Toast.makeText(application, "Register program succeed", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showToastMessage(String msg) {
+    public void registerProgramSyncRequest(String msg) {
         Toasty.info(this, msg).show();
+        AutoSyncService.start(getApplicationContext());
     }
 
     @CheckedChange({R.id.fragment_enroll_program_stage_cb_status})

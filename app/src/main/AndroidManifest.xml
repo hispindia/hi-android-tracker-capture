@@ -85,6 +85,7 @@
             >
         </activity>
 
+        <service android:name=".services.sync.AutoSyncService" />
         <receiver android:name=".services.sync.NConnectivityReceiver">
             <intent-filter>
                 <action

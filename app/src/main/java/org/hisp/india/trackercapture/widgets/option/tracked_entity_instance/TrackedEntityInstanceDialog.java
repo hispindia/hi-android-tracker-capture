@@ -71,8 +71,8 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
                                                           TrackedEntityInstanceService trackedEntityInstanceService,
                                                           ItemClickListener<TrackedEntityInstance> onItemClickListener) {
         TrackedEntityInstanceDialog dialog = TrackedEntityInstanceDialog_.builder()
-                                                                         .orgUnitId(orgUnitId)
-                                                                         .build();
+                .orgUnitId(orgUnitId)
+                .build();
         dialog.setOnItemClickListener(onItemClickListener);
         dialog.setTrackedEntityInstanceService(trackedEntityInstanceService);
         return dialog;
@@ -85,7 +85,7 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
         showLoading(true);
 
         trackedEntityInstanceService.getTrackedEntityInstancesLocal(orgUnitId, houseHoldProgram.getId())
-                                    .compose(RxScheduler.applyIoSchedulers())
+                .compose(RxScheduler.applyIoSchedulers())
                 .doOnTerminate(() -> showLoading(false))
                 .subscribe(rTrackedEntityInstances -> {
                     List<TrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
@@ -93,7 +93,7 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
                         trackedEntityInstances.add(RMapping.from(rTrackedEntityInstance));
                     }
                     setModelList(trackedEntityInstances);
-                                    });
+                });
     }
 
     public void showLoading(boolean show) {
@@ -135,8 +135,8 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
                     Attribute attribute = attributePreviewList.get(0);
                     tvLabel1.setText(attribute.getDisplayName());
                     tvAtt1.setText(AppUtils.highlightText(etSearch.getText().toString(),
-                                                          attribute.getValue(),
-                                                          Color.parseColor("#7A7986")));
+                            attribute.getValue(),
+                            Color.parseColor("#7A7986")));
 
                     tvLabel2.setVisibility(View.GONE);
                     tvAtt2.setVisibility(View.GONE);
@@ -149,8 +149,8 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
                     Attribute attribute = attributePreviewList.get(1);
                     tvLabel2.setText(attribute.getDisplayName());
                     tvAtt2.setText(AppUtils.highlightText(etSearch.getText().toString(),
-                                                          attribute.getValue(),
-                                                          Color.parseColor("#7A7986")));
+                            attribute.getValue(),
+                            Color.parseColor("#7A7986")));
 
                     tvLabel3.setVisibility(View.GONE);
                     tvAtt3.setVisibility(View.GONE);
@@ -161,8 +161,8 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
                     Attribute attribute = attributePreviewList.get(2);
                     tvLabel3.setText(attribute.getDisplayName());
                     tvAtt3.setText(AppUtils.highlightText(etSearch.getText().toString(),
-                                                          attribute.getValue(),
-                                                          Color.parseColor("#7A7986")));
+                            attribute.getValue(),
+                            Color.parseColor("#7A7986")));
                 }
 
                 helper.getView().setOnClickListener(view -> {
@@ -191,18 +191,18 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
                         });
 
                 builder.setTitle("Info")
-                       .setView(view)
-                       .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                           if (onItemClickListener != null) {
-                               onItemClickListener.onItemClick(item);
-                           }
-                           dismiss();
-                       })
-                       .setNegativeButton(android.R.string.no, (dialog, which) -> {
-                           // do nothing
-                       })
-                       .setIcon(android.R.drawable.ic_dialog_info)
-                       .show();
+                        .setView(view)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            if (onItemClickListener != null) {
+                                onItemClickListener.onItemClick(item);
+                            }
+                            dismiss();
+                        })
+                        .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                            // do nothing
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .show();
             }
         };
         lvItem.setAdapter(adapter);

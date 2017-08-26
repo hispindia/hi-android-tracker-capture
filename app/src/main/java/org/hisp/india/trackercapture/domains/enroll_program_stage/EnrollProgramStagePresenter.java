@@ -56,10 +56,9 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
         } else {
             taskRequest.setNeedSync(true);
             taskRequest.setEventList(eventList);
-
         }
         taskRequest.save();
-        getView().showToastMessage("Added into queue.");
+        getView().registerProgramSyncRequest("Added into queue.");
         router.exit();
     }
 
