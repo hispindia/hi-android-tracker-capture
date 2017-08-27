@@ -19,6 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
  */
 
 public class ApiErrorFilter implements InterceptFilter {
+    private static final String TAG = ApiErrorFilter.class.getSimpleName();
 
     private NetworkProvider networkProvider;
     private ProductFlavor productFlavor;
@@ -37,25 +38,24 @@ public class ApiErrorFilter implements InterceptFilter {
                 .onErrorResumeNext(throwable -> {
                     switch (productFlavor) {
                         case DEVELOP:
-                            Toast.makeText(networkProvider.getContext(), throwable.toString(),
-                                           Toast.LENGTH_SHORT)
-                                 .show();
+                            Toasty.error(networkProvider.getContext(), throwable.toString(), Toast.LENGTH_SHORT)
+                                    .show();
                             break;
                         case PRODUCTION:
                             if (throwable instanceof ApiException) {
                                 int code = ((ApiException) throwable).getCode();
                                 if (code == ErrorCodes.NETWORK_NOT_AVAILABLE_ERROR) {
                                     Toasty.error(networkProvider.getContext(), "Oops! Network error.",
-                                                 Toast.LENGTH_SHORT, true).show();
+                                            Toast.LENGTH_SHORT, true).show();
                                 } else {
                                     logService.log(throwable.toString());
                                     Toasty.error(networkProvider.getContext(), "Oops! Something error?",
-                                                 Toast.LENGTH_SHORT, true).show();
+                                            Toast.LENGTH_SHORT, true).show();
                                 }
                             } else {
                                 logService.log(throwable.toString());
                                 Toasty.error(networkProvider.getContext(), "Oops! Something error?",
-                                             Toast.LENGTH_SHORT, true).show();
+                                        Toast.LENGTH_SHORT, true).show();
                             }
                             break;
                     }

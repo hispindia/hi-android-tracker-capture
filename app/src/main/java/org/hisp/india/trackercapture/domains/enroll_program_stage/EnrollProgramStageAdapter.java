@@ -71,9 +71,7 @@ public class EnrollProgramStageAdapter extends BaseAdapter {
                         for (RTaskDataValue dataValue : taskEvent.getDataValues()) {
                             if (dataValue.getDataElementId() != null &&
                                 dataValue.getDataElementId()
-                                         .equals(rProgramStageDataElement
-                                                         .getDataElement()
-                                                         .getId())) {
+                                        .equals(rProgramStageDataElement.getDataElement().getId())) {
                                 rProgramStageDataElement.setValue(dataValue.getValue());
                                 rProgramStageDataElement.setValueDisplay(dataValue.getValue());
                                 break;
@@ -153,8 +151,7 @@ public class EnrollProgramStageAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setItemClickListener(
-            ItemClickListener<RProgramStage> itemClickListener) {
+    public void setItemClickListener(ItemClickListener<RProgramStage> itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
 

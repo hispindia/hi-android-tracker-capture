@@ -180,7 +180,6 @@ public class SyncQueueActivity extends BaseActivity<SyncQueueView, SyncQueuePres
 
     @Override
     public void syncError(String e) {
-        Toast.makeText(application, "Sync error: " + e, Toast.LENGTH_SHORT).show();
         updateTaskList();
     }
 

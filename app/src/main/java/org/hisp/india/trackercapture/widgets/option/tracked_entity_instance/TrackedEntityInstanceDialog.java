@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -36,6 +35,7 @@ import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.ItemClickListener;
+import org.hisp.india.trackercapture.widgets.NDialog;
 import org.hisp.india.trackercapture.widgets.NTextChange;
 import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 
@@ -171,27 +171,19 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
             }
 
             private void showDialogInfo(TrackedEntityInstance item) {
-                AlertDialog.Builder builder;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    builder = new AlertDialog.Builder(context, android.R.style.Theme_Material_Dialog_Alert);
-                } else {
-                    builder = new AlertDialog.Builder(context);
-                }
+                AlertDialog.Builder builder = NDialog.newAlertBuilder(context, R.layout.dialog_info, view -> {
+                    ListView lvInfoItem = view.findViewById(R.id.dialog_info_lv_item);
+                    lvInfoItem.setAdapter(
+                            new QuickAdapter<Attribute>(getContext(), R.layout.item_dialog_info, item.getAttributeList()) {
+                                @Override
+                                protected void convert(BaseAdapterHelper helper, Attribute item1) {
+                                    helper.setText(R.id.item_dialog_info_title, item1.getDisplayName());
+                                    helper.setText(R.id.item_dialog_info_value, item1.getValue());
+                                }
+                            });
+                });
 
-                View view = View.inflate(getContext(), R.layout.dialog_info, null);
-
-                ListView lvInfoItem = view.findViewById(R.id.dialog_info_lv_item);
-                lvInfoItem.setAdapter(
-                        new QuickAdapter<Attribute>(getContext(), R.layout.item_dialog_info, item.getAttributeList()) {
-                            @Override
-                            protected void convert(BaseAdapterHelper helper, Attribute item) {
-                                helper.setText(R.id.item_dialog_info_title, item.getDisplayName());
-                                helper.setText(R.id.item_dialog_info_value, item.getValue());
-                            }
-                        });
-
-                builder.setTitle("Info")
-                        .setView(view)
+                builder
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             if (onItemClickListener != null) {
                                 onItemClickListener.onItemClick(item);
@@ -201,7 +193,6 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
                         .setNegativeButton(android.R.string.no, (dialog, which) -> {
                             // do nothing
                         })
-                        .setIcon(android.R.drawable.ic_dialog_info)
                         .show();
             }
         };
