@@ -72,7 +72,7 @@ import ru.terrakok.cicerone.commands.Replace;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity<MainView, MainPresenter>
         implements MainView, DrawerAdapter.OnItemSelectedListener,
-                   NPermission.OnPermissionResult {
+        NPermission.OnPermissionResult {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_main_toolbar)
@@ -112,7 +112,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
             if (((Replace) command).getScreenKey().equals(Screens.LOGIN_SCREEN)) {
                 LoginActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
-                              .start();
+                        .start();
             }
 
         } else if (command instanceof Forward) {
@@ -120,14 +120,14 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
                 TMEnrollProgram tmEnrollProgram = new TMEnrollProgram(organizationUnit.getId(), program.getId());
                 EnrollProgramActivity_.intent(this)
-                                      .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
-                                      .start();
+                        .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
+                        .start();
 
             } else if (((Forward) command).getScreenKey().equals(Screens.TRACKED_ENTITY)) {
 
                 TrackedEntityActivity_.intent(this)
-                                      .rowModel((RowModel) ((Forward) command).getTransitionData())
-                                      .start();
+                        .rowModel((RowModel) ((Forward) command).getTransitionData())
+                        .start();
 
             }
         }
@@ -136,9 +136,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @AfterInject
     void inject() {
         DaggerMainComponent.builder()
-                           .applicationComponent(application.getApplicationComponent())
-                           .build()
-                           .inject(this);
+                .applicationComponent(application.getApplicationComponent())
+                .build()
+                .inject(this);
     }
 
     @AfterViews
@@ -183,10 +183,10 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         if (user != null) {
             if (!TextUtils.isEmpty(user.getFirstName()) && !TextUtils.isEmpty(user.getSurName())) {
                 character = String.valueOf(user.getFirstName().charAt(0)) +
-                            String.valueOf(user.getSurName().charAt(0));
+                        String.valueOf(user.getSurName().charAt(0));
             } else if (!TextUtils.isEmpty(user.getDisplayName()) && user.getDisplayName().length() > 1) {
                 character = String.valueOf(user.getDisplayName().charAt(0)) +
-                            String.valueOf(user.getDisplayName().charAt(1));
+                        String.valueOf(user.getDisplayName().charAt(1));
             }
             tvCharacterName.setText(character);
             tvDisplayName.setText(user.getDisplayName());
@@ -239,11 +239,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull
-                                                   String[] permissions,
-                                           @NonNull
-                                                   int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         nPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -330,7 +326,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         for (RProgramTrackedEntityAttribute programTrackedEntityAttribute : program
                 .getProgramTrackedEntityAttributes()) {
             if (displayInList.size() < 3 &&
-                programTrackedEntityAttribute.isDisplayInList()) {
+                    programTrackedEntityAttribute.isDisplayInList()) {
                 displayInList
                         .put(programTrackedEntityAttribute.getTrackedEntityAttribute().getId(), null);
             }
@@ -399,9 +395,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 }
                 helper.getView().setOnClickListener(v -> {
                     navigator.applyCommand(new Forward(Screens.TRACKED_ENTITY,
-                                                       new RowModel(queryResponse.getHeaders(),
-                                                                    queryResponse.getRows()
-                                                                                 .get(helper.getPosition()))));
+                            new RowModel(queryResponse.getHeaders(),
+                                    queryResponse.getRows()
+                                            .get(helper.getPosition()))));
                 });
             }
         });
@@ -432,8 +428,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Subscribe
     public void progressSubscribe(ProgressBus progressBus) {
         runOnUiThread(() ->
-                              setProgressCount(
-                                      (int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
+                setProgressCount(
+                        (int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
     }
 
     @Click(R.id.activity_main_tv_organization)

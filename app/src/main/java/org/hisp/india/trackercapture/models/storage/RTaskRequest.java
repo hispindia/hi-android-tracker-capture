@@ -164,13 +164,13 @@ public class RTaskRequest extends RealmObject {
 
     @Override
     public String toString() {
-        return "uuid='" + uuid + '\'' +
-               ", createTime='" + createTime + '\'' +
-               ", updateTime='" + updateTime + '\'' +
-               ", lastSyncTime='" + lastSyncTime + '\'' +
-               ", lastSyncStatus=" + lastSyncStatus +
-               ", needSync=" + needSync +
-               ", hadSynced=" + hadSynced +
-               ", lastError='" + lastError;
+        return "Uuid: " + uuid + '\n' +
+                "Create time: " + createTime + '\n' +
+                "Update time: " + updateTime + '\n' +
+                "Last sync time: " + lastSyncTime + '\n' +
+                "Last sync status: " + lastSyncStatus + '\n' +
+                "Need sync: " + needSync + '\n' +
+                "Had synced: " + hadSynced + '\n' +
+                "Last error: " + lastError;
     }
 }
