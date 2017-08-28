@@ -60,7 +60,7 @@ public class EnrollProgramStageAdapter extends BaseAdapter {
             //@nhancv TODO: 8/22/17 set value to program stage from task event
             for (RTaskEvent taskEvent : taskRequest.getEventList()) {
                 if (taskEvent.getProgramStageId() != null &&
-                    taskEvent.getProgramStageId().equals(rProgramStage.getId())) {
+                        taskEvent.getProgramStageId().equals(rProgramStage.getId())) {
                     rProgramStage.setDueDate(taskEvent.getDueDate());
                     rProgramStage.setEventDate(taskEvent.getEventDate());
                     rProgramStage.setStatus(taskEvent.getStatus());
@@ -70,8 +70,8 @@ public class EnrollProgramStageAdapter extends BaseAdapter {
                             .getProgramStageDataElements()) {
                         for (RTaskDataValue dataValue : taskEvent.getDataValues()) {
                             if (dataValue.getDataElementId() != null &&
-                                dataValue.getDataElementId()
-                                        .equals(rProgramStageDataElement.getDataElement().getId())) {
+                                    dataValue.getDataElementId()
+                                            .equals(rProgramStageDataElement.getDataElement().getId())) {
                                 rProgramStageDataElement.setValue(dataValue.getValue());
                                 rProgramStageDataElement.setValueDisplay(dataValue.getValue());
                                 break;
@@ -86,6 +86,7 @@ public class EnrollProgramStageAdapter extends BaseAdapter {
     }
 
     public void calculateDueDate() {
+        if (enrollmentDate == null) return;
         DateTime dateTime = AppUtils.parseDate(enrollmentDate);
         for (int i = 0; i < programStageList.size(); i++) {
             programStageList.get(i).setDueDate(
