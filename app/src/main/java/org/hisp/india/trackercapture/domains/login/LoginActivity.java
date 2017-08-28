@@ -101,7 +101,7 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
                 application.resetApplicationComponent();
 
                 MainActivity_.intent(this).flags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK)
-                             .start();
+                        .start();
             }
         }
     };
@@ -109,9 +109,9 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     @AfterInject
     void inject() {
         DaggerLoginComponent.builder()
-                            .applicationComponent(application.getApplicationComponent())
-                            .build()
-                            .inject(this);
+                .applicationComponent(application.getApplicationComponent())
+                .build()
+                .inject(this);
     }
 
     @AfterViews
@@ -210,9 +210,12 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
     @Subscribe
     public void progressSubscribe(ProgressBus progressBus) {
         if (progressBus.getApiClass() == AccountApi.class) {
-            runOnUiThread(() ->
-                                  setProgressCount(
-                                          (int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
+            runOnUiThread(() -> {
+                long contentLength = progressBus.getContentLength();
+                long bytesRead = progressBus.getBytesRead();
+                contentLength = contentLength == 0 ? bytesRead : contentLength;
+                setProgressCount((int) (bytesRead * 100 / contentLength));
+            });
 
         }
     }
@@ -228,9 +231,9 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
 
         RxScheduler.onStop(subscription);
         subscription = Observable.empty()
-                                 .delay(2, TimeUnit.SECONDS)
-                                 .doOnTerminate(() -> tapCounter = 0)
-                                 .subscribe();
+                .delay(2, TimeUnit.SECONDS)
+                .doOnTerminate(() -> tapCounter = 0)
+                .subscribe();
 
     }
 
