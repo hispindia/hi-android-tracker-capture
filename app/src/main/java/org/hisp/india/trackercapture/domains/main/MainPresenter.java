@@ -214,7 +214,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                     .compose(RxScheduler.applyIoSchedulers())
                     .subscribe(rTrackedEntityInstances -> updateViewSynced(isForceSync));
         } else {
-            updateViewSynced(isForceSync);
+            updateViewSynced(false);
         }
 
     }
@@ -222,6 +222,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     private void updateViewSynced(boolean isForceSync) {
         if (isViewAttached()) {
             getUserOrganizations();
+            getView().hideLoading();
             if (isForceSync) {
                 getView().syncSuccessful();
             }
