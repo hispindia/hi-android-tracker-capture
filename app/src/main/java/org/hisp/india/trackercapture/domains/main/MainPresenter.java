@@ -212,7 +212,9 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                         return rTrackedEntityInstances;
                     }))
                     .compose(RxScheduler.applyIoSchedulers())
-                    .subscribe(rTrackedEntityInstances -> updateViewSynced(isForceSync));
+                    .subscribe(rTrackedEntityInstances -> updateViewSynced(isForceSync), throwable -> {
+                        if (isViewAttached()) getView().showError(throwable.getMessage());
+                    });
         } else {
             updateViewSynced(false);
         }

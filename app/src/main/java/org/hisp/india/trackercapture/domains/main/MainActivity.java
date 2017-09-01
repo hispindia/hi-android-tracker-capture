@@ -205,9 +205,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         } else {
             //@nhancv TODO: after get all required permission
-            application.initRealmConfig();
-            //Fetching all org from remote and save to local
-            presenter.fetchingAllOrgs();
+            permissionGranted();
 
         }
         AutoSyncService.bus.register(this);
@@ -257,10 +255,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             case Manifest.permission.READ_EXTERNAL_STORAGE:
                 if (isGranted) {
                     //@nhancv TODO: after get all required permission
-                    application.initRealmConfig();
-
-                    //Fetching all org from remote and save to local
-                    presenter.fetchingAllOrgs();
+                    permissionGranted();
 
                 } else {
                     nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -478,6 +473,12 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Click(R.id.activity_main_bt_search)
     void btSearch() {
         presenter.queryPrograms(organizationUnit.getId(), program.getId(), ProgramStatus.ACTIVE);
+    }
+
+    private void permissionGranted() {
+        application.initRealmConfig();
+        //Fetching all org from remote and save to local
+        presenter.fetchingAllOrgs();
     }
 
     private void updateBtSearch() {
