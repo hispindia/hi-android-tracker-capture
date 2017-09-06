@@ -149,6 +149,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 .withToolbarMenuToggle(toolbar)
                 .withMenuOpened(false)
                 .withMenuLayout(R.layout.menu_drawer)
+                .withContentClickableWhenMenuOpened(false)
                 .inject()
                 .getLayout();
         TextView tvCharacterName = (TextView) navLayout.findViewById(R.id.menu_drawer_tv_character_name);
@@ -437,12 +438,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Click(R.id.activity_main_bt_search)
     void btSearch() {
         presenter.queryPrograms(organizationUnit.getId(), program.getId(), ProgramStatus.ACTIVE);
-    }
-
-    private void permissionGranted() {
-        application.initRealmConfig();
-        //Fetching all org from remote and save to local
-        presenter.fetchingAllOrgs();
     }
 
     private void updateBtSearch() {
