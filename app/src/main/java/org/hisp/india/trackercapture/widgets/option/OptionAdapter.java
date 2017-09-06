@@ -6,9 +6,6 @@ import android.widget.Filterable;
 
 import com.joanzapata.android.QuickAdapter;
 
-import org.hisp.india.trackercapture.models.base.Model;
-import org.hisp.india.trackercapture.utils.AppUtils;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +22,17 @@ public abstract class OptionAdapter<T> extends QuickAdapter<T> implements Filter
         originalList = new ArrayList<>();
     }
 
+    public void setOriginalList(List<T> elem) {
+        originalList.clear();
+        originalList.addAll(elem);
+    }
+
     @Override
     public void replaceAll(List<T> elem) {
         super.replaceAll(elem);
-        originalList = elem;
+        if (originalList.size() == 0 && elem.size() > 0) {
+            setOriginalList(elem);
+        }
     }
 
     @Override

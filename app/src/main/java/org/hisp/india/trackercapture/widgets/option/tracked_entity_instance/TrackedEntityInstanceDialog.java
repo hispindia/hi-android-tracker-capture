@@ -243,6 +243,7 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
         } else if (adapter != null && lvSearch != null) {
             tvEmpty.setVisibility(View.GONE);
             adapter.replaceAll(modelList);
+
             lvSearch.setVisibility((modelList.size() <= 5) ? View.GONE : View.VISIBLE);
         }
     }
