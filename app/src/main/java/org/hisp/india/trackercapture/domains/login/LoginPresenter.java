@@ -67,22 +67,21 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {
         }
     }
 
-    public void login() {
+    private void login() {
         RxScheduler.onStop(subscription);
         getView().showLoading("Authentication ...");
         subscription = accountService.login()
-                                     .map(user -> {
-                                         getView().updateProgressStatus("Save user data ...");
-                                         return user;
-                                     })
-                                     .compose(
-                                             new AuthenticationSuccessFilter(accountService.getCredentials()).execute())
-                                     .compose(RxScheduler.applyIoSchedulers())
-                                     .doOnTerminate(() -> getView().hideLoading())
-                                     .subscribe(user -> {
-                                         getView().loginSuccessful(user);
-                                         router.replaceScreen(Screens.MAIN_SCREEN);
-                                     }, this::exportError);
+                .map(user -> {
+                    getView().updateProgressStatus("Save user data ...");
+                    return user;
+                })
+                .compose(new AuthenticationSuccessFilter(accountService.getCredentials()).execute())
+                .compose(RxScheduler.applyIoSchedulers())
+                .doOnTerminate(() -> getView().hideLoading())
+                .subscribe(user -> {
+                    getView().loginSuccessful(user);
+                    router.replaceScreen(Screens.MAIN_SCREEN);
+                }, this::exportError);
     }
 
     private void exportError(Throwable throwable) {

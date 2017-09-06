@@ -1,8 +1,6 @@
 package org.hisp.india.trackercapture.domains.main;
 
-import android.Manifest;
 import android.content.Intent;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
@@ -17,7 +15,6 @@ import android.widget.Toast;
 
 import com.joanzapata.android.BaseAdapterHelper;
 import com.joanzapata.android.QuickAdapter;
-import com.nhancv.npermission.NPermission;
 import com.yarolegovich.slidingrootnav.SlidingRootNavBuilder;
 import com.yarolegovich.slidingrootnav.SlidingRootNavLayout;
 
@@ -71,8 +68,7 @@ import ru.terrakok.cicerone.commands.Replace;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity<MainView, MainPresenter>
-        implements MainView, DrawerAdapter.OnItemSelectedListener,
-        NPermission.OnPermissionResult {
+        implements MainView, DrawerAdapter.OnItemSelectedListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_main_toolbar)
@@ -105,7 +101,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     private AutocompleteDialog dialog;
     private List<RProgram> programList;
     private List<ROrganizationUnit> organizationUnitList;
-    private NPermission nPermission;
 
     private Navigator navigator = command -> {
         if (command instanceof Replace) {
@@ -143,8 +138,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @AfterViews
     void init() {
-        //@nhancv TODO: force request sdcard permission
-        nPermission = new NPermission(true);
 
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
@@ -201,14 +194,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     protected void onResume() {
         super.onResume();
         DefaultNetworkProvider.PROGRESS_BUS.register(this);
-        if (Build.VERSION.SDK_INT >= 23) {
-            nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        } else {
-            //@nhancv TODO: after get all required permission
-            permissionGranted();
-
-        }
         AutoSyncService.bus.register(this);
+        presenter.fetchingAllOrgs();
     }
 
     @Override
@@ -234,36 +221,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Override
     public MainPresenter createPresenter() {
         return presenter;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        nPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public void onPermissionResult(String permission, boolean isGranted) {
-        switch (permission) {
-            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                if (isGranted) {
-                    nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-                } else {
-                    nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                }
-                break;
-            case Manifest.permission.READ_EXTERNAL_STORAGE:
-                if (isGranted) {
-                    //@nhancv TODO: after get all required permission
-                    permissionGranted();
-
-                } else {
-                    nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -421,9 +378,16 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @Subscribe
     public void progressSubscribe(ProgressBus progressBus) {
-        runOnUiThread(() ->
-                setProgressCount(
-                        (int) (progressBus.getBytesRead() * 100 / progressBus.getContentLength())));
+        runOnUiThread(() -> {
+            long contentLength = progressBus.getContentLength();
+            long bytesRead = progressBus.getBytesRead();
+            if (contentLength == 0) {
+                if (bytesRead == 0) contentLength = 1;
+                else contentLength = bytesRead;
+            }
+            setProgressCount((int) (bytesRead * 100 / contentLength));
+        });
+
     }
 
     @Click(R.id.activity_main_tv_organization)

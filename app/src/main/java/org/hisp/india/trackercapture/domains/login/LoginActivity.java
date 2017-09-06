@@ -213,7 +213,10 @@ public class LoginActivity extends BaseActivity<LoginView, LoginPresenter>
             runOnUiThread(() -> {
                 long contentLength = progressBus.getContentLength();
                 long bytesRead = progressBus.getBytesRead();
-                contentLength = contentLength == 0 ? bytesRead : contentLength;
+                if (contentLength == 0) {
+                    if (bytesRead == 0) contentLength = 1;
+                    else contentLength = bytesRead;
+                }
                 setProgressCount((int) (bytesRead * 100 / contentLength));
             });
 

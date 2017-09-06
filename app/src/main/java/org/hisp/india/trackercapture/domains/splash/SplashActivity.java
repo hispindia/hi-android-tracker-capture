@@ -1,14 +1,17 @@
 package org.hisp.india.trackercapture.domains.splash;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.hannesdorfmann.mosby3.mvp.MvpActivity;
+import com.nhancv.npermission.NPermission;
 
 import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
@@ -28,7 +31,7 @@ import javax.inject.Inject;
  */
 
 @EActivity(R.layout.activity_splash)
-public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> implements SplashView {
+public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> implements SplashView, NPermission.OnPermissionResult {
 
     @ViewById(R.id.activity_splash_background)
     protected RelativeLayout rlBackground;
@@ -40,23 +43,73 @@ public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> imp
     @Inject
     protected SplashPresenter presenter;
 
+    private boolean finishAnimation;
+    private boolean permissionGranted;
+    private NPermission nPermission;
+
     @AfterInject
     void inject() {
         DaggerSplashComponent.builder()
-                             .applicationComponent(application.getApplicationComponent())
-                             .build()
-                             .inject(this);
+                .applicationComponent(application.getApplicationComponent())
+                .build()
+                .inject(this);
     }
 
     @AfterViews
     void init() {
+
+        //@nhancv TODO: force request sdcard permission
+        nPermission = new NPermission(true);
+
         scaleUp();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= 23) {
+            nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        } else {
+            //@nhancv TODO: after get all required permission
+            permissionGranted();
+
+        }
     }
 
     @NonNull
     @Override
     public SplashPresenter createPresenter() {
         return presenter;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        nPermission.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onPermissionResult(String permission, boolean isGranted) {
+        switch (permission) {
+            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                if (isGranted) {
+                    nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                } else {
+                    nPermission.requestPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+                break;
+            case Manifest.permission.READ_EXTERNAL_STORAGE:
+                if (isGranted) {
+                    //@nhancv TODO: after get all required permission
+                    permissionGranted();
+
+                } else {
+                    nPermission.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -94,7 +147,7 @@ public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> imp
 
         final AnimatorSet animationSet = new AnimatorSet();
         animationSet.playTogether(animScaleX, animScaleY, animAlpha, animTranslationY, animSlightBounceX,
-                                  animSlightBounceY);
+                animSlightBounceY);
         animationSet.start();
         animationSet.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -122,10 +175,23 @@ public class SplashActivity extends MvpActivity<SplashView, SplashPresenter> imp
         animationSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                presenter.gotoNextScreen();
+                finishAnimation = true;
+                checkNextScreen();
             }
         });
 
+    }
+
+    private void permissionGranted() {
+        permissionGranted = true;
+        application.initRealmConfig();
+        checkNextScreen();
+    }
+
+    private void checkNextScreen() {
+        if (finishAnimation && permissionGranted) {
+            presenter.gotoNextScreen();
+        }
     }
 
 }
