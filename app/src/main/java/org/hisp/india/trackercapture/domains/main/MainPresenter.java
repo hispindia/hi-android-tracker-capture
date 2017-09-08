@@ -108,8 +108,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     }
 
     public void fetchingAllOrgs() {
-        RSync orgSync = SyncQuery.getSyncRowByKey(SyncKey.ROrganizationUnit);
-        if (orgSync == null || !orgSync.isStatus()) {
+        RSync flagSync = SyncQuery.getSyncRowByKey(SyncKey.ROrganizationUnit);
+        if (flagSync == null || !flagSync.isStatus()) {
             RxScheduler.onStop(subscription);
             List<ROrganizationUnit> currentOrgForUser = OrganizationQuery.getUserOrganizations();
             HashMap<String, Boolean> userOrgKeyMap = new HashMap<>();
@@ -182,9 +182,9 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
      * For house hold program
      */
     public void syncTrackedEntityInstance(List<ROrganizationUnit> currentOrgForUser, boolean isForceSync) {
-        RSync orgSync = SyncQuery.getSyncRowByKey(SyncKey.RTaskTrackedEntityInstance);
-        if (isForceSync || orgSync == null || !orgSync.isStatus()) {
-            getView().showLoading("Retrieve all organization...");
+        RSync flagSync = SyncQuery.getSyncRowByKey(SyncKey.RTaskTrackedEntityInstance);
+        if (isForceSync || flagSync == null || !flagSync.isStatus()) {
+            getView().showLoading("Sync TEI...");
             rx.Observable.defer(() -> rx.Observable.from(currentOrgForUser)
                     .flatMap(rOrganizationUnit -> rx.Observable
                             .from(rOrganizationUnit.getPrograms())
@@ -212,9 +212,11 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                         return rTrackedEntityInstances;
                     }))
                     .compose(RxScheduler.applyIoSchedulers())
-                    .subscribe(rTrackedEntityInstances -> updateViewSynced(isForceSync), throwable -> {
+                    .doOnCompleted(() -> updateViewSynced(isForceSync))
+                    .doOnError(throwable -> {
                         if (isViewAttached()) getView().showError(throwable.getMessage());
-                    });
+                    })
+                    .subscribe();
         } else {
             updateViewSynced(false);
         }
