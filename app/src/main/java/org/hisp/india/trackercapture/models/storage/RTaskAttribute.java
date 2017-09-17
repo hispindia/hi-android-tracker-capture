@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.storage;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -17,10 +18,18 @@ public class RTaskAttribute extends RealmObject implements Serializable {
     @SerializedName("value")
     private String value;
 
-    public static RTaskAttribute create(String attributeId, String value) {
+    @Expose(serialize = false, deserialize = false)
+    private String displayName;
+
+    @Expose(serialize = false, deserialize = false)
+    private String valueType;
+
+    public static RTaskAttribute create(String attributeId, String value, String displayName, String valueType) {
         RTaskAttribute attribute = new RTaskAttribute();
         attribute.setAttributeId(attributeId);
         attribute.setValue(value);
+        attribute.setDisplayName(displayName);
+        attribute.setValueType(valueType);
         return attribute;
     }
 
@@ -40,4 +49,19 @@ public class RTaskAttribute extends RealmObject implements Serializable {
         this.value = value;
     }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getValueType() {
+        return valueType;
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
+    }
 }

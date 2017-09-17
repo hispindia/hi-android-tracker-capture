@@ -61,16 +61,20 @@ public class RProgramTrackedEntityAttribute extends RealmObject implements Model
         this.displayInList = displayInList;
     }
 
+    public String getValueTypeStr() {
+        return valueType;
+    }
+
     public ValueType getValueType() {
         return ValueType.getType(valueType);
     }
 
-    public void setValueType(String valueType) {
-        this.valueType = valueType;
-    }
-
     public void setValueType(ValueType valueType) {
         this.valueType = valueType.name();
+    }
+
+    public void setValueType(String valueType) {
+        this.valueType = valueType;
     }
 
     public RTrackedEntityAttribute getTrackedEntityAttribute() {

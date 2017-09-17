@@ -21,14 +21,13 @@ public class TrackedEntityInstance implements Serializable {
     @SerializedName("attributes")
     private List<Attribute> attributeList;
 
-    @Expose
+    @Expose(serialize = false, deserialize = false)
     private String programId;
-
-    @Expose
+    @Expose(serialize = false, deserialize = false)
     private String displayName;
-    @Expose
+    @Expose(serialize = false, deserialize = false)
     private String value;
-    @Expose
+    @Expose(serialize = false, deserialize = false)
     private List<Attribute> attributePreview;
 
     public String getTrackedEntityId() {

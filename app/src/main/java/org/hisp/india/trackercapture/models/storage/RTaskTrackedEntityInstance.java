@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.storage;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -23,16 +24,20 @@ public class RTaskTrackedEntityInstance extends RealmObject implements Serializa
     @SerializedName("attributes")
     private RealmList<RTaskAttribute> attributeRequestList;
 
+    @Expose(serialize = false, deserialize = false)
+    private String programId;
+
     public RTaskTrackedEntityInstance() {
         attributeRequestList = new RealmList<>();
     }
 
     public static RTaskTrackedEntityInstance create(String trackedEntityId, String orgUnitId,
-                                                    List<RTaskAttribute> attributeRequestList) {
+                                                    List<RTaskAttribute> attributeRequestList, String programId) {
         RTaskTrackedEntityInstance trackedEntityInstance = new RTaskTrackedEntityInstance();
         trackedEntityInstance.setTrackedEntityId(trackedEntityId);
         trackedEntityInstance.setOrgUnitId(orgUnitId);
         trackedEntityInstance.setAttributeRequestList(attributeRequestList);
+        trackedEntityInstance.setProgramId(programId);
         return trackedEntityInstance;
     }
 
@@ -67,5 +72,13 @@ public class RTaskTrackedEntityInstance extends RealmObject implements Serializa
 
     public void setTrackedEntityInstanceId(String trackedEntityInstanceId) {
         this.trackedEntityInstanceId = trackedEntityInstanceId;
+    }
+
+    public String getProgramId() {
+        return programId;
+    }
+
+    public void setProgramId(String programId) {
+        this.programId = programId;
     }
 }

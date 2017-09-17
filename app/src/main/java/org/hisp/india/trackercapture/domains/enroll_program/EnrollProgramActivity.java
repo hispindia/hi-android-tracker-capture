@@ -40,7 +40,7 @@ import ru.terrakok.cicerone.commands.Forward;
 
 @EActivity(R.layout.activity_enroll_program)
 public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, EnrollProgramPresenter> implements
-                                                                                                   EnrollProgramView {
+        EnrollProgramView {
     private static final String TAG = EnrollProgramActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_enroll_program_toolbar)
@@ -72,8 +72,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
                 finish();
 
                 EnrollProgramStageActivity_.intent(this)
-                                           .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
-                                           .start();
+                        .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
+                        .start();
             }
         }
     };
@@ -81,9 +81,9 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     @AfterInject
     void inject() {
         DaggerEnrollProgramComponent.builder()
-                                    .applicationComponent(application.getApplicationComponent())
-                                    .build()
-                                    .inject(this);
+                .applicationComponent(application.getApplicationComponent())
+                .build()
+                .inject(this);
     }
 
     @AfterViews
@@ -110,10 +110,10 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
         RProgram program = tmEnrollProgram.getProgram();
         adapter = new EnrollProgramAdapter(this,
-                                           tmEnrollProgram.getOrganizationUnitId(),
-                                           tmEnrollProgram.getProgramId(),
-                                           program.getDisplayName(),
-                                           this::btRegisterClick);
+                tmEnrollProgram.getOrganizationUnitId(),
+                tmEnrollProgram.getProgramId(),
+                program.getDisplayName(),
+                this::btRegisterClick);
         rvProfile.setAdapter(adapter);
         rvProfile.post(() -> getProgramDetail(program));
 
@@ -149,10 +149,10 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             List<TMItem> itemModels = new ArrayList<>();
             if (programDetail.isDisplayIncidentDate()) {
                 itemModels.add(TMItem.createIncidentDate(programDetail.getIncidentDateLabel(),
-                                                         programDetail.isSelectIncidentDatesInFuture()));
+                        programDetail.isSelectIncidentDatesInFuture()));
             }
             itemModels.add(TMItem.createEnrollmentDate(programDetail.getEnrollmentDateLabel(),
-                                                       programDetail.isSelectEnrollmentDatesInFuture()));
+                    programDetail.isSelectEnrollmentDatesInFuture()));
 
             for (RProgramTrackedEntityAttribute rProgramTrackedEntityAttribute : programDetail
                     .getProgramTrackedEntityAttributes()) {
@@ -160,7 +160,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             }
 
             if (fromScreenName == null ||
-                !fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
+                    !fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
                 itemModels.add(TMItem.createRegisterButton());
             }
 
@@ -191,9 +191,16 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         for (RProgramTrackedEntityAttribute programTrackedEntityAttribute : adapter
                 .getProgramTrackedEntityAttributeList()) {
             if (!TextUtils.isEmpty(programTrackedEntityAttribute.getValue())) {
+
+                String displayName = programTrackedEntityAttribute.getDisplayName();
+                if (displayName != null) displayName = displayName.replace(programDetail.getDisplayName() + " ", "");
+
                 taskAttributeList
-                        .add(RTaskAttribute.create(programTrackedEntityAttribute.getTrackedEntityAttribute().getId(),
-                                                   programTrackedEntityAttribute.getValue()));
+                        .add(RTaskAttribute.create(
+                                programTrackedEntityAttribute.getTrackedEntityAttribute().getId(),
+                                programTrackedEntityAttribute.getValue(),
+                                displayName,
+                                programTrackedEntityAttribute.getValueTypeStr()));
             } else if (programTrackedEntityAttribute.isMandatory()) {
                 checkForm = false;
             }
@@ -204,7 +211,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             tmEnrollProgram
                     .setTrackedEntityInstance(taskAttributeList)
                     .setEnrollment(adapter.getEnrollmentDateValue(),
-                                   adapter.getIncidentDateValue());
+                            adapter.getIncidentDateValue());
 
             presenter.gotoProgramStage();
         } else {
