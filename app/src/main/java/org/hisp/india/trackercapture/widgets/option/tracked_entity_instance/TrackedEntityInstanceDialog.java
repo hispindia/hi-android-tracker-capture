@@ -93,7 +93,7 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
                         trackedEntityInstances.add(RMapping.from(rTrackedEntityInstance));
                     }
                     setModelList(trackedEntityInstances);
-                });
+                }, Throwable::printStackTrace);
     }
 
     public void showLoading(boolean show) {
