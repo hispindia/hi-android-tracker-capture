@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.base.BaseModel;
+import org.hisp.india.trackercapture.models.base.ProgramStageSection;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,6 +23,13 @@ public class ProgramStage extends BaseModel implements Serializable {
     @Expose
     @SerializedName("programStageDataElements")
     private List<ProgramStageDataElement> programStageDataElements;
+    @Expose
+    @SerializedName("programStageSections")
+    private List<ProgramStageSection> programStageSections;
+
+    public List<ProgramStageSection> getProgramStageSections() {
+        return programStageSections;
+    }
 
     public int getSortOrder() {
         return sortOrder;

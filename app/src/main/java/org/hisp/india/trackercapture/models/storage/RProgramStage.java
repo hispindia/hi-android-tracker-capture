@@ -22,6 +22,7 @@ public class RProgramStage extends RealmObject implements Model {
     private int sortOrder;
     private int minDaysFromStart;
     private RealmList<RProgramStageDataElement> programStageDataElements;
+    private RealmList<RProgramStageSection> programStageSections;
 
     @Ignore
     private String dueDate;
@@ -91,6 +92,14 @@ public class RProgramStage extends RealmObject implements Model {
     public void setProgramStageDataElements(
             RealmList<RProgramStageDataElement> programStageDataElements) {
         this.programStageDataElements = programStageDataElements;
+    }
+
+    public RealmList<RProgramStageSection> getProgramStageSections() {
+        return programStageSections;
+    }
+
+    public void setProgramStageSections(RealmList<RProgramStageSection> programStageSections) {
+        this.programStageSections = programStageSections;
     }
 
     public String getStatus() {

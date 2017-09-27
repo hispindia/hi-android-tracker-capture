@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage_detail;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import org.hisp.india.trackercapture.models.storage.RProgramStageDataElement;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.DatePickerDialog;
 import org.hisp.india.trackercapture.widgets.NToolbar;
+import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
 
 import java.util.List;
 
@@ -61,6 +63,8 @@ public class EnrollProgramStageDetailActivity
     protected View vRoot;
     @ViewById(R.id.fragment_enroll_program_stage_detail_cb_status)
     protected CheckBox cbStatus;
+    @ViewById(R.id.tv_section_selected)
+    protected TextView tvSectionSelected;
 
     @App
     protected MainApplication application;
@@ -69,7 +73,8 @@ public class EnrollProgramStageDetailActivity
     @Inject
     protected EnrollProgramStageDetailPresenter presenter;
     private RProgramStage programStage;
-    private EnrollProgramStageDetailAdapter adapter;
+    private EnrollProgramStageSectionDetailAdapter adapter;
+    private AutocompleteDialog dialog;
 
     private Navigator navigator = command -> {
         if (command instanceof Back) {
@@ -98,11 +103,12 @@ public class EnrollProgramStageDetailActivity
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
-        toolbar.applyEnrollProgramStageDetailUi(this, "Program stages",
-                                                () -> presenter.onBackCommandClick());
         programStage = RProgramStage.fromJson(programStageStr);
+        toolbar.applyEnrollProgramStageDetailUi(this, programStage.getDisplayName(),
+                                                () -> presenter.onBackCommandClick());
 
-        adapter = new EnrollProgramStageDetailAdapter(this);
+
+        adapter = new EnrollProgramStageSectionDetailAdapter(this);
 
         lvStage.setAdapter(adapter);
         lvStage.post(() -> presenter.getProgramStageDetail(programStage.getProgramStageDataElements()));
@@ -170,6 +176,26 @@ public class EnrollProgramStageDetailActivity
         });
         datePicker.show(getSupportFragmentManager());
 
+    }
+
+    @Click(R.id.tv_section_selected)
+    protected void setTvSectionSelectedClick(){
+        if(programStage.getProgramStageSections()!=null){
+            dialog = AutocompleteDialog.newInstance(programStage.getProgramStageSections(),(model)->{
+               if(dialog!=null){
+                   dialog.dismiss();
+               }
+
+                tvSectionSelected.setText(model.getDisplayName());
+
+
+                adapter.setProgramStageSection(model);
+                lvStage.post(()->AppUtils.refreshListViewAsNonScroll(lvStage));
+                adapter.notifyDataSetChanged();
+
+            });
+            dialog.show(getSupportFragmentManager());
+        }
     }
 
 }

@@ -9,6 +9,7 @@ import org.hisp.india.trackercapture.models.base.Program;
 import org.hisp.india.trackercapture.models.base.ProgramRule;
 import org.hisp.india.trackercapture.models.base.ProgramRuleAction;
 import org.hisp.india.trackercapture.models.base.ProgramRuleVariable;
+import org.hisp.india.trackercapture.models.base.ProgramStageSection;
 import org.hisp.india.trackercapture.models.base.ProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.base.TrackedEntity;
 import org.hisp.india.trackercapture.models.base.TrackedEntityAttribute;
@@ -103,6 +104,7 @@ public class RMapping {
         model.setSortOrder(programStage.getSortOrder());
         model.setMinDaysFromStart(programStage.getMinDaysFromStart());
         model.setProgramStageDataElements(new RealmList<>());
+        model.setProgramStageSections(new RealmList<>());
 
         if (programStage.getProgramStageDataElements() != null) {
             for (ProgramStageDataElement programStageDataElement : programStage.getProgramStageDataElements()) {
@@ -113,7 +115,39 @@ public class RMapping {
             }
         }
 
+        if(programStage.getProgramStageSections()!=null){
+            for(ProgramStageSection programStageSection:programStage.getProgramStageSections()){
+                RProgramStageSection item = from(programStageSection);
+                if(item!=null){
+                    model.getProgramStageSections().add(item);
+                }
+            }
+        }
+
         return model;
+    }
+
+    public static RProgramStageSection from(ProgramStageSection programStageSection){
+        if(programStageSection==null) {
+            return null;
+        }
+        RProgramStageSection model = new RProgramStageSection();
+        model.setId(programStageSection.getId());
+        model.setDisplayName(programStageSection.getDisplayName());
+        model.setSortOrder(programStageSection.getSortOrder());
+        model.setExternalAccess(programStageSection.isExternalAccess());
+        model.setProgramStageDataElements(new RealmList<>());
+        if(programStageSection.getProgramStageDataElements()!=null){
+            for(ProgramStageDataElement dataElement:programStageSection.getProgramStageDataElements()){
+                RProgramStageDataElement item = from(dataElement);
+                if(item!=null){
+                    model.getProgramStageDataElements().add(item);
+                }
+            }
+        }
+
+        return model;
+
     }
 
     public static RProgramRuleVariable from(ProgramRuleVariable programRuleVariable) {
@@ -140,10 +174,12 @@ public class RMapping {
         model.setDisplayName(optionSet.getDisplayName());
         model.setValueType(optionSet.getValueType());
         model.setOptions(new RealmList<>());
-        for (Option option : optionSet.getOptions()) {
-            ROption item = from(option);
-            if (item != null) {
-                model.getOptions().add(item);
+        if(optionSet.getOptions()!=null) {
+            for (Option option : optionSet.getOptions()) {
+                ROption item = from(option);
+                if (item != null) {
+                    model.getOptions().add(item);
+                }
             }
         }
         return model;
