@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.base;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -11,14 +12,19 @@ import java.util.List;
 
 public class User extends BaseModel implements Serializable {
 
+    @Expose
     @SerializedName("name")
     private String name;
+    @Expose
     @SerializedName("firstName")
     private String firstName;
+    @Expose
     @SerializedName("surname")
     private String surName;
+    @Expose
     @SerializedName("email")
     private String email;
+    @Expose
     @SerializedName("organisationUnits")
     private List<OrganizationUnit> organizationUnits;
 
@@ -45,11 +51,11 @@ public class User extends BaseModel implements Serializable {
     @Override
     public String toString() {
         return "UserResponse{" +
-               "name='" + name + '\'' +
-               ", firstName='" + firstName + '\'' +
-               ", surName='" + surName + '\'' +
-               ", email='" + email + '\'' +
-               ", organisationUnits=" + organizationUnits +
-               '}';
+                "name='" + name + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", surName='" + surName + '\'' +
+                ", email='" + email + '\'' +
+                ", organisationUnits=" + organizationUnits +
+                '}';
     }
 }

@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.base;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.io.Serializable;
  */
 
 public class Option extends BaseModel implements Serializable {
+    @Expose
     @SerializedName("code")
     private String code;
 

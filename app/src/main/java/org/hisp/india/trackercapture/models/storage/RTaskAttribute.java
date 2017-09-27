@@ -13,15 +13,14 @@ import io.realm.RealmObject;
 
 public class RTaskAttribute extends RealmObject implements Serializable {
 
+    @Expose
     @SerializedName("attribute")
     private String attributeId;
+    @Expose
     @SerializedName("value")
     private String value;
 
-    @Expose(serialize = false, deserialize = false)
     private String displayName;
-
-    @Expose(serialize = false, deserialize = false)
     private String valueType;
 
     public static RTaskAttribute create(String attributeId, String value, String displayName, String valueType) {

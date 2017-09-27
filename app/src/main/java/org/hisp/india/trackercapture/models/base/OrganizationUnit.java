@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.base;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -11,13 +12,17 @@ import java.util.List;
 
 public class OrganizationUnit extends BaseModel implements Serializable {
 
+    @Expose
     @SerializedName("programs")
     private List<Program> programs;
+    @Expose
     @SerializedName("level")
     private int level;
+    @Expose
     @SerializedName("code")
     private String code;
 
+    @Expose
     @SerializedName("parent")
     private BaseModel parent;
 

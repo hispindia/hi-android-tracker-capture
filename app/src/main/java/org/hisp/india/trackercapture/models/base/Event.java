@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.models.base;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
@@ -17,22 +18,31 @@ import java.util.List;
  */
 
 public class Event extends BaseModel implements Serializable {
+    @Expose
     @SerializedName("dataValues")
     private List<DataValue> dataValues;
+    @Expose
     @SerializedName("dueDate")
     private String dueDate;
+    @Expose
     @SerializedName("eventDate")
     private String eventDate;
+    @Expose
     @SerializedName("enrollment")
     private String enrollmentId;
+    @Expose
     @SerializedName("orgUnit")
     private String orgUnitId;
+    @Expose
     @SerializedName("program")
     private String programId;
+    @Expose
     @SerializedName("programStage")
     private String programStageId;
+    @Expose
     @SerializedName("status")
     private String status = ProgramStatus.SCHEDULE.name();
+    @Expose
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
 
@@ -41,7 +51,7 @@ public class Event extends BaseModel implements Serializable {
         this.eventDate = programStage.getEventDate();
         this.programStageId = programStage.getId();
         this.status = TextUtils.isEmpty(programStage.getStatus()) ? ProgramStatus.SCHEDULE.name() :
-                      programStage.getStatus();
+                programStage.getStatus();
         this.setDataValues(getDataValueList(programStage.getProgramStageDataElements()));
     }
 
@@ -64,8 +74,8 @@ public class Event extends BaseModel implements Serializable {
         ArrayList<DataValue> res = new ArrayList<>();
         for (RProgramStageDataElement programStageDataElement : programStageDataElementList) {
             DataValue dataValue = new DataValue(programStageDataElement.getValue(),
-                                                programStageDataElement.getDataElement().getId(),
-                                                programStageDataElement.isAllowProvidedElsewhere());
+                    programStageDataElement.getDataElement().getId(),
+                    programStageDataElement.isAllowProvidedElsewhere());
             res.add(dataValue);
         }
         return res;

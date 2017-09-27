@@ -15,16 +15,19 @@ import io.realm.RealmObject;
 
 public class RTaskTrackedEntityInstance extends RealmObject implements Serializable {
 
+    @Expose
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
+    @Expose
     @SerializedName("trackedEntity")
     private String trackedEntityId;
+    @Expose
     @SerializedName("orgUnit")
     private String orgUnitId;
+    @Expose
     @SerializedName("attributes")
     private RealmList<RTaskAttribute> attributeRequestList;
 
-    @Expose(serialize = false, deserialize = false)
     private String programId;
 
     public RTaskTrackedEntityInstance() {

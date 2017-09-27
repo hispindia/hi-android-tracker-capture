@@ -12,22 +12,26 @@ import java.util.List;
  */
 
 public class TrackedEntityInstance implements Serializable {
+    @Expose
     @SerializedName("trackedEntity")
     private String trackedEntityId;
+    @Expose
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
+    @Expose
     @SerializedName("orgUnit")
     private String orgUnitId;
+    @Expose
     @SerializedName("attributes")
     private List<Attribute> attributeList;
 
-    @Expose(serialize = false, deserialize = false)
+
     private String programId;
-    @Expose(serialize = false, deserialize = false)
+
     private String displayName;
-    @Expose(serialize = false, deserialize = false)
+
     private String value;
-    @Expose(serialize = false, deserialize = false)
+
     private List<Attribute> attributePreview;
 
     public String getTrackedEntityId() {
@@ -89,8 +93,8 @@ public class TrackedEntityInstance implements Serializable {
         }
         for (Attribute attribute : attributeList) {
             if (attributePreview.size() > 0 &&
-                attributePreview.size() < 4 &&
-                !attribute.getDisplayName().equals(displayName)) {
+                    attributePreview.size() < 4 &&
+                    !attribute.getDisplayName().equals(displayName)) {
                 attributePreview.add(attribute);
             }
         }

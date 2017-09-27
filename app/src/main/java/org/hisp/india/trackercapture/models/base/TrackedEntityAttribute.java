@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.base;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -9,8 +10,10 @@ import java.io.Serializable;
  */
 
 public class TrackedEntityAttribute extends BaseModel implements Serializable {
+    @Expose
     @SerializedName("optionSetValue")
     private boolean optionSetValue;
+    @Expose
     @SerializedName("optionSet")
     private OptionSet optionSet;
 
