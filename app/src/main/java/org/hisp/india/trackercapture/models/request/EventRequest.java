@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.request;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.storage.RTaskEvent;
@@ -11,6 +12,7 @@ import java.util.List;
  */
 
 public class EventRequest {
+    @Expose
     @SerializedName("events")
     private List<RTaskEvent> events;
 

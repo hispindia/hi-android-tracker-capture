@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.storage;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
@@ -14,18 +15,25 @@ import io.realm.RealmObject;
 
 public class RTaskEnrollment extends RealmObject implements Serializable {
 
+    @Expose
     @SerializedName("enrollment")
     private String enrollmentId;
+    @Expose
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
+    @Expose
     @SerializedName("program")
     private String programId;
+    @Expose
     @SerializedName("status")
     private String status = ProgramStatus.ACTIVE.name();
+    @Expose
     @SerializedName("orgUnit")
     private String orgUnitId;
+    @Expose
     @SerializedName("enrollmentDate")
     private String enrollmentDate;
+    @Expose
     @SerializedName("incidentDate")
     private String incidentDate;
 

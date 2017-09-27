@@ -12,6 +12,7 @@ import org.hisp.india.core.di.scope.ApplicationScope;
 import org.hisp.india.core.services.log.DefaultLogService;
 import org.hisp.india.core.services.log.LogService;
 import org.hisp.india.core.services.network.DefaultNetworkProvider;
+import org.hisp.india.core.services.network.HttpLoggingInterceptor;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.BuildConfig;
 import org.hisp.india.trackercapture.models.base.Credentials;
@@ -112,8 +113,14 @@ public class ApplicationModule {
     public NetworkProvider provideNetworkProvider(LogService logService, Credentials credentials) {
         NetworkProvider networkProvider = new DefaultNetworkProvider(application, BuildConfig.DEBUG) {
             @Override
+            public HttpLoggingInterceptor.Level getLevel() {
+                return HttpLoggingInterceptor.Level.BODY;
+            }
+
+            @Override
             public GsonBuilder createBuilder() {
                 return super.createBuilder()
+                        .excludeFieldsWithoutExposeAnnotation()
                         .setExclusionStrategies(new ExclusionStrategy() {
                             @Override
                             public boolean shouldSkipField(FieldAttributes f) {
@@ -130,7 +137,8 @@ public class ApplicationModule {
                                 new MapDeserializer());
             }
         };
-        return networkProvider.addDefaultHeader()
+        return networkProvider
+                .addDefaultHeader()
                 .enableFilter(true)
                 .addHeader("Authorization", credentials.getApiToken())
                 .addFilter(new ApiErrorFilter(networkProvider, logService));

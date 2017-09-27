@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -9,12 +10,16 @@ import java.io.Serializable;
  */
 
 public class HeaderResponse implements Serializable {
+    @Expose
     @SerializedName("name")
     private String name;
+    @Expose
     @SerializedName("column")
     private String column;
+    @Expose
     @SerializedName("type")
     private boolean hidden;
+    @Expose
     @SerializedName("meta")
     private boolean meta;
 
@@ -37,10 +42,10 @@ public class HeaderResponse implements Serializable {
     @Override
     public String toString() {
         return "HeaderResponse{" +
-               "name='" + name + '\'' +
-               ", column='" + column + '\'' +
-               ", hidden=" + hidden +
-               ", meta=" + meta +
-               '}';
+                "name='" + name + '\'' +
+                ", column='" + column + '\'' +
+                ", hidden=" + hidden +
+                ", meta=" + meta +
+                '}';
     }
 }

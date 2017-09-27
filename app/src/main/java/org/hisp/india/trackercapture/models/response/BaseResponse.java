@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -9,16 +10,22 @@ import java.util.List;
  */
 
 public class BaseResponse {
+    @Expose
     @SerializedName("httpStatus")
     private String httpStatus;
+    @Expose
     @SerializedName("httpStatusCode")
     private int httpStatusCode;
+    @Expose
     @SerializedName("status")
     private String status;
+    @Expose
     @SerializedName("message")
     private String message;
+    @Expose
     @SerializedName("response")
     private Response response;
+    @Expose
     @SerializedName("importCount")
     private ImportCount importCount;
 
@@ -65,21 +72,25 @@ public class BaseResponse {
     @Override
     public String toString() {
         return "BaseResponse{" +
-               "httpStatus='" + httpStatus + '\'' +
-               ", httpStatusCode=" + httpStatusCode +
-               ", status='" + status + '\'' +
-               ", message='" + message + '\'' +
-               ", response=" + response +
-               '}';
+                "httpStatus='" + httpStatus + '\'' +
+                ", httpStatusCode=" + httpStatusCode +
+                ", status='" + status + '\'' +
+                ", message='" + message + '\'' +
+                ", response=" + response +
+                '}';
     }
 
     public class Response {
+        @Expose
         @SerializedName("responseType")
         private String responseType;
+        @Expose
         @SerializedName("status")
         private String status;
+        @Expose
         @SerializedName("reference")
         private String reference;
+        @Expose
         @SerializedName("importSummaries")
         private List<Response> importSummaries;
 
@@ -114,21 +125,25 @@ public class BaseResponse {
         @Override
         public String toString() {
             return "Response{" +
-                   "responseType='" + responseType + '\'' +
-                   ", status='" + status + '\'' +
-                   ", reference='" + reference + '\'' +
-                   '}';
+                    "responseType='" + responseType + '\'' +
+                    ", status='" + status + '\'' +
+                    ", reference='" + reference + '\'' +
+                    '}';
         }
     }
 
     public class ImportCount {
 
+        @Expose
         @SerializedName("imported")
         private int imported;
+        @Expose
         @SerializedName("updated")
         private int updated;
+        @Expose
         @SerializedName("ignored")
         private int ignored;
+        @Expose
         @SerializedName("deleted")
         private int deleted;
 

@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.base;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.e_num.ValueType;
@@ -11,14 +12,19 @@ import java.io.Serializable;
  */
 
 public class ProgramTrackedEntityAttribute extends BaseModel implements Serializable {
+    @Expose
     @SerializedName("mandatory")
     private boolean mandatory;
+    @Expose
     @SerializedName("displayInList")
     private boolean displayInList;
+    @Expose
     @SerializedName("allowFutureDate")
     private boolean allowFutureDate;
+    @Expose
     @SerializedName("valueType")
     private String valueType;
+    @Expose
     @SerializedName("trackedEntityAttribute")
     private TrackedEntityAttribute trackedEntityAttribute;
 

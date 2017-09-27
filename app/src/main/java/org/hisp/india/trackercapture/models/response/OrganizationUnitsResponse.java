@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
@@ -12,9 +13,11 @@ import java.util.List;
 
 public class OrganizationUnitsResponse {
 
+    @Expose
     @SerializedName("pager")
     private PageResponse pageResponse;
 
+    @Expose
     @SerializedName("organisationUnits")
     private List<OrganizationUnit> organizationUnits;
 

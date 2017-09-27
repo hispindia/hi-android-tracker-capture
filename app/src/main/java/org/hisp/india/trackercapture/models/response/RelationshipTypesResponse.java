@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.base.RelationshipType;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class RelationshipTypesResponse {
 
+    @Expose
     @SerializedName("relationshipTypes")
     private List<RelationshipType> relationshipTypes;
 

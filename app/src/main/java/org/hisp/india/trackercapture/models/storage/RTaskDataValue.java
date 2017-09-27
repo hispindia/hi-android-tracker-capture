@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.storage;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -14,12 +15,16 @@ import io.realm.annotations.PrimaryKey;
 public class RTaskDataValue extends RealmObject implements Serializable {
 
     @PrimaryKey
+    @Expose
     @SerializedName("dataElement")
     private String dataElementId;
+    @Expose
     @SerializedName("value")
     private String value;
+    @Expose
     @SerializedName("providedElsewhere")
     private boolean providedElsewhere;
+    @Expose
     @SerializedName("storedBy")
     private String storedBy;
 

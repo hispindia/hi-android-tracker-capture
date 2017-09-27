@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.base.BaseModel;
@@ -12,16 +13,22 @@ import java.io.Serializable;
  */
 
 public class ProgramStageDataElement extends BaseModel implements Serializable {
+    @Expose
     @SerializedName("displayInReports")
     private boolean displayInReports;
+    @Expose
     @SerializedName("compulsory")
     private boolean compulsory;
+    @Expose
     @SerializedName("allowProvidedElsewhere")
     private boolean allowProvidedElsewhere;
+    @Expose
     @SerializedName("sortOrder")
     private int sortOrder;
+    @Expose
     @SerializedName("allowFutureDate")
     private boolean allowFutureDate;
+    @Expose
     @SerializedName("dataElement")
     private DataElement dataElement;
 

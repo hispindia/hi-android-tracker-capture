@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.base;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -9,12 +10,16 @@ import java.io.Serializable;
  */
 
 public class DataValue implements Serializable {
+    @Expose
     @SerializedName("value")
     private String value;
+    @Expose
     @SerializedName("dataElement")
     private String dataElementId;
+    @Expose
     @SerializedName("providedElsewhere")
     private boolean providedElsewhere;
+    @Expose
     @SerializedName("storedBy")
     private String storedBy;
 

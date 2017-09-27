@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.base.BaseModel;
@@ -12,10 +13,13 @@ import java.util.List;
  */
 
 public class ProgramStage extends BaseModel implements Serializable {
+    @Expose
     @SerializedName("sortOrder")
     private int sortOrder;
+    @Expose
     @SerializedName("minDaysFromStart")
     private int minDaysFromStart;
+    @Expose
     @SerializedName("programStageDataElements")
     private List<ProgramStageDataElement> programStageDataElements;
 

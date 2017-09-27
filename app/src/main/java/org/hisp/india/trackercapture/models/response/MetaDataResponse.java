@@ -1,5 +1,6 @@
 package org.hisp.india.trackercapture.models.response;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -10,8 +11,10 @@ import java.util.Map;
  */
 
 public class MetaDataResponse implements Serializable {
+    @Expose
     @SerializedName("names")
     private Map<String, String> names;
+    @Expose
     @SerializedName("pager")
     private PageResponse pager;
 
@@ -26,8 +29,8 @@ public class MetaDataResponse implements Serializable {
     @Override
     public String toString() {
         return "MetaDataResponse{" +
-               "names=" + names +
-               ", pager=" + pager +
-               '}';
+                "names=" + names +
+                ", pager=" + pager +
+                '}';
     }
 }

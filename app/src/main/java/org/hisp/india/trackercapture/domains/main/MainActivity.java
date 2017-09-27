@@ -185,9 +185,12 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             tvCharacterName.setText(character);
             tvDisplayName.setText(user.getDisplayName());
             tvEmail.setText(user.getEmail());
+            updateBtSearch();
+
+        } else {
+            presenter.logout();
         }
 
-        updateBtSearch();
 
     }
 

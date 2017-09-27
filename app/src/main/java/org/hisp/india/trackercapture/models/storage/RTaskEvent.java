@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.models.storage;
 
 import android.text.TextUtils;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
@@ -19,22 +20,31 @@ import io.realm.RealmObject;
 
 public class RTaskEvent extends RealmObject implements Serializable {
 
+    @Expose
     @SerializedName("dataValues")
     private RealmList<RTaskDataValue> dataValues;
+    @Expose
     @SerializedName("dueDate")
     private String dueDate;
+    @Expose
     @SerializedName("eventDate")
     private String eventDate;
+    @Expose
     @SerializedName("enrollment")
     private String enrollmentId;
+    @Expose
     @SerializedName("orgUnit")
     private String orgUnitId;
+    @Expose
     @SerializedName("program")
     private String programId;
+    @Expose
     @SerializedName("programStage")
     private String programStageId;
+    @Expose
     @SerializedName("status")
     private String status = ProgramStatus.SCHEDULE.name();
+    @Expose
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
 
@@ -48,7 +58,7 @@ public class RTaskEvent extends RealmObject implements Serializable {
         taskEvent.setEventDate(programStage.getEventDate());
         taskEvent.setProgramStageId(programStage.getId());
         taskEvent.setStatus(TextUtils.isEmpty(programStage.getStatus()) ? ProgramStatus.SCHEDULE.name() :
-                            programStage.getStatus());
+                programStage.getStatus());
         taskEvent.setDataValues(taskEvent.getDataValueList(programStage.getProgramStageDataElements()));
         return taskEvent;
     }
@@ -57,8 +67,8 @@ public class RTaskEvent extends RealmObject implements Serializable {
         ArrayList<RTaskDataValue> res = new ArrayList<>();
         for (RProgramStageDataElement programStageDataElement : programStageDataElementList) {
             RTaskDataValue dataValue = RTaskDataValue.create(programStageDataElement.getValue(),
-                                                             programStageDataElement.getDataElement().getId(),
-                                                             programStageDataElement.isAllowProvidedElsewhere());
+                    programStageDataElement.getDataElement().getId(),
+                    programStageDataElement.isAllowProvidedElsewhere());
             res.add(dataValue);
         }
         return res;

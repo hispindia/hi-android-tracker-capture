@@ -79,9 +79,9 @@ public class TMEnrollProgram {
             taskEnrollment.setIncidentDate(incidentDateValue);
         } else {
             taskRequest.setEnrollment(RTaskEnrollment.create(programId,
-                                                             organizationUnitId,
-                                                             enrollmentDateValue,
-                                                             incidentDateValue));
+                    organizationUnitId,
+                    enrollmentDateValue,
+                    incidentDateValue));
         }
         return this;
     }
@@ -101,10 +101,12 @@ public class TMEnrollProgram {
                 trackedEntityInstance.setAttributeRequestList(taskAttributeList);
             } else {
                 taskRequest
-                        .setTrackedEntityInstance(RTaskTrackedEntityInstance.create(program.getTrackedEntity().getId(),
-                                                                                    organizationUnitId,
-                                                                                    taskAttributeList
-                                                                                   ));
+                        .setTrackedEntityInstance(RTaskTrackedEntityInstance.create(
+                                program.getTrackedEntity().getId(),
+                                organizationUnitId,
+                                taskAttributeList,
+                                program.getId()
+                        ));
             }
 
         }
