@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.services.enrollments;
 
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.response.EnrollmentsResponse;
 import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 
 import rx.Observable;
@@ -37,5 +38,11 @@ public class DefaultEnrollmentService implements EnrollmentService {
         return networkProvider
                 .transformResponse(restService.putEnrollments(enrollmentRequest,
                                                               enrollmentRequest.getEnrollmentId()));
+    }
+
+    //added by ifhaam on 10/03/2017
+    @Override
+    public Observable<EnrollmentsResponse> getEnrollments(String trackedEntityInstance){
+        return networkProvider.transformResponse(restService.getEnrollments(trackedEntityInstance));
     }
 }

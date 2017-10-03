@@ -67,6 +67,61 @@ public class TrackedEntityInstanceQuery {
         });
     }
 
+    public static RTrackedEntityInstance getTrackedEntityInstance(String orgId,String programId,String teiId){
+        return RealmHelper.query(realm -> {
+            RTrackedEntityInstance rTrackedEntityInstance = realm.where(RTrackedEntityInstance.class)
+                    .equalTo("orgUnitId", orgId)
+                    .equalTo("programId", programId)
+                    .equalTo("trackedEntityInstanceId",teiId)
+                    .findFirst();
+
+            HashMap<String, Boolean> teiKeys = new HashMap<>();
+
+            RTrackedEntityInstance res = null ;
+
+            if (rTrackedEntityInstance !=null && rTrackedEntityInstance.getTrackedEntityInstanceId() != null) {
+                teiKeys.put(rTrackedEntityInstance.getTrackedEntityInstanceId(), true);
+                res = realm.copyFromRealm(rTrackedEntityInstance);
+            }
+
+
+
+            //Get TEI from Task Queue
+            RTaskTrackedEntityInstance teiInQueue = realm.where(RTaskTrackedEntityInstance.class)
+                    .equalTo("orgUnitId", orgId)
+                    .equalTo("programId", programId)
+                    .equalTo("trackedEntityInstanceId",teiId)
+                    .findFirst();
+
+
+            RTrackedEntityInstance trackedEntityInstance = new RTrackedEntityInstance();
+
+            RealmList<RAttribute> attributes = new RealmList<>();
+            for (RTaskAttribute rTaskAttribute : teiInQueue.getAttributeRequestList()) {
+                RAttribute att = new RAttribute();
+                att.setDisplayName(rTaskAttribute.getDisplayName());
+                att.setAttributeId(rTaskAttribute.getAttributeId());
+                att.setValue(rTaskAttribute.getValue());
+                att.setValueType(rTaskAttribute.getValueType());
+                attributes.add(att);
+            }
+            trackedEntityInstance.setAttributeList(attributes);
+            trackedEntityInstance.setOrgUnitId(teiInQueue.getOrgUnitId());
+            trackedEntityInstance.setProgramId(teiInQueue.getProgramId());
+            trackedEntityInstance.setTrackedEntityId(teiInQueue.getTrackedEntityId());
+            trackedEntityInstance.setTrackedEntityInstanceId(teiInQueue.getTrackedEntityInstanceId());
+
+            if (trackedEntityInstance.getTrackedEntityInstanceId() == null ||
+                    !teiKeys.containsKey(trackedEntityInstance.getTrackedEntityInstanceId())) {
+                //res.add(trackedEntityInstance);
+                if(res == null) res = trackedEntityInstance;
+            }
+
+
+            return res;
+        });
+    }
+
     public static void insertOrUpdate(List<RTrackedEntityInstance> trackedEntityInstanceList) {
         RealmHelper.transaction(realm -> realm.insertOrUpdate(trackedEntityInstanceList));
     }

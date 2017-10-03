@@ -378,13 +378,16 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 }
                 helper.getView().setOnClickListener(v -> {
 
+                    /*removed by ifhaam
+
                     navigator.applyCommand(new Forward(Screens.TRACKED_ENTITY,
                             new RowModel(queryResponse.getHeaders(),
                                     queryResponse.getRows()
                                             .get(helper.getPosition()))));
+                    */
 
                     //added by ifhaam for testing
-                    presenter.getEvents(organizationUnit.getId(),//orgunit has to be fetched from row headers as well
+                    presenter.getEvents(organizationUnit,//orgunit has to be fetched from row headers as well
                             //temperarily im using this.
                             getTrackedInstanceId(
                                     new RowModel(queryResponse.getHeaders()
@@ -400,6 +403,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
 
     }
+
 
 
 

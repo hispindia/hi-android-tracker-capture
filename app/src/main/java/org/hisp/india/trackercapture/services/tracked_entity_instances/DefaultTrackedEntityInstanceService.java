@@ -46,6 +46,11 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
                 .just(TrackedEntityInstanceQuery.getTrackedEntityInstances(orgUnitId, programId)));
     }
 
+    public Observable<RTrackedEntityInstance> getTrackedEntituInstanceLocal(String orgUnitId,String programId,String tei){
+        return Observable.defer(() -> Observable
+                .just(TrackedEntityInstanceQuery.getTrackedEntityInstance(orgUnitId,programId,tei)));
+    }
+
     @Override
     public Observable<BaseResponse> postTrackedEntityInstances(
             RTaskTrackedEntityInstance trackedEntityInstanceRequest) {
