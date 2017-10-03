@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.domains.main;
 
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
+import org.hisp.india.trackercapture.models.response.EventsResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
@@ -43,4 +44,7 @@ public interface MainView extends MvpView {
 
     void hideCircleProgressView();
 
+    //added by ifhaam on 28/09/2017
+    void getEventsSuccess(EventsResponse eventResponse);
+    void registerProgramSyncRequest(String msg);
 }

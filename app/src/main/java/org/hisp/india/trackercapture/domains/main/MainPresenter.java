@@ -3,16 +3,30 @@ package org.hisp.india.trackercapture.domains.main;
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
 import org.hisp.india.core.services.schedulers.RxScheduler;
+import org.hisp.india.trackercapture.models.base.DataValue;
+import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
 import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.e_num.SyncKey;
+import org.hisp.india.trackercapture.models.response.EventsResponse;
+import org.hisp.india.trackercapture.models.response.HeaderResponse;
 import org.hisp.india.trackercapture.models.response.OrganizationUnitsResponse;
+import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.RMapping;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
+import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.storage.RSync;
+import org.hisp.india.trackercapture.models.storage.RTaskAttribute;
+import org.hisp.india.trackercapture.models.storage.RTaskDataValue;
+import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
+import org.hisp.india.trackercapture.models.storage.RTaskEvent;
+import org.hisp.india.trackercapture.models.storage.RTaskRequest;
+import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
 import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
 import org.hisp.india.trackercapture.models.storage.RUser;
+import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.account.AccountQuery;
 import org.hisp.india.trackercapture.services.account.AccountService;
@@ -30,11 +44,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.realm.RealmList;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+
+import static android.R.attr.action;
 
 /**
  * Created by nhancao on 5/5/17.
@@ -56,6 +73,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
     private Subscription subscription;
     private int orgUnitTotalPages;
+
+    private List<RTrackedEntityInstance> trackedEntityInstances;
 
     @Inject
     public MainPresenter(Router router, NavigatorHolder navigatorHolder, AccountService accountService,
@@ -105,7 +124,136 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                 .subscribe(queryResponse -> {
                     getView().queryProgramSuccess(queryResponse);
                 });
+
     }
+
+    public List<RTaskAttribute> getTaskAttributes(QueryResponse queryResponse,
+                                                  RealmList<RProgramTrackedEntityAttribute> attributes
+                                                    ,int trackedEntityInstance){
+        List<RTaskAttribute> rTastAttributes = new ArrayList<>();
+
+        for(RProgramTrackedEntityAttribute attribute : attributes){
+            for(int i=0;i<queryResponse.getHeaders().size();i++){
+
+                if(queryResponse.getHeaders().get(i) .getName().equals(attribute.getTrackedEntityAttribute().getId())){
+                    RTaskAttribute rTaskAttribute = RTaskAttribute.create(attribute.getTrackedEntityAttribute().getId(),
+                            queryResponse.getRows().get(trackedEntityInstance).get(i), attribute.getDisplayName()
+                            ,attribute.getValueType().toString());
+                    rTastAttributes.add(rTaskAttribute);
+                    break;
+                }
+            }
+        }
+
+        return rTastAttributes;
+    }
+
+
+
+    //added by ifhaam on 28/09/2017
+    public void getEvents(String orgUnitId,String trackedInstanceId,QueryResponse queryResponse,
+                          RProgram program,int trackedEntityInstance
+            ){
+        RxScheduler.onStop(subscription);
+        getView().showLoading();
+        subscription = trackedEntityInstanceService
+                .getEvents(orgUnitId,trackedInstanceId)
+                .compose(RxScheduler.applyIoSchedulers())
+                .doOnTerminate(()->getView().hideLoading())
+                .doOnError((action)->{
+                            getView().hideLoading();
+                            getView().showError(action.getMessage());
+                        }
+
+                )
+                .subscribe(eventsResponse -> {
+                    //getView().getEventsSuccess(eventsResponse);
+                    List<RTaskEvent> events = getRTastEvents(eventsResponse);
+                    if(events.size()!=0){
+                        //TMEnrollProgram program = new TMEnrollProgram(orgUnitId,events.get(0).getProgramId());
+                        TMEnrollProgram tmEnrollProgram = prepareTMEnrollProgram(queryResponse,program,
+                                orgUnitId,trackedEntityInstance,events);
+                        registerProgram(tmEnrollProgram,events);
+                    }
+
+                });
+    }
+
+    //ADDED BY IFHAAM ON 3/9/2017
+    private TMEnrollProgram prepareTMEnrollProgram(QueryResponse queryResponse,
+                                                   RProgram program,String orgUnitID,int trackedEntityInstance
+                                                    ,List<RTaskEvent> events){
+
+
+        List<RTaskAttribute> rTaskAttributes  = getTaskAttributes(queryResponse,program.getProgramTrackedEntityAttributes(), trackedEntityInstance);
+        String programID = program.getId();
+
+
+        RTaskTrackedEntityInstance rTaskTrackedEntityInstance = RTaskTrackedEntityInstance.create(
+                trackedEntityInstances.get(trackedEntityInstance).getTrackedEntityId(),orgUnitID,rTaskAttributes,programID
+        );
+        rTaskTrackedEntityInstance.setTrackedEntityInstanceId(trackedEntityInstances.get(trackedEntityInstance).getTrackedEntityInstanceId());
+
+        RTaskEnrollment rTaskEnrollment = RTaskEnrollment.create(programID,orgUnitID,
+                null,null);
+        rTaskEnrollment.setTrackedEntityInstanceId(
+                trackedEntityInstances.get(trackedEntityInstance).getTrackedEntityInstanceId());
+
+
+        RTaskRequest taskRequest = RTaskRequest.create(rTaskTrackedEntityInstance,
+                rTaskEnrollment,events);
+
+        TMEnrollProgram enrollProgram = new TMEnrollProgram(taskRequest);
+        enrollProgram.getTaskRequest().setHadSynced(true);
+
+        return  enrollProgram;
+
+    }
+
+    //added by ifhaam
+    public List<RTaskEvent> getRTastEvents(EventsResponse eventsResponse){
+        List<Event> events = eventsResponse.getEvents();
+        List<RTaskEvent> rTaskEvents = new ArrayList<>();
+        for(Event event:events){
+            RTaskEvent rTaskEvent = new RTaskEvent();
+            rTaskEvent.setDueDate(event.getDueDate());
+            rTaskEvent.setEventDate(event.getEventDate());
+            rTaskEvent.setEnrollmentId(event.getEnrollmentId());
+            rTaskEvent.setOrgUnitId(event.getOrgUnitId());
+            rTaskEvent.setProgramId(event.getProgramId());
+            rTaskEvent.setProgramStageId(event.getProgramStageId());
+            rTaskEvent.setStatus(event.getStatus());
+            rTaskEvent.setTrackedEntityInstanceId(event.getTrackedEntityInstanceId());
+            for(DataValue dataValue : event.getDataValues()){
+                RTaskDataValue taskDataValue =
+                        RTaskDataValue.create(dataValue.getValue(),
+                                dataValue.getDataElementId(),
+                                dataValue.isProvidedElsewhere());
+                rTaskEvent.getDataValues().add(taskDataValue);
+
+            }
+            rTaskEvents.add(rTaskEvent);
+        }
+        return rTaskEvents;
+    }
+
+    //added by ifhaam
+    public void registerProgram(TMEnrollProgram tmEnrollProgram, List<RTaskEvent> eventList) {
+        RTaskRequest taskRequest = tmEnrollProgram.getTaskRequest();
+        if (taskRequest == null) {
+            taskRequest = RTaskRequest.create(tmEnrollProgram.getTaskRequest().getTrackedEntityInstance(),
+                    tmEnrollProgram.getTaskRequest().getEnrollment(),
+                    eventList);
+        } else {
+            taskRequest.setNeedSync(true);
+            taskRequest.setEventList(eventList);
+        }
+
+        taskRequest.save();
+        getView().registerProgramSyncRequest("Added into queue.");
+        router.exit();
+    }
+
 
     public void fetchingAllOrgs() {
         RSync flagSync = SyncQuery.getSyncRowByKey(SyncKey.ROrganizationUnit);
@@ -209,6 +357,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                             realm.copyToRealmOrUpdate(
                                     RSync.create(SyncKey.RTaskTrackedEntityInstance, true));
                         });
+                        trackedEntityInstances = rTrackedEntityInstances;
                         return rTrackedEntityInstances;
                     }))
                     .compose(RxScheduler.applyIoSchedulers())

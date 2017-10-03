@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.services.tracked_entity_instances;
 
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.response.EventsResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.response.TrackedEntityInstancesResponse;
 import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
@@ -29,4 +30,7 @@ public interface TrackedEntityInstanceService {
 
     Observable<QueryResponse> queryTrackedEntityInstances(String orgUnitId, String programId,
                                                           ProgramStatus programStatus);
+
+    //added by ifhaam to manage editing of already entered events on 28/09/2017
+    Observable<EventsResponse> getEvents(String orgUnitId,String trackedInstanceId);
 }

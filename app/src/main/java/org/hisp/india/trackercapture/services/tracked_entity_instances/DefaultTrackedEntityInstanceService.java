@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture.services.tracked_entity_instances;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.response.EventsResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.response.TrackedEntityInstancesResponse;
 import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
@@ -66,5 +67,11 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
                                                                  ProgramStatus programStatus) {
         return networkProvider
                 .transformResponse(restService.queryTrackedEntityInstances(orgUnitId, programId, programStatus.name()));
+    }
+
+    //added by ifhaam 28/09/2017
+    @Override
+    public Observable<EventsResponse> getEvents(String orgUnitId,String trackedInstanceId){
+        return networkProvider.transformResponse(restService.getEvents(orgUnitId, trackedInstanceId));
     }
 }
