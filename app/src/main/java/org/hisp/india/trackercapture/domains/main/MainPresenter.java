@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
+import org.androidannotations.annotations.App;
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.base.DataValue;
 import org.hisp.india.trackercapture.models.base.Enrollment;
@@ -41,6 +42,7 @@ import org.hisp.india.trackercapture.services.sync.SyncQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.DefaultTrackedEntityInstanceService;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
+import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.utils.RealmHelper;
 
 import java.util.ArrayList;
@@ -167,7 +169,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
             ){
         String orgUnitId = orgUnit.getId();
         RxScheduler.onStop(subscription);
-        getView().showLoading();
+        getView().showLoading("Fetching Stage Details");
         subscription = trackedEntityInstanceService
                 .getEvents(orgUnitId,trackedInstanceId)
                 .compose(RxScheduler.applyIoSchedulers())
@@ -189,7 +191,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     //ADDED BY IFHAAM ON 3/9/2017
     private TMEnrollProgram prepareTMEnrollProgram(QueryResponse queryResponse,
                                                    RProgram program,String orgUnitID,int trackedEntityInstance
-                                                    ,List<RTaskEvent> events,String rTrackedEntityInstanceId){
+                                                    ,List<RTaskEvent> events,String rTrackedEntityInstanceId,Enrollment enrollment){
 
 
         List<RTaskAttribute> rTaskAttributes  = getTaskAttributes(queryResponse,program.getProgramTrackedEntityAttributes(), trackedEntityInstance);
@@ -209,7 +211,9 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                 selectedTrackedEntityInstance.getTrackedEntityInstanceId());
 
         RTaskEnrollment rTaskEnrollment = RTaskEnrollment.create(programID,orgUnitID,
-                null,null);
+                AppUtils.trimTime(enrollment.getEnrollmentDate()).toString(),
+                AppUtils.trimTime(enrollment.getIncidentDate()).toString());
+        rTaskEnrollment.setEnrollmentId(enrollment.getEnrollment());
         rTaskEnrollment.setTrackedEntityInstanceId(
                 selectedTrackedEntityInstance.getTrackedEntityInstanceId());
 
@@ -274,7 +278,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                                         RProgram program,int trackedEntityInstance
             ,List<RTaskEvent> events){
         RxScheduler.onStop(subscription);
-        getView().showLoading();
+        getView().showLoading(" Getting TEI data");
         subscription = (trackedEntityInstanceService)
                 //.getTrackedEntituInstanceLocal(orgId, programId, tei)
                 .getTrackedEntityInstances(orgId,program.getId())
@@ -282,9 +286,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                 .doOnTerminate(() -> {
                     Log.i(TAG," Succcccccccccccceeeeeeeeeed");
                     getView().hideLoading();
-                    getEnrollment(tei);
-                    TMEnrollProgram tmEnrollProgram = prepareTMEnrollProgram(queryResponse,program,orgId,trackedEntityInstance,events,tei);
-                    registerProgram(tmEnrollProgram,events);
+                    getEnrollment(tei,queryResponse,program,trackedEntityInstance,orgId,events);
+
                 }
                 )
                 .subscribe(trackedEntityInstances -> {
@@ -296,15 +299,27 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                 });
     }
 
-    public void getEnrollment(String trakedEntityInstanceId){
+    public void getEnrollment(String trakedEntityInstanceId,QueryResponse queryResponse,
+                              RProgram program,int trackedEntityInstance,String orgId,List<RTaskEvent> events){
+
         RxScheduler.onStop(subscription);
         subscription = enrollmentService
                 .getEnrollments(trakedEntityInstanceId)
                 .compose(RxScheduler.applyIoSchedulers())
-                .doOnTerminate(()->Log.i(TAG," Enrollment Synced")
+                .doOnTerminate(()->{
+                    Log.i(TAG," Enrollment Synced");
+                    getView().hideLoading();
+                }
                 )
                 .subscribe(enrollments->{
-                        List<Enrollment> enrollments1 = enrollments.getEnrollments();
+                       for(Enrollment enrollment:enrollments.getEnrollments()){
+                           if(enrollment.getTrackedEntityInstance().equals(trakedEntityInstanceId)) {
+
+                               TMEnrollProgram tmEnrollProgram = prepareTMEnrollProgram(queryResponse, program, orgId, trackedEntityInstance, events, trakedEntityInstanceId, enrollment);
+                               registerProgram(tmEnrollProgram, events);
+                               break;
+                           }
+                       }
                 }
 
                 );
