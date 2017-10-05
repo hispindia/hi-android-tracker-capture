@@ -40,16 +40,13 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
                 .transformResponse(restService.getTrackedEntityInstances(orgUnitId, programId));
     }
 
+
     @Override
     public Observable<List<RTrackedEntityInstance>> getTrackedEntityInstancesLocal(String orgUnitId, String programId) {
         return Observable.defer(() -> Observable
                 .just(TrackedEntityInstanceQuery.getTrackedEntityInstances(orgUnitId, programId)));
     }
 
-    public Observable<RTrackedEntityInstance> getTrackedEntituInstanceLocal(String orgUnitId,String programId,String tei){
-        return Observable.defer(() -> Observable
-                .just(TrackedEntityInstanceQuery.getTrackedEntityInstance(orgUnitId,programId,tei)));
-    }
 
     @Override
     public Observable<BaseResponse> postTrackedEntityInstances(

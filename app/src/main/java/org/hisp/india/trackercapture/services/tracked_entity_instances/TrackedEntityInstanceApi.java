@@ -42,12 +42,19 @@ public interface TrackedEntityInstanceApi {
             @Query("programStatus")
                     String programStatus);
 
-    @GET("api/trackedEntityInstances?paging=false&fields=[*]")
+    @GET("api/trackedEntityInstances?skipPaging=true&fields=[*]")
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(
             @Query("ou")
                     String orgUnitId,
             @Query("program")
                     String programId);
+
+    //added by ifhaam
+    @GET("api/trackedEntityInstances?paging=false&fields=[*]")
+    Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(
+            @Query("ou")
+                    String orgUnitId
+            );
 
 
     @GET("api/events?paging=false&fields=[*]")

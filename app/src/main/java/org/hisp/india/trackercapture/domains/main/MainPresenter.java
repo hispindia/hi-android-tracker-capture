@@ -197,6 +197,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         List<RTaskAttribute> rTaskAttributes  = getTaskAttributes(queryResponse,program.getProgramTrackedEntityAttributes(), trackedEntityInstance);
         String programID = program.getId();
 
+        selectedTrackedEntityInstance = null;
         for(RTrackedEntityInstance rTrackedEntityInstance : trackedEntityInstances){
             if(rTrackedEntityInstance.getTrackedEntityInstanceId().equals(rTrackedEntityInstanceId)){
                 selectedTrackedEntityInstance =rTrackedEntityInstance;
@@ -288,10 +289,10 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                     getView().hideLoading();
                     getEnrollment(tei,queryResponse,program,trackedEntityInstance,orgId,events);
 
-                }
-                )
+                })
+                .doOnError((Error)-> getView().hideLoading())
                 .subscribe(trackedEntityInstances -> {
-                    this.trackedEntityInstances = new ArrayList<RTrackedEntityInstance>();
+                    this.trackedEntityInstances = new ArrayList<>();
                     for(TrackedEntityInstance trackedEntityInstance1:trackedEntityInstances.getTrackedEntityInstances()){
                         this.trackedEntityInstances.add(RMapping.from(trackedEntityInstance1));
                     }

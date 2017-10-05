@@ -1,7 +1,6 @@
 package org.hisp.india.trackercapture.domains.main;
 
 import android.content.Intent;
-import android.database.Observable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
@@ -186,7 +185,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
         //Update info
         RUser user = presenter.getUserInfo();
-        String character = "";
+       String character = "";
         if (user != null) {
             if (!TextUtils.isEmpty(user.getFirstName()) && !TextUtils.isEmpty(user.getSurName())) {
                 character = String.valueOf(user.getFirstName().charAt(0)) +
