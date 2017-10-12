@@ -1,6 +1,7 @@
 package org.hisp.india.trackercapture.services.enrollments;
 
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.response.EnrollmentsResponse;
 import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 
 import rx.Observable;
@@ -16,5 +17,8 @@ public interface EnrollmentService {
     Observable<BaseResponse> postEnrollments(RTaskEnrollment enrollmentRequest);
 
     Observable<BaseResponse> putEnrollments(RTaskEnrollment enrollmentRequest);
+
+    //added by ifhaam on 03/10/2017
+    Observable<EnrollmentsResponse> getEnrollments(String trackedEntityInstance);
 
 }

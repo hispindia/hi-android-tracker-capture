@@ -12,16 +12,15 @@ import rx.Observable;
 public interface AccountApi {
 
 
-    @GET("api/me?fields=id,created,lastUpdated,name,displayName,firstName,surname,gender," +
-         "birthday,introduction,education,employer,interests,jobTitle,languages," +
-         "email,phoneNumber,organisationUnits[code,level,id,displayName,parent,programs[" +
-         "id,displayName,trackedEntity,withoutRegistration,programRuleVariables[*]," +
-         "programStages[*,programStageDataElements[*,dataElement[*," +
-         "optionSet[id,displayName,valueType,options[id,displayName,code]]]]]," +
-         "programRules[*,programRuleActions[id,programRuleActionType]]," +
-         "enrollmentDateLabel,selectEnrollmentDatesInFuture,incidentDateLabel," +
-         "selectIncidentDatesInFuture,displayIncidentDate,programTrackedEntityAttributes[*," +
-         "trackedEntityAttribute[id,displayName,optionSetValue," +
-         "optionSet[id,displayName,valueType,options[id,displayName,code]]]]]]")
+    @GET("api/me?fields=id,created,lastUpdated,name,displayName," +
+                 "firstName,surname,gender,birthday,introduction,education,employer,interests,jobTitle," +
+                 "languages,email,phoneNumber,organisationUnits[code,level,id,displayName,parent,programs" +
+                 "[id,displayName,trackedEntity,withoutRegistration,programRuleVariables[*],programStages" +
+                 "[*,programStageSections[*,programStageDataElements[*,dataElement[*]]],programStageDataElements" +
+                 "[*,dataElement[*,optionSet[id,displayName,valueType,options[id,displayName,code]]]]]," +
+                 "programRules[*,programRuleActions[id,programRuleActionType]],enrollmentDateLabel" +
+                 ",selectEnrollmentDatesInFuture,incidentDateLabel,selectIncidentDatesInFuture," +
+                 "displayIncidentDate,programTrackedEntityAttributes[*,trackedEntityAttribute" +
+                 "[id,displayName,optionSetValue,optionSet[id,displayName,valueType,options[id,displayName,code]]]]]]")
     Observable<User> login();
 }

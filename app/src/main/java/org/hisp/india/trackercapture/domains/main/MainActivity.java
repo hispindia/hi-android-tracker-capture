@@ -39,15 +39,26 @@ import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
 import org.hisp.india.trackercapture.domains.sync_queue.SyncQueueActivity_;
 import org.hisp.india.trackercapture.domains.tracked_entity.TrackedEntityActivity_;
+import org.hisp.india.trackercapture.models.base.DataValue;
+import org.hisp.india.trackercapture.models.base.Event;
+import org.hisp.india.trackercapture.models.base.Program;
 import org.hisp.india.trackercapture.models.base.RowModel;
+import org.hisp.india.trackercapture.models.base.TrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
+import org.hisp.india.trackercapture.models.response.EventsResponse;
+import org.hisp.india.trackercapture.models.response.HeaderResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
+import org.hisp.india.trackercapture.models.storage.RTaskDataValue;
+import org.hisp.india.trackercapture.models.storage.RTaskEvent;
+import org.hisp.india.trackercapture.models.storage.RTaskRequest;
+import org.hisp.india.trackercapture.models.storage.RTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
+import org.hisp.india.trackercapture.services.programs.DefaultProgramService;
 import org.hisp.india.trackercapture.services.sync.AutoSyncService;
 import org.hisp.india.trackercapture.services.sync.SyncBus;
 import org.hisp.india.trackercapture.utils.AppUtils;
@@ -62,6 +73,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import es.dmoral.toasty.Toasty;
+import io.realm.RealmList;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.Replace;
@@ -173,7 +185,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
         //Update info
         RUser user = presenter.getUserInfo();
-        String character = "";
+       String character = "";
         if (user != null) {
             if (!TextUtils.isEmpty(user.getFirstName()) && !TextUtils.isEmpty(user.getSurName())) {
                 character = String.valueOf(user.getFirstName().charAt(0)) +
@@ -276,6 +288,20 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         tvProgram.setEnabled(true);
     }
 
+    //added by ifhaam
+    @Override
+    public void getEventsSuccess(EventsResponse eventsResponse){
+
+        Toasty.info(getApplicationContext(),eventsResponse.toString()).show();
+    }
+
+    //added by ifhaam
+    @Override
+    public void registerProgramSyncRequest(String msg) {
+        Toasty.info(this, msg).show();
+        AutoSyncService.start(getApplicationContext());
+    }
+
     @Override
     public void queryProgramSuccess(QueryResponse queryResponse) {
         Map<String, Pair<Integer, String>> displayInList = new LinkedHashMap<>();
@@ -350,14 +376,44 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                     helper.setVisible(R.id.item_program_info_tv_3, true);
                 }
                 helper.getView().setOnClickListener(v -> {
+
+                    /*removed by ifhaam
+
                     navigator.applyCommand(new Forward(Screens.TRACKED_ENTITY,
                             new RowModel(queryResponse.getHeaders(),
                                     queryResponse.getRows()
                                             .get(helper.getPosition()))));
+                    */
+
+                    //added by ifhaam for testing
+                    presenter.getEvents(organizationUnit,//orgunit has to be fetched from row headers as well
+                            //temperarily im using this.
+                            getTrackedInstanceId(
+                                    new RowModel(queryResponse.getHeaders()
+                                    ,queryResponse.getRows()
+                                    .get(helper.getPosition())))
+                                    ,queryResponse,program,helper.getPosition()
+                            );
+
                 });
             }
         });
 
+
+
+    }
+
+
+
+
+    //added by ifhaam
+    private String getTrackedInstanceId(RowModel rowModel){
+        for(int i=0;i< rowModel.getHeaders().size();i++){
+            if(rowModel.getHeaders().get(i).getName().equals("instance")){
+                return rowModel.getRows().get(i);
+            }
+        }
+        return "";
     }
 
     @Override
@@ -441,6 +497,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Click(R.id.activity_main_bt_search)
     void btSearch() {
         presenter.queryPrograms(organizationUnit.getId(), program.getId(), ProgramStatus.ACTIVE);
+
     }
 
     private void updateBtSearch() {
@@ -457,5 +514,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         return new SimpleItem(menuItem.getTitle(), ContextCompat.getDrawable(this, menuItem.getIcon()));
     }
 
-
+    public Program getProgram(){
+        //Observable<Program> a =  new DefaultProgramService().getProgramDetail("");
+        return null;
+    }
 }

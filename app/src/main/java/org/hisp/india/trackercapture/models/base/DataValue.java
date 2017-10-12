@@ -29,4 +29,28 @@ public class DataValue implements Serializable {
         this.providedElsewhere = providedElsewhere;
         this.storedBy = "android";
     }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getDataElementId() {
+        return dataElementId;
+    }
+
+    public void setDataElementId(String dataElementId) {
+        this.dataElementId = dataElementId;
+    }
+
+    public boolean isProvidedElsewhere() {
+        return providedElsewhere;
+    }
+
+    public void setProvidedElsewhere(boolean providedElsewhere) {
+        this.providedElsewhere = providedElsewhere;
+    }
 }

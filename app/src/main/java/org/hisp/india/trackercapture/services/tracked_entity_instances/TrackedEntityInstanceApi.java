@@ -1,6 +1,8 @@
 package org.hisp.india.trackercapture.services.tracked_entity_instances;
 
+import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.response.EventsResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.response.TrackedEntityInstancesResponse;
 import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
@@ -40,12 +42,24 @@ public interface TrackedEntityInstanceApi {
             @Query("programStatus")
                     String programStatus);
 
-    @GET("api/trackedEntityInstances?paging=false&fields=[*]")
+    @GET("api/trackedEntityInstances?skipPaging=true&fields=[*]")
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(
             @Query("ou")
                     String orgUnitId,
             @Query("program")
                     String programId);
 
+    //added by ifhaam
+    @GET("api/trackedEntityInstances?paging=false&fields=[*]")
+    Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(
+            @Query("ou")
+                    String orgUnitId
+            );
 
+
+    @GET("api/events?paging=false&fields=[*]")
+    Observable<EventsResponse> getEvents(
+            @Query("orgUnit")String orgUnitId,
+            @Query("trackedEntityInstance")String trackedInstanceId
+                                );
 }

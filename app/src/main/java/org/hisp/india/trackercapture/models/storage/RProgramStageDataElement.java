@@ -44,6 +44,19 @@ public class RProgramStageDataElement extends RealmObject implements Model {
         return displayName;
     }
 
+    @Override
+    public boolean equals(Object o){
+        if(this==o) return true;
+        if(o==null)return  false;
+        RProgramStageDataElement that = (RProgramStageDataElement)o;
+        return  id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode(){
+        return id.hashCode();
+    }
+
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }

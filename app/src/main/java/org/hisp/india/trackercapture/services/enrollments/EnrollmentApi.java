@@ -1,12 +1,15 @@
 package org.hisp.india.trackercapture.services.enrollments;
 
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.response.EnrollmentsResponse;
 import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -27,5 +30,11 @@ public interface EnrollmentApi {
             @Path("enrollmentId")
                     String enrollmentId);
 
+
+    //added by ifhaam 03/10/2017
+    @GET("api/enrollments.json?ouMode=ACCESSIBLE")
+    Observable<EnrollmentsResponse> getEnrollments(
+            @Query("trackedEntityInstance")String trackedEntityInstance
+    );
 
 }

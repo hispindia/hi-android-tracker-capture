@@ -15,6 +15,6 @@ public interface ProgramService {
 
     Observable<ProgramsResponse> getPrograms();
 
-    Observable<Program> getProgramDetail(String programId);
+    public Observable<Program> getProgramDetail(String programId);
 
 }

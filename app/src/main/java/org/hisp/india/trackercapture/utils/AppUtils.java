@@ -247,6 +247,14 @@ public class AppUtils {
         return formatter.print(date);
     }
 
+    //added by ifhaam
+    public static String trimTime(String date){
+        int indexOfT = date.indexOf("T");
+        date = date.substring(0,indexOfT);
+        return  formatDate(parseDate(date));
+
+    }
+
     /**
      * Format input year, month, day to string
      * Ex: 2017 5 4 => 2017-05-04

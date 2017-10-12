@@ -112,4 +112,44 @@ public class Event extends BaseModel implements Serializable {
     public void setTrackedEntityInstanceId(String trackedEntityInstanceId) {
         this.trackedEntityInstanceId = trackedEntityInstanceId;
     }
+
+    public List<DataValue> getDataValues() {
+        return dataValues;
+    }
+
+    public String getDueDate() {
+        return dueDate;
+    }
+
+    public String getEventDate() {
+        return eventDate;
+    }
+
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public String getEnrollmentId() {
+        return enrollmentId;
+    }
+
+    public String getOrgUnitId() {
+        return orgUnitId;
+    }
+
+    public String getProgramId() {
+        return programId;
+    }
+
+    public String getProgramStageId() {
+        return programStageId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getTrackedEntityInstanceId() {
+        return trackedEntityInstanceId;
+    }
 }
