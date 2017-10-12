@@ -62,6 +62,7 @@ import org.hisp.india.trackercapture.services.programs.DefaultProgramService;
 import org.hisp.india.trackercapture.services.sync.AutoSyncService;
 import org.hisp.india.trackercapture.services.sync.SyncBus;
 import org.hisp.india.trackercapture.utils.AppUtils;
+import org.hisp.india.trackercapture.utils.RealmHelper;
 import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
 
 import java.util.ArrayList;
@@ -250,6 +251,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 break;
             case LOGOUT:
                 presenter.logout();
+                RealmHelper.transaction((realm)->realm.deleteAll());
+
                 break;
             default:
                 break;

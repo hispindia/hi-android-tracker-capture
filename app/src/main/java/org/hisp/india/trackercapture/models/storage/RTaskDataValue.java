@@ -14,7 +14,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class RTaskDataValue extends RealmObject implements Serializable {
 
-    @PrimaryKey
+    //remove @primary key by ifhaam on 12/10/2017
     @Expose
     @SerializedName("dataElement")
     private String dataElementId;

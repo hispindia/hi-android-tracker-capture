@@ -116,6 +116,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     public void logout() {
         accountService.logout();
         router.replaceScreen(Screens.LOGIN_SCREEN);
+
     }
 
     public void getUserOrganizations() {
