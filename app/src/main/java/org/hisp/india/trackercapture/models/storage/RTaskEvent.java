@@ -13,12 +13,17 @@ import java.util.List;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by nhancao on 8/17/17.
  */
 
 public class RTaskEvent extends RealmObject implements Serializable {
+
+    @Expose
+    @SerializedName("event")
+    private String event;//added by ifhaam
 
     @Expose
     @SerializedName("dataValues")
@@ -48,6 +53,7 @@ public class RTaskEvent extends RealmObject implements Serializable {
     @SerializedName("trackedEntityInstance")
     private String trackedEntityInstanceId;
 
+
     public RTaskEvent() {
         dataValues = new RealmList<>();
     }
@@ -60,6 +66,18 @@ public class RTaskEvent extends RealmObject implements Serializable {
         taskEvent.setStatus(TextUtils.isEmpty(programStage.getStatus()) ? ProgramStatus.SCHEDULE.name() :
                 programStage.getStatus());
         taskEvent.setDataValues(taskEvent.getDataValueList(programStage.getProgramStageDataElements()));
+        return taskEvent;
+    }
+
+    public static RTaskEvent create(RProgramStage programStage,RTaskEvent event){
+        RTaskEvent taskEvent = new RTaskEvent();
+        taskEvent.setDueDate(programStage.getDueDate());
+        taskEvent.setEventDate(programStage.getEventDate());
+        taskEvent.setProgramStageId(programStage.getId());
+        taskEvent.setStatus(TextUtils.isEmpty(programStage.getStatus())?ProgramStatus.SCHEDULE.name():
+                programStage.getStatus());
+        taskEvent.setDataValues(taskEvent.getDataValueList(programStage.getProgramStageDataElements()));
+        if(event!=null && event.getEvent()!=null)taskEvent.setEvent(event.getEvent());
         return taskEvent;
     }
 
@@ -149,5 +167,13 @@ public class RTaskEvent extends RealmObject implements Serializable {
 
     public void setTrackedEntityInstanceId(String trackedEntityInstanceId) {
         this.trackedEntityInstanceId = trackedEntityInstanceId;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
     }
 }

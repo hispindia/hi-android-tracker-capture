@@ -3,6 +3,7 @@ package org.hisp.india.trackercapture.services.events;
 import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.models.request.EventRequest;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 
 import rx.Observable;
 
@@ -36,5 +37,11 @@ public class DefaultEventService implements EventService {
     public Observable<BaseResponse> putEvents(EventRequest eventRequest, String trackedEntityInstanceId) {
         return networkProvider
                 .transformResponse(restService.putEvents(eventRequest, trackedEntityInstanceId));
+    }
+
+    @Override
+    public Observable<BaseResponse> putEvent(RTaskEvent event, String eventId){
+        return networkProvider
+                .transformResponse(restService.putEvent(event,eventId));
     }
 }

@@ -1,7 +1,9 @@
 package org.hisp.india.trackercapture.services.events;
 
+import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.request.EventRequest;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 
 import rx.Observable;
 
@@ -16,5 +18,7 @@ public interface EventService {
     Observable<BaseResponse> postEvents(EventRequest eventRequest);
 
     Observable<BaseResponse> putEvents(EventRequest eventRequest, String trackedEntityInstanceId);
+
+    Observable<BaseResponse> putEvent(RTaskEvent event, String eventId);
 
 }

@@ -1,7 +1,9 @@
 package org.hisp.india.trackercapture.services.events;
 
+import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.request.EventRequest;
 import org.hisp.india.trackercapture.models.response.BaseResponse;
+import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -26,5 +28,12 @@ public interface EventApi {
                     EventRequest eventRequest,
             @Path("trackedEntityInstanceId")
                     String trackedEntityInstanceId);
+
+
+    @PUT("api/events/{eventId}")
+    Observable<BaseResponse> putEvent(
+            @Body RTaskEvent event,
+            @Path("eventId")String eventId
+        );
 
 }

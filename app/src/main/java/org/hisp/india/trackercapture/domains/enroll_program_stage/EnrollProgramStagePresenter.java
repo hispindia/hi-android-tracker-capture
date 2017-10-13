@@ -55,6 +55,14 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
                                               eventList);
         } else {
             taskRequest.setNeedSync(true);
+            for(RTaskEvent taskEvent :taskRequest.getEventList()){
+                for(RTaskEvent rTaskEvent:eventList){
+                    if(taskEvent.getProgramStageId().equals(rTaskEvent.getProgramStageId())){
+                        rTaskEvent.setEvent(taskEvent.getEvent());
+                        break;
+                    }
+                }
+            }
             taskRequest.setEventList(eventList);
         }
         taskRequest.save();
