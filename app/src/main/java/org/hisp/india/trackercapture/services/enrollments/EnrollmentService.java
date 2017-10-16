@@ -20,5 +20,6 @@ public interface EnrollmentService {
 
     //added by ifhaam on 03/10/2017
     Observable<EnrollmentsResponse> getEnrollments(String trackedEntityInstance);
+    Observable<EnrollmentsResponse> getEnrollments(String orgUnit,String trackedEntityInstance,String program);
 
 }

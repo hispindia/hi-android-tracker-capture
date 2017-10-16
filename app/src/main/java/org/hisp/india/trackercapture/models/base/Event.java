@@ -18,9 +18,9 @@ import java.util.List;
  */
 
 public class Event extends BaseModel implements Serializable {
-    /*@Expose
+    @Expose
     @SerializedName("event")
-    private String event;*/
+    private String event;
     @Expose
     @SerializedName("dataValues")
     private List<DataValue> dataValues;
@@ -154,5 +154,13 @@ public class Event extends BaseModel implements Serializable {
 
     public String getTrackedEntityInstanceId() {
         return trackedEntityInstanceId;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
     }
 }

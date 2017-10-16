@@ -76,4 +76,9 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
     public Observable<EventsResponse> getEvents(String orgUnitId,String trackedInstanceId){
         return networkProvider.transformResponse(restService.getEvents(orgUnitId, trackedInstanceId));
     }
+
+    //added by ifhaam 13/10/2017
+    public Observable<EventsResponse> getEvents(String orgUnitId,String trackedInstanceId,String programId){
+        return networkProvider.transformResponse(restService.getEvents(orgUnitId,trackedInstanceId,programId));
+    }
 }

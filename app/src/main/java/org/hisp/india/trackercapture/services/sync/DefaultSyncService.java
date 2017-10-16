@@ -146,6 +146,7 @@ public class DefaultSyncService implements SyncService {
         subscription = trackedEntityInstanceService
                 .putTrackedEntityInstances(taskRequest.getTrackedEntityInstance())
                 .observeOn(Schedulers.computation())
+                .compose(RxScheduler.applyIoSchedulers())
                 .flatMap(baseResponse -> {
                     String trackedEntityInstanceId = baseResponse.getResponse().getReference();
                     if (trackedEntityInstanceId != null) {
@@ -191,10 +192,10 @@ public class DefaultSyncService implements SyncService {
                         Observable<BaseResponse> postSubscriptionsObservable = eventService.postEvents(new EventRequest(eventsToPost))
                                 .compose(RxScheduler.applyIoSchedulers());
 
-                        Observable<List<BaseResponse>> putSubscriptionsObservable =
-                                Observable.from(eventsToPut)
-                                    .flatMap(eventToPut-> eventService.putEvent(eventToPut,eventToPut.getEvent()))
-                                    .toList();
+                        Observable<List<BaseResponse>> putSubscriptionsObservable = Observable.from(eventsToPut)
+                                .flatMap(eventToPut-> eventService.putEvent(eventToPut,eventToPut.getEvent()))
+                                .compose(RxScheduler.applyIoSchedulers())
+                                .toList();
 
 
                         Observable.zip(postSubscriptionsObservable,putSubscriptionsObservable,

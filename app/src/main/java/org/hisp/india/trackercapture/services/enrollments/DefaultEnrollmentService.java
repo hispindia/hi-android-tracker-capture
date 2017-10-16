@@ -45,4 +45,9 @@ public class DefaultEnrollmentService implements EnrollmentService {
     public Observable<EnrollmentsResponse> getEnrollments(String trackedEntityInstance){
         return networkProvider.transformResponse(restService.getEnrollments(trackedEntityInstance));
     }
+
+    @Override
+    public Observable<EnrollmentsResponse> getEnrollments(String orgUnit,String trackedEntityInstance,String program){
+        return networkProvider.transformResponse(restService.getEnrollments(orgUnit,trackedEntityInstance,program));
+    }
 }

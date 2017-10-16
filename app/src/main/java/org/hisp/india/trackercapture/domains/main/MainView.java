@@ -7,6 +7,7 @@ import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 
+import java.util.HashMap;
 import java.util.List;
 
 import ru.terrakok.cicerone.Navigator;
@@ -47,4 +48,5 @@ public interface MainView extends MvpView {
     //added by ifhaam on 28/09/2017
     void getEventsSuccess(EventsResponse eventResponse);
     void registerProgramSyncRequest(String msg);
+    void downloadInstancesSuccess(QueryResponse queryResponse,HashMap<String,String> uuids);
 }

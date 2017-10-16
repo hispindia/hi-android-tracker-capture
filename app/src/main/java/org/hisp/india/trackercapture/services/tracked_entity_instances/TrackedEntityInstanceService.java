@@ -33,4 +33,6 @@ public interface TrackedEntityInstanceService {
 
     //added by ifhaam to manage editing of already entered events on 28/09/2017
     Observable<EventsResponse> getEvents(String orgUnitId,String trackedInstanceId);
+
+    Observable<EventsResponse> getEvents(String orgUnitId,String trackedInstanceId,String programId);
 }

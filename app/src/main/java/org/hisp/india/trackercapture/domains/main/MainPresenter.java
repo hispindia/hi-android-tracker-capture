@@ -10,9 +10,11 @@ import org.hisp.india.trackercapture.models.base.DataValue;
 import org.hisp.india.trackercapture.models.base.Enrollment;
 import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
+import org.hisp.india.trackercapture.models.base.RowModel;
 import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.e_num.SyncKey;
+import org.hisp.india.trackercapture.models.response.EnrollmentsResponse;
 import org.hisp.india.trackercapture.models.response.EventsResponse;
 import org.hisp.india.trackercapture.models.response.HeaderResponse;
 import org.hisp.india.trackercapture.models.response.OrganizationUnitsResponse;
@@ -27,17 +29,20 @@ import org.hisp.india.trackercapture.models.storage.RTaskDataValue;
 import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 import org.hisp.india.trackercapture.models.storage.RTaskRequest;
+import org.hisp.india.trackercapture.models.storage.RTaskRequestNonQueue;
 import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
 import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
 import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
+import org.hisp.india.trackercapture.services.RTaskRequestNonQueue.RTaskRequestNonQueueQuery;
 import org.hisp.india.trackercapture.services.account.AccountQuery;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
+import org.hisp.india.trackercapture.services.sync.DefaultSyncService;
 import org.hisp.india.trackercapture.services.sync.SyncQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.DefaultTrackedEntityInstanceService;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceQuery;
@@ -54,6 +59,7 @@ import javax.inject.Inject;
 import io.realm.RealmList;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
+import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -142,19 +148,32 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
     //added by ifhaam
     public List<RTaskAttribute> getTaskAttributes(QueryResponse queryResponse,
-                                                  RealmList<RProgramTrackedEntityAttribute> attributes
-                                                    ,int trackedEntityInstance){
+                                                  RealmList<RProgramTrackedEntityAttribute> attributes,
+                                                    String trackedEntityInstanceId){
         List<RTaskAttribute> rTastAttributes = new ArrayList<>();
 
-        for(RProgramTrackedEntityAttribute attribute : attributes){
-            for(int i=0;i<queryResponse.getHeaders().size();i++){
+        //find the instance
+        int trackedEntityInstance = -1;
+        int x=0;
+        for(List<String> row :queryResponse.getRows()){
+            if(row.get(0).equals(trackedEntityInstanceId)) {
+                trackedEntityInstance = x;
+                break;
+            }
+            x++;
+        }
 
-                if(queryResponse.getHeaders().get(i) .getName().equals(attribute.getTrackedEntityAttribute().getId())){
-                    RTaskAttribute rTaskAttribute = RTaskAttribute.create(attribute.getTrackedEntityAttribute().getId(),
-                            queryResponse.getRows().get(trackedEntityInstance).get(i), attribute.getDisplayName()
-                            ,attribute.getValueType().toString());
-                    rTastAttributes.add(rTaskAttribute);
-                    break;
+        if(trackedEntityInstance!=-1) {
+            for (RProgramTrackedEntityAttribute attribute : attributes) {
+                for (int i = 0; i < queryResponse.getHeaders().size(); i++) {
+
+                    if (queryResponse.getHeaders().get(i).getName().equals(attribute.getTrackedEntityAttribute().getId())) {
+                        RTaskAttribute rTaskAttribute = RTaskAttribute.create(attribute.getTrackedEntityAttribute().getId(),
+                                queryResponse.getRows().get(trackedEntityInstance).get(i), attribute.getDisplayName()
+                                , attribute.getValueType().toString());
+                        rTastAttributes.add(rTaskAttribute);
+                        break;
+                    }
                 }
             }
         }
@@ -189,13 +208,144 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
               });
     }
 
+    public void prepareDataTemp(ROrganizationUnit organizationUnit,RProgram rProgram,QueryResponse queryResponse){
+        HashMap<String,String> uuidList  = new HashMap<>();
+        RxScheduler.onStop(subscription);
+        getView().showLoading();
+        trackedEntityInstances = new ArrayList<>();
+        subscription = trackedEntityInstanceService
+                .getTrackedEntityInstances(organizationUnit.getId(),rProgram.getId())
+                .compose(RxScheduler.applyIoSchedulers())
+                .flatMap(trackedEntityInstancesResponse->{
+                    for(TrackedEntityInstance trackedEntityInstance :
+                            trackedEntityInstancesResponse.getTrackedEntityInstances()){
+                        trackedEntityInstances.add(RMapping.from(trackedEntityInstance));
+                    }
+                    return Observable.from(trackedEntityInstances);
+                })
+
+                .flatMap(trackedEntityInstance->{
+                    Observable<EventsResponse> eventsObservable = trackedEntityInstanceService
+                            .getEvents(organizationUnit.getId(),
+                                    trackedEntityInstance.getTrackedEntityInstanceId(), rProgram.getId())
+                            .compose(RxScheduler.applyIoSchedulers());
+
+                    Observable<EnrollmentsResponse>
+                            enrollmentObservable = enrollmentService
+                            .getEnrollments(organizationUnit.getId(),trackedEntityInstance.getTrackedEntityInstanceId(),rProgram.getId())
+                            .compose(RxScheduler.applyIoSchedulers());
+
+                     return Observable.zip(eventsObservable,enrollmentObservable,
+                            (eventsResponse,enrollmentsResponse)->{
+
+                                List<RTaskEvent> events = getRTastEvents(eventsResponse);
+                                Enrollment enrollment = enrollmentsResponse.getEnrollments().get(0);
+                                TMEnrollProgram tmEnrollProgram ;
+                                if (enrollment.getTrackedEntityInstance().equals(trackedEntityInstance.getTrackedEntityInstanceId())) {
+                                    if(events.size()>0&& !events.get(0).getTrackedEntityInstanceId().equals(enrollment.getTrackedEntityInstance())){
+                                        return null;
+                                    }
+
+                                }
+                                tmEnrollProgram = prepareTMEnrollProgram(queryResponse,rProgram,organizationUnit.getId()
+                                        ,0,events,trackedEntityInstance.getTrackedEntityInstanceId(),enrollment);
+
+
+                                return tmEnrollProgram;
+                            });
+                            //.compose(RxScheduler.applyIoSchedulers())
+                            /*.doOnCompleted(()->{
+                                if(trackedEntityInstances.size()==uuidList.size()){
+                                    getView().downloadInstancesSuccess(queryResponse,uuidList);
+                                    getView().hideLoading();
+                                    subscription.unsubscribe();
+                                }
+                                .subscribe(tmeEnrollProgram->{
+                                if(tmeEnrollProgram!=null){
+                                    //registerProgram(tmeEnrollProgram,tmeEnrollProgram.getTaskRequest().getEventList());
+                                    //tmeEnrollProgram.getTaskRequest().save();
+                                    RTaskRequestNonQueue taskRequestNonQueue =
+                                            new RTaskRequestNonQueue(tmeEnrollProgram.getTaskRequest());
+
+                                    uuidList.put(taskRequestNonQueue.getTrackedEntityInstance().getTrackedEntityInstanceId(),taskRequestNonQueue.getUuid());
+                                    RTaskRequestNonQueueQuery.save(taskRequestNonQueue);
+                                    Log.i(" SAVING ",tmeEnrollProgram.getTaskRequest()
+                                            .getTrackedEntityInstance().getTrackedEntityInstanceId());
+                                }else{
+                                    Log.i(" SAVING ","null returned");
+                                }
+
+
+                            });
+                            })*/
+
+                    }
+                )
+
+                .doOnNext(tmeEnrollProgram-> {
+                    if(tmeEnrollProgram!=null){
+                        //registerProgram(tmeEnrollProgram,tmeEnrollProgram.getTaskRequest().getEventList());
+                        //tmeEnrollProgram.getTaskRequest().save();
+                        RTaskRequestNonQueue taskRequestNonQueue =
+                                new RTaskRequestNonQueue(tmeEnrollProgram.getTaskRequest());
+
+                        uuidList.put(taskRequestNonQueue.getTrackedEntityInstance().getTrackedEntityInstanceId(),taskRequestNonQueue.getUuid());
+                        RTaskRequestNonQueueQuery.save(taskRequestNonQueue);
+                        Log.i(" SAVING ",tmeEnrollProgram.getTaskRequest()
+                                .getTrackedEntityInstance().getTrackedEntityInstanceId());
+                    }else{
+                        Log.i(" SAVING ","null returned");
+                    }
+                })
+                .compose(RxScheduler.applyIoSchedulers())
+                .doOnCompleted(()->{
+                            if(trackedEntityInstances.size()==uuidList.size()){
+                                getView().downloadInstancesSuccess(queryResponse,uuidList);
+
+                                //subscription.unsubscribe();
+                            }else{
+                                getView().showError("Not completed try re syncing");
+                            }
+                            getView().hideLoading();
+                })
+                .subscribe();
+
+
+
+    }
+
+    //added by ifhaam
+    public void editData(String uuid){
+        RTaskRequestNonQueue taskRequestNonQueue = RTaskRequestNonQueueQuery.getRTaskRequestNonQueue(uuid);
+        RTaskRequest taskRequest = RTaskRequestNonQueue.getRTaskRequest(taskRequestNonQueue);
+        taskRequest.save();
+        //String trackedEntityInstance = getTrackedInstanceId(new RowModel(queryResponse.getHeaders(),queryResponse.getRows().get(position)));
+        //String rTaskQueryId = SyncQuery.getRTaskRequest(uuid).getUuid();
+        try {
+            router.navigateTo(Screens.ENROLL_PROGRAM_STAGE, uuid);
+        }catch (NullPointerException ex){
+            getView().showError(" Insufficient Data try reloading");
+        }
+    }
+
+    //added by ifhaam
+    private String getTrackedInstanceId(RowModel rowModel){
+        for(int i=0;i< rowModel.getHeaders().size();i++){
+            if(rowModel.getHeaders().get(i).getName().equals("instance")){
+                return rowModel.getRows().get(i);
+            }
+        }
+        return "";
+    }
+
     //ADDED BY IFHAAM ON 3/9/2017
     private TMEnrollProgram prepareTMEnrollProgram(QueryResponse queryResponse,
                                                    RProgram program,String orgUnitID,int trackedEntityInstance
                                                     ,List<RTaskEvent> events,String rTrackedEntityInstanceId,Enrollment enrollment){
 
 
-        List<RTaskAttribute> rTaskAttributes  = getTaskAttributes(queryResponse,program.getProgramTrackedEntityAttributes(), trackedEntityInstance);
+        List<RTaskAttribute> rTaskAttributes  = getTaskAttributes(queryResponse,program.getProgramTrackedEntityAttributes(),
+                rTrackedEntityInstanceId);
         String programID = program.getId();
 
         selectedTrackedEntityInstance = null;
@@ -211,10 +361,13 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         );
         rTaskTrackedEntityInstance.setTrackedEntityInstanceId(
                 selectedTrackedEntityInstance.getTrackedEntityInstanceId());
-
+        String enrollementDate = enrollment.getEnrollmentDate()==null?"":
+                AppUtils.trimTime(enrollment.getEnrollmentDate());
+        String incidentDate = enrollment.getIncidentDate()==null?"":
+                AppUtils.trimTime(enrollment.getIncidentDate());
         RTaskEnrollment rTaskEnrollment = RTaskEnrollment.create(programID,orgUnitID,
-                AppUtils.trimTime(enrollment.getEnrollmentDate()).toString(),
-                AppUtils.trimTime(enrollment.getIncidentDate()).toString());
+                enrollementDate,
+                incidentDate);
         rTaskEnrollment.setEnrollmentId(enrollment.getEnrollment());
         rTaskEnrollment.setTrackedEntityInstanceId(
                 selectedTrackedEntityInstance.getTrackedEntityInstanceId());
@@ -236,6 +389,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         List<RTaskEvent> rTaskEvents = new ArrayList<>();
         for(Event event:events){
             RTaskEvent rTaskEvent = new RTaskEvent();
+            rTaskEvent.setEvent(event.getEvent());
             rTaskEvent.setDueDate(event.getDueDate());
             rTaskEvent.setEventDate(event.getEventDate());
             rTaskEvent.setEnrollmentId(event.getEnrollmentId());

@@ -31,6 +31,7 @@ import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program.EnrollProgramActivity_;
+import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity_;
 import org.hisp.india.trackercapture.domains.login.LoginActivity_;
 import org.hisp.india.trackercapture.domains.menu.DrawerAdapter;
 import org.hisp.india.trackercapture.domains.menu.DrawerItem;
@@ -52,6 +53,7 @@ import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.storage.RTaskDataValue;
+import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 import org.hisp.india.trackercapture.models.storage.RTrackedEntityAttribute;
@@ -61,12 +63,14 @@ import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.programs.DefaultProgramService;
 import org.hisp.india.trackercapture.services.sync.AutoSyncService;
 import org.hisp.india.trackercapture.services.sync.SyncBus;
+import org.hisp.india.trackercapture.services.sync.SyncQuery;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.utils.RealmHelper;
 import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,6 +140,28 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 TrackedEntityActivity_.intent(this)
                         .rowModel((RowModel) ((Forward) command).getTransitionData())
                         .start();
+
+            }else if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM_STAGE)) {
+
+                RTaskRequest taskRequest = SyncQuery.getRTaskRequest((String) ((Forward) command).getTransitionData());
+                RTaskEnrollment enrollment = taskRequest.getEnrollment();
+                String orgUnitId = null, programId = null;
+                if (enrollment != null) {
+                    orgUnitId = enrollment.getOrgUnitId();
+                    programId = enrollment.getProgramId();
+                }
+
+                if (orgUnitId != null && programId != null) {
+
+
+                    EnrollProgramStageActivity_.intent(this)
+                            .tmEnrollProgramJson(
+                                    TMEnrollProgram
+                                            .toJson(new TMEnrollProgram(taskRequest)))
+                            .start();
+                } else {
+                    Toast.makeText(application, "TaskRequest info is null", Toast.LENGTH_SHORT).show();
+                }
 
             }
         }
@@ -306,7 +332,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     }
 
     @Override
-    public void queryProgramSuccess(QueryResponse queryResponse) {
+    public void downloadInstancesSuccess(QueryResponse queryResponse,HashMap<String,String> uuidList){
         Map<String, Pair<Integer, String>> displayInList = new LinkedHashMap<>();
         for (RProgramTrackedEntityAttribute programTrackedEntityAttribute : program
                 .getProgramTrackedEntityAttributes()) {
@@ -389,21 +415,32 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                     */
 
                     //added by ifhaam for testing
-                    presenter.getEvents(organizationUnit,//orgunit has to be fetched from row headers as well
+                    /*presenter.getEvents(organizationUnit,//orgunit has to be fetched from row headers as well
                             //temperarily im using this.
                             getTrackedInstanceId(
                                     new RowModel(queryResponse.getHeaders()
                                     ,queryResponse.getRows()
                                     .get(helper.getPosition())))
                                     ,queryResponse,program,helper.getPosition()
-                            );
-
+                            );*/
+                    String trackedEntityInstance = getTrackedInstanceId(
+                            new RowModel(queryResponse.getHeaders()
+                                    ,queryResponse.getRows()
+                                    .get(helper.getPosition()))
+                                    );
+                    presenter.editData(uuidList.get(trackedEntityInstance));
                 });
+
+
+
+
             }
         });
+    }
 
-
-
+    @Override
+    public void queryProgramSuccess(QueryResponse queryResponse) {
+        presenter.prepareDataTemp(organizationUnit,program,queryResponse);
     }
 
 

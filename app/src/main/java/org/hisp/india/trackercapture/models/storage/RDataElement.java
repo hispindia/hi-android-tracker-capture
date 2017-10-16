@@ -13,7 +13,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class RDataElement extends RealmObject implements Model {
 
-
+    @PrimaryKey
     private String id;
     private String displayName;
     private String valueType;

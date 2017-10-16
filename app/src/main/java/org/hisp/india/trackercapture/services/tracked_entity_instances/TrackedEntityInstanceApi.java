@@ -62,4 +62,11 @@ public interface TrackedEntityInstanceApi {
             @Query("orgUnit")String orgUnitId,
             @Query("trackedEntityInstance")String trackedInstanceId
                                 );
+
+    @GET("api/events?paging=false&fields=[*]")
+    Observable<EventsResponse> getEvents(
+            @Query("orgUnit")String orgUnitId,
+            @Query("trackedEntityInstance")String trackedInstanceId,
+            @Query("program")String programId
+                                         );
 }
