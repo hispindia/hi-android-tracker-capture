@@ -209,6 +209,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     }
 
     public void prepareDataTemp(ROrganizationUnit organizationUnit,RProgram rProgram,QueryResponse queryResponse){
+        RTaskRequestNonQueueQuery.clear();
         HashMap<String,String> uuidList  = new HashMap<>();
         RxScheduler.onStop(subscription);
         getView().showLoading();

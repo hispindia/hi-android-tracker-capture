@@ -28,4 +28,10 @@ public class RTaskRequestNonQueueQuery {
         });
     }
 
+    public static void clear(){
+        RealmHelper.transaction(realm->realm.where(RTaskRequest.class).findAll().deleteAllFromRealm());
+        RealmHelper.transaction(realm -> realm.where(RTaskRequestNonQueue.class).findAll().deleteAllFromRealm());
+
+    }
+
 }
