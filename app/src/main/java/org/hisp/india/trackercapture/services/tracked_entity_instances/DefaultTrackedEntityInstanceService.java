@@ -66,9 +66,9 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
 
     @Override
     public Observable<QueryResponse> queryTrackedEntityInstances(String orgUnitId, String programId,
-                                                                 ProgramStatus programStatus) {
+                                                                 ProgramStatus programStatus,int page) {
         return networkProvider
-                .transformResponse(restService.queryTrackedEntityInstances(orgUnitId, programId, programStatus.name()));
+                .transformResponse(restService.queryTrackedEntityInstances(orgUnitId, programId, programStatus.name(), page));
     }
 
     //added by ifhaam 28/09/2017
@@ -77,8 +77,18 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
         return networkProvider.transformResponse(restService.getEvents(orgUnitId, trackedInstanceId));
     }
 
+
+
     //added by ifhaam 13/10/2017
+    @Override
     public Observable<EventsResponse> getEvents(String orgUnitId,String trackedInstanceId,String programId){
         return networkProvider.transformResponse(restService.getEvents(orgUnitId,trackedInstanceId,programId));
     }
+
+    @Override
+    public Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(String orgUnitId, String programId, int page) {
+        return networkProvider.transformResponse(restService.getTrackedEntityInstances(orgUnitId,programId,page));
+    }
+
+
 }

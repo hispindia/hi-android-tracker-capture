@@ -16,8 +16,15 @@ public class TrackedEntityInstancesResponse {
     @Expose
     @SerializedName("trackedEntityInstances")
     private List<TrackedEntityInstance> trackedEntityInstances;
+    @Expose
+    @SerializedName("pager")
+    private PageResponse pager;
 
     public List<TrackedEntityInstance> getTrackedEntityInstances() {
         return trackedEntityInstances;
+    }
+
+    public PageResponse getPager() {
+        return pager;
     }
 }

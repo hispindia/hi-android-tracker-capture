@@ -3,9 +3,11 @@ package org.hisp.india.trackercapture.domains.main;
 import com.hannesdorfmann.mosby3.mvp.MvpView;
 
 import org.hisp.india.trackercapture.models.response.EventsResponse;
+import org.hisp.india.trackercapture.models.response.PageResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
+import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,8 @@ public interface MainView extends MvpView {
 
     void queryProgramSuccess(QueryResponse queryResponse);
 
+    void queryProgramSuccess(QueryResponse queryResponse,int page);//added by ifhaam
+
     void syncSuccessful();
 
     void showError(String error);
@@ -49,4 +53,6 @@ public interface MainView extends MvpView {
     void getEventsSuccess(EventsResponse eventResponse);
     void registerProgramSyncRequest(String msg);
     void downloadInstancesSuccess(QueryResponse queryResponse,HashMap<String,String> uuids);
+    void downloadInstancesSuccess(QueryResponse queryResponse, HashMap<String,String> uuidList, List<RTrackedEntityInstance> trackedEntityInstances);
+    void downloadInstancesSuccess(HashMap<String,String> uuidList, List<RTrackedEntityInstance> trackedEntityInstances, PageResponse pageResponse);
 }

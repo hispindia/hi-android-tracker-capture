@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
-import org.androidannotations.annotations.App;
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.base.DataValue;
 import org.hisp.india.trackercapture.models.base.Enrollment;
@@ -16,9 +15,10 @@ import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.e_num.SyncKey;
 import org.hisp.india.trackercapture.models.response.EnrollmentsResponse;
 import org.hisp.india.trackercapture.models.response.EventsResponse;
-import org.hisp.india.trackercapture.models.response.HeaderResponse;
 import org.hisp.india.trackercapture.models.response.OrganizationUnitsResponse;
+import org.hisp.india.trackercapture.models.response.PageResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
+import org.hisp.india.trackercapture.models.storage.RAttribute;
 import org.hisp.india.trackercapture.models.storage.RMapping;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
@@ -35,16 +35,16 @@ import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
 import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
+import org.hisp.india.trackercapture.services.RTaskRequestNonQueue.DefaultRTaskRequestNonQueueService;
 import org.hisp.india.trackercapture.services.RTaskRequestNonQueue.RTaskRequestNonQueueQuery;
+import org.hisp.india.trackercapture.services.RTaskRequestNonQueue.RTaskRequestNonQueueService;
 import org.hisp.india.trackercapture.services.account.AccountQuery;
 import org.hisp.india.trackercapture.services.account.AccountService;
 import org.hisp.india.trackercapture.services.enrollments.EnrollmentService;
 import org.hisp.india.trackercapture.services.filter.AuthenticationSuccessFilter;
 import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.organization.OrganizationService;
-import org.hisp.india.trackercapture.services.sync.DefaultSyncService;
 import org.hisp.india.trackercapture.services.sync.SyncQuery;
-import org.hisp.india.trackercapture.services.tracked_entity_instances.DefaultTrackedEntityInstanceService;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.AppUtils;
@@ -63,9 +63,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-
-import static android.R.attr.action;
-import static android.R.attr.tabStripEnabled;
 
 /**
  * Created by nhancao on 5/5/17.
@@ -86,6 +83,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     protected TrackedEntityInstanceService trackedEntityInstanceService;
     @Inject
     protected EnrollmentService enrollmentService;
+    //@Inject
+    protected RTaskRequestNonQueueService taskRequestNonQueueService;
 
     private Subscription subscription;
     private int orgUnitTotalPages;
@@ -94,6 +93,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
     private RTrackedEntityInstance selectedTrackedEntityInstance;
 
+    private PageResponse pageResponse;
+
     @Inject
     public MainPresenter(Router router, NavigatorHolder navigatorHolder, AccountService accountService,
                          TrackedEntityInstanceService trackedEntityInstanceService) {
@@ -101,6 +102,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         this.navigatorHolder = navigatorHolder;
         this.accountService = accountService;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
+        this.taskRequestNonQueueService = new DefaultRTaskRequestNonQueueService();
     }
 
     @Override
@@ -133,15 +135,24 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         }
     }
 
+    //changed by ifhaam not used now
     public void queryPrograms(String orgUnitId, String programId, ProgramStatus programStatus) {
+        queryPrograms(orgUnitId,programId,programStatus,1);
+
+    }
+
+    //changed by ifhaam not used now 
+    public void queryPrograms(String orgUnitId, String programId, ProgramStatus programStatus,int page) {
         RxScheduler.onStop(subscription);
         getView().showLoading();
         subscription = trackedEntityInstanceService
-                .queryTrackedEntityInstances(orgUnitId, programId, programStatus)
+                .queryTrackedEntityInstances(orgUnitId, programId, programStatus,page)
                 .compose(RxScheduler.applyIoSchedulers())
-                .doOnTerminate(() -> getView().hideLoading())
+                .doOnTerminate(() -> {
+                    getView().hideLoading();
+                })
                 .subscribe(queryResponse -> {
-                    getView().queryProgramSuccess(queryResponse);
+                    getView().queryProgramSuccess(queryResponse,page);
                 });
 
     }
@@ -183,6 +194,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
 
 
+
+
     //added by ifhaam on 28/09/2017
     public void getEvents(ROrganizationUnit orgUnit,String trackedInstanceId,QueryResponse queryResponse,
                           RProgram program,int trackedEntityInstance
@@ -208,16 +221,22 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
               });
     }
 
-    public void prepareDataTemp(ROrganizationUnit organizationUnit,RProgram rProgram,QueryResponse queryResponse){
+    public void downloadInstances(ROrganizationUnit organizationUnit, RProgram rProgram){
+        downloadInstances(organizationUnit,rProgram,1);
+    }
+
+    public void downloadInstances(ROrganizationUnit organizationUnit, RProgram rProgram, int page){
         RTaskRequestNonQueueQuery.clear();
         HashMap<String,String> uuidList  = new HashMap<>();
+        List<PageResponse> pageResponse = new ArrayList<>();
         RxScheduler.onStop(subscription);
         getView().showLoading();
         trackedEntityInstances = new ArrayList<>();
         subscription = trackedEntityInstanceService
-                .getTrackedEntityInstances(organizationUnit.getId(),rProgram.getId())
+                .getTrackedEntityInstances(organizationUnit.getId(),rProgram.getId(),page)
                 .compose(RxScheduler.applyIoSchedulers())
                 .flatMap(trackedEntityInstancesResponse->{
+                    pageResponse.add(trackedEntityInstancesResponse.getPager());
                     for(TrackedEntityInstance trackedEntityInstance :
                             trackedEntityInstancesResponse.getTrackedEntityInstances()){
                         trackedEntityInstances.add(RMapping.from(trackedEntityInstance));
@@ -248,37 +267,12 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                                     }
 
                                 }
-                                tmEnrollProgram = prepareTMEnrollProgram(queryResponse,rProgram,organizationUnit.getId()
-                                        ,0,events,trackedEntityInstance.getTrackedEntityInstanceId(),enrollment);
+                                tmEnrollProgram = prepareTMEnrollProgram(rProgram,organizationUnit.getId()
+                                        ,events,trackedEntityInstance,enrollment);
 
 
                                 return tmEnrollProgram;
                             });
-                            //.compose(RxScheduler.applyIoSchedulers())
-                            /*.doOnCompleted(()->{
-                                if(trackedEntityInstances.size()==uuidList.size()){
-                                    getView().downloadInstancesSuccess(queryResponse,uuidList);
-                                    getView().hideLoading();
-                                    subscription.unsubscribe();
-                                }
-                                .subscribe(tmeEnrollProgram->{
-                                if(tmeEnrollProgram!=null){
-                                    //registerProgram(tmeEnrollProgram,tmeEnrollProgram.getTaskRequest().getEventList());
-                                    //tmeEnrollProgram.getTaskRequest().save();
-                                    RTaskRequestNonQueue taskRequestNonQueue =
-                                            new RTaskRequestNonQueue(tmeEnrollProgram.getTaskRequest());
-
-                                    uuidList.put(taskRequestNonQueue.getTrackedEntityInstance().getTrackedEntityInstanceId(),taskRequestNonQueue.getUuid());
-                                    RTaskRequestNonQueueQuery.save(taskRequestNonQueue);
-                                    Log.i(" SAVING ",tmeEnrollProgram.getTaskRequest()
-                                            .getTrackedEntityInstance().getTrackedEntityInstanceId());
-                                }else{
-                                    Log.i(" SAVING ","null returned");
-                                }
-
-
-                            });
-                            })*/
 
                     }
                 )
@@ -300,8 +294,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                 })
                 .compose(RxScheduler.applyIoSchedulers())
                 .doOnCompleted(()->{
-                            if(trackedEntityInstances.size()==uuidList.size()){
-                                getView().downloadInstancesSuccess(queryResponse,uuidList);
+                            if(trackedEntityInstances.size()==uuidList.size() && trackedEntityInstances.size()>0){
+                                getView().downloadInstancesSuccess(uuidList,trackedEntityInstances,pageResponse.get(0));
 
                                 //subscription.unsubscribe();
                             }else{
@@ -314,6 +308,28 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
 
     }
+
+    public void getInstancesLocal(RProgram program,ROrganizationUnit organizationUnit){
+        HashMap<String,String> uuidList = new HashMap<>();
+        List<RTrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
+        getView().showLoading();
+        RxScheduler.onStop(subscription);
+        subscription = taskRequestNonQueueService.getRTaskRequestNonQueryLocal(program,organizationUnit)
+                    .compose(RxScheduler.applyIoSchedulers())
+                    .doOnCompleted(()->{
+                        getView().hideLoading();
+                        getView().downloadInstancesSuccess(uuidList,trackedEntityInstances,null);
+                    })
+                    .doOnNext((taskRequestNonQueueList)->{
+                        for(RTaskRequestNonQueue taskRequestNonQueue:taskRequestNonQueueList){
+                            RTrackedEntityInstance trackedEntityInstance = RTrackedEntityInstance.create(taskRequestNonQueue.getTrackedEntityInstance());
+
+                            uuidList.put(trackedEntityInstance.getTrackedEntityInstanceId(),taskRequestNonQueue.getUuid());
+                            trackedEntityInstances.add(trackedEntityInstance);
+                        }
+                    })
+                    .subscribe();
+     }
 
     //added by ifhaam
     public void editData(String uuid){
@@ -340,28 +356,25 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     }
 
     //ADDED BY IFHAAM ON 3/9/2017
-    private TMEnrollProgram prepareTMEnrollProgram(QueryResponse queryResponse,
-                                                   RProgram program,String orgUnitID,int trackedEntityInstance
-                                                    ,List<RTaskEvent> events,String rTrackedEntityInstanceId,Enrollment enrollment){
+    private TMEnrollProgram prepareTMEnrollProgram(RProgram program,String orgUnitID
+                                                    ,List<RTaskEvent> events,RTrackedEntityInstance rTrackedEntityInstance,Enrollment enrollment){
 
 
-        List<RTaskAttribute> rTaskAttributes  = getTaskAttributes(queryResponse,program.getProgramTrackedEntityAttributes(),
-                rTrackedEntityInstanceId);
+        List<RTaskAttribute> rTaskAttributes  = new ArrayList<>();//getTaskAttributes(queryResponse,program.getProgramTrackedEntityAttributes(),               rTrackedEntityInstanceId);
+        for(RAttribute rAttribute:rTrackedEntityInstance.getAttributeList()){
+            RTaskAttribute taskAttribute = RTaskAttribute.create(rAttribute.getAttributeId(),
+                                                                rAttribute.getValue(),
+                                                                rAttribute.getDisplayName(),
+                                                                rAttribute.getValueType());
+            rTaskAttributes.add(taskAttribute);
+        }
         String programID = program.getId();
 
-        selectedTrackedEntityInstance = null;
-        for(RTrackedEntityInstance rTrackedEntityInstance : trackedEntityInstances){
-            if(rTrackedEntityInstance.getTrackedEntityInstanceId().equals(rTrackedEntityInstanceId)){
-                selectedTrackedEntityInstance =rTrackedEntityInstance;
-                break;
-            }
-        }
-
         RTaskTrackedEntityInstance rTaskTrackedEntityInstance = RTaskTrackedEntityInstance.create(
-               selectedTrackedEntityInstance.getTrackedEntityId(),orgUnitID,rTaskAttributes,programID
+               rTrackedEntityInstance.getTrackedEntityId(),orgUnitID,rTaskAttributes,programID
         );
         rTaskTrackedEntityInstance.setTrackedEntityInstanceId(
-                selectedTrackedEntityInstance.getTrackedEntityInstanceId());
+                rTrackedEntityInstance.getTrackedEntityInstanceId());
         String enrollementDate = enrollment.getEnrollmentDate()==null?"":
                 AppUtils.trimTime(enrollment.getEnrollmentDate());
         String incidentDate = enrollment.getIncidentDate()==null?"":
@@ -371,7 +384,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                 incidentDate);
         rTaskEnrollment.setEnrollmentId(enrollment.getEnrollment());
         rTaskEnrollment.setTrackedEntityInstanceId(
-                selectedTrackedEntityInstance.getTrackedEntityInstanceId());
+                rTaskTrackedEntityInstance.getTrackedEntityInstanceId());
 
 
         RTaskRequest taskRequest = RTaskRequest.create(rTaskTrackedEntityInstance,
@@ -472,8 +485,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                        for(Enrollment enrollment:enrollments.getEnrollments()){
                            if(enrollment.getTrackedEntityInstance().equals(trakedEntityInstanceId)) {
 
-                               TMEnrollProgram tmEnrollProgram = prepareTMEnrollProgram(queryResponse, program, orgId, trackedEntityInstance, events, trakedEntityInstanceId, enrollment);
-                               registerProgram(tmEnrollProgram, events);
+                               //TMEnrollProgram tmEnrollProgram = //prepareTMEnrollProgram(queryResponse, program, orgId, trackedEntityInstance, events, trakedEntityInstanceId, enrollment);
+                               //registerProgram(tmEnrollProgram, events);
                                break;
                            }
                        }

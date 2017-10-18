@@ -40,27 +40,21 @@ import org.hisp.india.trackercapture.domains.menu.SimpleItem;
 import org.hisp.india.trackercapture.domains.menu.SpaceItem;
 import org.hisp.india.trackercapture.domains.sync_queue.SyncQueueActivity_;
 import org.hisp.india.trackercapture.domains.tracked_entity.TrackedEntityActivity_;
-import org.hisp.india.trackercapture.models.base.DataValue;
-import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.base.Program;
 import org.hisp.india.trackercapture.models.base.RowModel;
-import org.hisp.india.trackercapture.models.base.TrackedEntityAttribute;
-import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.response.EventsResponse;
-import org.hisp.india.trackercapture.models.response.HeaderResponse;
+import org.hisp.india.trackercapture.models.response.PageResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
+import org.hisp.india.trackercapture.models.storage.RAttribute;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
-import org.hisp.india.trackercapture.models.storage.RTaskDataValue;
 import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
-import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 import org.hisp.india.trackercapture.models.storage.RTaskRequest;
-import org.hisp.india.trackercapture.models.storage.RTrackedEntityAttribute;
+import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
 import org.hisp.india.trackercapture.models.storage.RUser;
 import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
-import org.hisp.india.trackercapture.services.programs.DefaultProgramService;
 import org.hisp.india.trackercapture.services.sync.AutoSyncService;
 import org.hisp.india.trackercapture.services.sync.SyncBus;
 import org.hisp.india.trackercapture.services.sync.SyncQuery;
@@ -78,14 +72,13 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import es.dmoral.toasty.Toasty;
-import io.realm.RealmList;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.Replace;
 
 @EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity<MainView, MainPresenter>
-        implements MainView, DrawerAdapter.OnItemSelectedListener {
+        implements MainView, DrawerAdapter.OnItemSelectedListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @ViewById(R.id.activity_main_toolbar)
@@ -98,6 +91,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     protected View btSearch;
     @ViewById(R.id.activity_main_bt_enroll)
     protected View btEnroll;
+    @ViewById(R.id.activity_main_bt_search_local)
+    protected View btSearchLocal;
     @ViewById(R.id.activity_main_lv_program)
     protected ListView lvProgram;
     @ViewById(R.id.item_program_info_tv_header_1)
@@ -106,6 +101,12 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     protected TextView tvHeader2;
     @ViewById(R.id.item_program_info_tv_header_3)
     protected TextView tvHeader3;
+    @ViewById(R.id.tv_next)
+    protected TextView tvNext;
+    @ViewById(R.id.tv_previous)
+    protected TextView tvPrevious;
+    @ViewById(R.id.tv_page_count)
+    protected TextView tvPageCount;
 
     @App
     protected MainApplication application;
@@ -118,6 +119,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     private AutocompleteDialog dialog;
     private List<RProgram> programList;
     private List<ROrganizationUnit> organizationUnitList;
+
+    private PageResponse pageResponse;
 
     private Navigator navigator = command -> {
         if (command instanceof Replace) {
@@ -210,6 +213,9 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setAdapter(adapter);
 
+        //added by ifhaam
+        initResponseContollers();
+
         //Update info
         RUser user = presenter.getUserInfo();
        String character = "";
@@ -230,6 +236,40 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             presenter.logout();
         }
 
+
+    }
+    //added by ifhaam
+    private void initResponseContollers(){
+
+        tvNext.setOnClickListener((event)->{
+            if(pageResponse==null){
+                Toasty.info(getApplicationContext(),"No Data").show();
+            }else{
+                if(pageResponse.getPage()<pageResponse.getPageCount()){
+                    //presenter.queryPrograms(organizationUnit.getId(),program.getId(),ProgramStatus.ACTIVE,pageResponse.getPage()+1);
+                    presenter.downloadInstances(organizationUnit,program,pageResponse.getPage()+1);
+                }else{
+                    presenter.downloadInstances(organizationUnit,program);
+                    //presenter.queryPrograms(organizationUnit.getId(),program.getId(),ProgramStatus.ACTIVE);
+                }
+            }
+        });
+
+        tvPrevious.setOnClickListener((event)->{
+            if(pageResponse==null){
+                Toasty.info(getApplicationContext(),"No Data").show();
+            }else{
+                if(pageResponse.getPage()==1){
+                    presenter.downloadInstances(organizationUnit,program);
+                    //presenter.queryPrograms(organizationUnit.getId(),program.getId(),ProgramStatus.ACTIVE,pageResponse.getPageCount());
+                }else{
+                    presenter.downloadInstances(organizationUnit,program,pageResponse.getPage()-1);
+                    //presenter.queryPrograms(organizationUnit.getId(),program.getId(),ProgramStatus.ACTIVE,pageResponse.getPage()-1);
+                }
+            }
+        });
+        String pageCountText = pageResponse==null?"N/A":pageResponse.getPage()+"/"+pageResponse.getPageCount();
+        tvPageCount.setText(pageCountText);
 
     }
 
@@ -317,6 +357,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         tvProgram.setEnabled(true);
     }
 
+    @Override
+    public void queryProgramSuccess(QueryResponse queryResponse) {
+
+    }
+
     //added by ifhaam
     @Override
     public void getEventsSuccess(EventsResponse eventsResponse){
@@ -329,6 +374,199 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     public void registerProgramSyncRequest(String msg) {
         Toasty.info(this, msg).show();
         AutoSyncService.start(getApplicationContext());
+    }
+
+    //added by ifhaam
+    public void downloadInstancesSuccess(QueryResponse queryResponse, HashMap<String,String> uuidList, List<RTrackedEntityInstance> trackedEntityInstances){
+        List<String> displayInList = new ArrayList<String>();
+        List<String> rowHeader = new ArrayList<>();
+
+        for (RProgramTrackedEntityAttribute programTrackedEntityAttribute : program
+                .getProgramTrackedEntityAttributes()) {
+            if (displayInList.size() < 3 &&
+                    programTrackedEntityAttribute.isDisplayInList()) {
+                displayInList
+                        .add(programTrackedEntityAttribute.getTrackedEntityAttribute().getId());
+                rowHeader.add(programTrackedEntityAttribute.getTrackedEntityAttribute().getDisplayName());
+            }
+        }
+
+        tvHeader1.setVisibility(View.GONE);
+        tvHeader2.setVisibility(View.GONE);
+        tvHeader3.setVisibility(View.GONE);
+        if (rowHeader.size() > 0) {
+            tvHeader1.setText(rowHeader.get(0));
+            tvHeader1.setVisibility(View.VISIBLE);
+        }
+        if (rowHeader.size() > 1) {
+            tvHeader2.setText(rowHeader.get(1));
+            tvHeader2.setVisibility(View.VISIBLE);
+        }
+        if (rowHeader.size() > 2) {
+            tvHeader3.setText(rowHeader.get(2));
+            tvHeader3.setVisibility(View.VISIBLE);
+        }
+
+
+        lvProgram.setAdapter(new QuickAdapter<RTrackedEntityInstance>(this, R.layout.item_program_info, trackedEntityInstances) {
+            @Override
+            protected void convert(BaseAdapterHelper helper, RTrackedEntityInstance trackedEntityInstance) {
+                helper.setVisible(R.id.item_program_info_tv_1, false);
+                helper.setVisible(R.id.item_program_info_tv_2, false);
+                helper.setVisible(R.id.item_program_info_tv_3, false);
+
+
+                HashMap<String,String> valToDisplay = new HashMap<String, String>();
+
+                for(String id :displayInList){
+                    for(RAttribute attribute :trackedEntityInstance.getAttributeList()){
+
+                        if(id.equals(attribute.getAttributeId())){
+                            valToDisplay.put(attribute.getAttributeId(),attribute.getValue());
+                            break;
+                        }
+                    }
+
+                }
+
+                if (rowHeader.size() > 0) {
+                    String val = valToDisplay.get(displayInList.get(0));
+                    if(val==null) val ="";
+                    helper.setText(R.id.item_program_info_tv_1, val);
+                    helper.setVisible(R.id.item_program_info_tv_1, true);
+                }
+                if (rowHeader.size() > 1) {
+                    String val = valToDisplay.get(displayInList.get(1));
+                    if(val==null) val ="";
+                    helper.setText(R.id.item_program_info_tv_2, val);
+                    helper.setVisible(R.id.item_program_info_tv_2, true);
+                }
+                if (rowHeader.size() > 2) {
+                    String val = valToDisplay.get(displayInList.get(2));
+                    if(val==null) val ="";
+                    helper.setText(R.id.item_program_info_tv_3, val);
+                    helper.setVisible(R.id.item_program_info_tv_3, true);
+                }
+
+                helper.getView().setOnClickListener(v -> {
+
+                    /*removed by ifhaam
+
+                    navigator.applyCommand(new Forward(Screens.TRACKED_ENTITY,
+                            new RowModel(queryResponse.getHeaders(),
+                                    queryResponse.getRows()
+                                            .get(helper.getPosition()))));
+                    */
+
+                    //added by ifhaam for testing
+                    /*presenter.getEvents(organizationUnit,//orgunit has to be fetched from row headers as well
+                            //temperarily im using this.
+                            getTrackedInstanceId(
+                                    new RowModel(queryResponse.getHeaders()
+                                    ,queryResponse.getRows()
+                                    .get(helper.getPosition())))
+                                    ,queryResponse,program,helper.getPosition()
+                            );*/
+                    /*String trackedEntityInstanceID = getTrackedInstanceId(
+                            new RowModel(queryResponse.getHeaders()
+                                    ,queryResponse.getRows()
+                                    .get(helper.getPosition()))
+                    );*/
+                    presenter.editData(uuidList.get(trackedEntityInstance.getTrackedEntityInstanceId()));
+                });
+
+
+
+
+            }
+        });
+    }
+
+    @Override
+    public void downloadInstancesSuccess(HashMap<String,String> uuidList, List<RTrackedEntityInstance> trackedEntityInstances,PageResponse pageResponse){
+
+        this.pageResponse =pageResponse;
+        initResponseContollers();
+
+        List<String> displayInList = new ArrayList<String>();
+        List<String> rowHeader = new ArrayList<>();
+
+        for (RProgramTrackedEntityAttribute programTrackedEntityAttribute : program
+                .getProgramTrackedEntityAttributes()) {
+            if (displayInList.size() < 3 &&
+                    programTrackedEntityAttribute.isDisplayInList()) {
+                displayInList
+                        .add(programTrackedEntityAttribute.getTrackedEntityAttribute().getId());
+                rowHeader.add(programTrackedEntityAttribute.getTrackedEntityAttribute().getDisplayName());
+            }
+        }
+
+        tvHeader1.setVisibility(View.GONE);
+        tvHeader2.setVisibility(View.GONE);
+        tvHeader3.setVisibility(View.GONE);
+        if (rowHeader.size() > 0) {
+            tvHeader1.setText(rowHeader.get(0));
+            tvHeader1.setVisibility(View.VISIBLE);
+        }
+        if (rowHeader.size() > 1) {
+            tvHeader2.setText(rowHeader.get(1));
+            tvHeader2.setVisibility(View.VISIBLE);
+        }
+        if (rowHeader.size() > 2) {
+            tvHeader3.setText(rowHeader.get(2));
+            tvHeader3.setVisibility(View.VISIBLE);
+        }
+
+
+        lvProgram.setAdapter(new QuickAdapter<RTrackedEntityInstance>(this, R.layout.item_program_info, trackedEntityInstances) {
+            @Override
+            protected void convert(BaseAdapterHelper helper, RTrackedEntityInstance trackedEntityInstance) {
+                helper.setVisible(R.id.item_program_info_tv_1, false);
+                helper.setVisible(R.id.item_program_info_tv_2, false);
+                helper.setVisible(R.id.item_program_info_tv_3, false);
+
+
+                HashMap<String,String> valToDisplay = new HashMap<String, String>();
+
+                for(String id :displayInList){
+                    for(RAttribute attribute :trackedEntityInstance.getAttributeList()){
+
+                        if(id.equals(attribute.getAttributeId())){
+                            valToDisplay.put(attribute.getAttributeId(),attribute.getValue());
+                            break;
+                        }
+                    }
+
+                }
+
+                if (rowHeader.size() > 0) {
+                    String val = valToDisplay.get(displayInList.get(0));
+                    if(val==null) val ="";
+                    helper.setText(R.id.item_program_info_tv_1, val);
+                    helper.setVisible(R.id.item_program_info_tv_1, true);
+                }
+                if (rowHeader.size() > 1) {
+                    String val = valToDisplay.get(displayInList.get(1));
+                    if(val==null) val ="";
+                    helper.setText(R.id.item_program_info_tv_2, val);
+                    helper.setVisible(R.id.item_program_info_tv_2, true);
+                }
+                if (rowHeader.size() > 2) {
+                    String val = valToDisplay.get(displayInList.get(2));
+                    if(val==null) val ="";
+                    helper.setText(R.id.item_program_info_tv_3, val);
+                    helper.setVisible(R.id.item_program_info_tv_3, true);
+                }
+
+                helper.getView().setOnClickListener(v -> {
+                    presenter.editData(uuidList.get(trackedEntityInstance.getTrackedEntityInstanceId()));
+                });
+
+
+
+
+            }
+        });
     }
 
     @Override
@@ -404,6 +642,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                     helper.setText(R.id.item_program_info_tv_3, item.get(2));
                     helper.setVisible(R.id.item_program_info_tv_3, true);
                 }
+
                 helper.getView().setOnClickListener(v -> {
 
                     /*removed by ifhaam
@@ -439,8 +678,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     }
 
     @Override
-    public void queryProgramSuccess(QueryResponse queryResponse) {
-        presenter.prepareDataTemp(organizationUnit,program,queryResponse);
+    public void queryProgramSuccess(QueryResponse queryResponse,int page) {
+       // uuidList = new ArrayList<>();
+        //presenter.downloadInstances(organizationUnit,program,queryResponse,page);
+        pageResponse = queryResponse.getMetaData().getPager();
+        initResponseContollers();
     }
 
 
@@ -475,6 +717,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     public void hideCircleProgressView() {
         runOnUiThread(() -> enableCircleProgressView(false));
     }
+
 
     @Subscribe
     public void progressSubscribe(ProgressBus progressBus) {
@@ -536,8 +779,14 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
     @Click(R.id.activity_main_bt_search)
     void btSearch() {
-        presenter.queryPrograms(organizationUnit.getId(), program.getId(), ProgramStatus.ACTIVE);
+       // removed by ifhaam presenter.queryPrograms(organizationUnit.getId(), program.getId(), ProgramStatus.ACTIVE);
+        presenter.downloadInstances(organizationUnit,program);
 
+    }
+
+    @Click(R.id.activity_main_bt_search_local)
+    void btSerachLocal(){
+        presenter.getInstancesLocal(program,organizationUnit);
     }
 
     private void updateBtSearch() {
@@ -557,5 +806,10 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     public Program getProgram(){
         //Observable<Program> a =  new DefaultProgramService().getProgramDetail("");
         return null;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }

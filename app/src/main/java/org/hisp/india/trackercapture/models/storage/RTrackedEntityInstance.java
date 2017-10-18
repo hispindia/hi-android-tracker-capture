@@ -17,6 +17,26 @@ public class RTrackedEntityInstance extends RealmObject {
     private String programId;
     private RealmList<RAttribute> attributeList;
 
+    public static RTrackedEntityInstance create(RTaskTrackedEntityInstance taskTrackedEntityInstance){
+        RTrackedEntityInstance trackedEntityInstance = new RTrackedEntityInstance();
+        trackedEntityInstance.setTrackedEntityInstanceId(taskTrackedEntityInstance.getTrackedEntityInstanceId());
+        trackedEntityInstance.setTrackedEntityId(taskTrackedEntityInstance.getTrackedEntityId());
+        trackedEntityInstance.setOrgUnitId(taskTrackedEntityInstance.getOrgUnitId());
+        trackedEntityInstance.setProgramId(taskTrackedEntityInstance.getProgramId());
+        trackedEntityInstance.setAttributeList(new RealmList<>());
+        for(RTaskAttribute taskAttribute : taskTrackedEntityInstance.getAttributeRequestList()){
+            RAttribute attribute = new RAttribute();
+            attribute.setAttributeId(taskAttribute.getAttributeId());
+            attribute.setValue(taskAttribute.getValue());
+            attribute.setDisplayName(taskAttribute.getDisplayName());
+            attribute.setValueType(taskAttribute.getValueType());
+            trackedEntityInstance.getAttributeList().add(attribute);
+        }
+
+        return trackedEntityInstance;
+
+    }
+
     public String getTrackedEntityInstanceId() {
         return trackedEntityInstanceId;
     }
