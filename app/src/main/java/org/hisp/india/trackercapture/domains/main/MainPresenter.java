@@ -4,25 +4,23 @@ import android.util.Log;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 
+import org.hisp.india.core.services.network.DefaultNetworkProvider;
+import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.core.services.schedulers.RxScheduler;
 import org.hisp.india.trackercapture.models.base.DataValue;
 import org.hisp.india.trackercapture.models.base.Enrollment;
 import org.hisp.india.trackercapture.models.base.Event;
 import org.hisp.india.trackercapture.models.base.OrganizationUnit;
-import org.hisp.india.trackercapture.models.base.RowModel;
 import org.hisp.india.trackercapture.models.base.TrackedEntityInstance;
-import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
 import org.hisp.india.trackercapture.models.e_num.SyncKey;
 import org.hisp.india.trackercapture.models.response.EnrollmentsResponse;
 import org.hisp.india.trackercapture.models.response.EventsResponse;
 import org.hisp.india.trackercapture.models.response.OrganizationUnitsResponse;
 import org.hisp.india.trackercapture.models.response.PageResponse;
-import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.storage.RAttribute;
 import org.hisp.india.trackercapture.models.storage.RMapping;
 import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
-import org.hisp.india.trackercapture.models.storage.RProgramTrackedEntityAttribute;
 import org.hisp.india.trackercapture.models.storage.RSync;
 import org.hisp.india.trackercapture.models.storage.RTaskAttribute;
 import org.hisp.india.trackercapture.models.storage.RTaskDataValue;
@@ -56,7 +54,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.realm.RealmList;
+
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
 import rx.Observable;
@@ -91,9 +89,6 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
     private List<RTrackedEntityInstance> trackedEntityInstances;
 
-    private RTrackedEntityInstance selectedTrackedEntityInstance;
-
-    private PageResponse pageResponse;
 
     @Inject
     public MainPresenter(Router router, NavigatorHolder navigatorHolder, AccountService accountService,
@@ -103,6 +98,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         this.accountService = accountService;
         this.trackedEntityInstanceService = trackedEntityInstanceService;
         this.taskRequestNonQueueService = new DefaultRTaskRequestNonQueueService();
+
     }
 
     @Override
@@ -135,105 +131,28 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         }
     }
 
-    //changed by ifhaam not used now
-    public void queryPrograms(String orgUnitId, String programId, ProgramStatus programStatus) {
-        queryPrograms(orgUnitId,programId,programStatus,1);
-
-    }
-
-    //changed by ifhaam not used now 
-    public void queryPrograms(String orgUnitId, String programId, ProgramStatus programStatus,int page) {
-        RxScheduler.onStop(subscription);
-        getView().showLoading();
-        subscription = trackedEntityInstanceService
-                .queryTrackedEntityInstances(orgUnitId, programId, programStatus,page)
-                .compose(RxScheduler.applyIoSchedulers())
-                .doOnTerminate(() -> {
-                    getView().hideLoading();
-                })
-                .subscribe(queryResponse -> {
-                    getView().queryProgramSuccess(queryResponse,page);
-                });
-
+    //added by ifhaam
+    public void downloadInstances(ROrganizationUnit organizationUnit, RProgram rProgram){
+        downloadInstances(organizationUnit,rProgram,1);
+        RTaskRequestNonQueueQuery.clearTaskNonQueue(rProgram,organizationUnit);
     }
 
     //added by ifhaam
-    public List<RTaskAttribute> getTaskAttributes(QueryResponse queryResponse,
-                                                  RealmList<RProgramTrackedEntityAttribute> attributes,
-                                                    String trackedEntityInstanceId){
-        List<RTaskAttribute> rTastAttributes = new ArrayList<>();
-
-        //find the instance
-        int trackedEntityInstance = -1;
-        int x=0;
-        for(List<String> row :queryResponse.getRows()){
-            if(row.get(0).equals(trackedEntityInstanceId)) {
-                trackedEntityInstance = x;
-                break;
-            }
-            x++;
-        }
-
-        if(trackedEntityInstance!=-1) {
-            for (RProgramTrackedEntityAttribute attribute : attributes) {
-                for (int i = 0; i < queryResponse.getHeaders().size(); i++) {
-
-                    if (queryResponse.getHeaders().get(i).getName().equals(attribute.getTrackedEntityAttribute().getId())) {
-                        RTaskAttribute rTaskAttribute = RTaskAttribute.create(attribute.getTrackedEntityAttribute().getId(),
-                                queryResponse.getRows().get(trackedEntityInstance).get(i), attribute.getDisplayName()
-                                , attribute.getValueType().toString());
-                        rTastAttributes.add(rTaskAttribute);
-                        break;
-                    }
-                }
-            }
-        }
-
-        return rTastAttributes;
-    }
-
-
-
-
-
-    //added by ifhaam on 28/09/2017
-    public void getEvents(ROrganizationUnit orgUnit,String trackedInstanceId,QueryResponse queryResponse,
-                          RProgram program,int trackedEntityInstance
-            ){
-        String orgUnitId = orgUnit.getId();
-        RxScheduler.onStop(subscription);
-        getView().showLoading("Fetching Stage Details");
-        subscription = trackedEntityInstanceService
-                .getEvents(orgUnitId,trackedInstanceId)
-                .compose(RxScheduler.applyIoSchedulers())
-                .doOnTerminate(()->getView().hideLoading())
-                .doOnError((action)->{
-                            getView().hideLoading();
-                            getView().showError(action.getMessage());
-                        }
-
-                )
-                .subscribe(eventsResponse -> {
-                    //getView().getEventsSuccess(eventsResponse);
-                    List<RTaskEvent> events = getRTastEvents(eventsResponse);
-                    getTrakedEntityInstance(orgUnitId,trackedInstanceId,queryResponse,program,trackedEntityInstance,events);
-                    Log.i(" TAG "," TEI Received");
-              });
-    }
-
-    public void downloadInstances(ROrganizationUnit organizationUnit, RProgram rProgram){
-        downloadInstances(organizationUnit,rProgram,1);
-    }
-
     public void downloadInstances(ROrganizationUnit organizationUnit, RProgram rProgram, int page){
-        RTaskRequestNonQueueQuery.clear();
+        RTaskRequestNonQueueQuery.clearTaskQueue();
         HashMap<String,String> uuidList  = new HashMap<>();
         List<PageResponse> pageResponse = new ArrayList<>();
         RxScheduler.onStop(subscription);
-        getView().showLoading();
+        getView().showLoading("Downloading TEI...");
         trackedEntityInstances = new ArrayList<>();
         subscription = trackedEntityInstanceService
                 .getTrackedEntityInstances(organizationUnit.getId(),rProgram.getId(),page)
+
+                .doOnError((error)->{
+                    getView().showError("Error downloading data try again");
+                    Log.i(TAG,error.getMessage());
+                })
+
                 .compose(RxScheduler.applyIoSchedulers())
                 .flatMap(trackedEntityInstancesResponse->{
                     pageResponse.add(trackedEntityInstancesResponse.getPager());
@@ -241,10 +160,13 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                             trackedEntityInstancesResponse.getTrackedEntityInstances()){
                         trackedEntityInstances.add(RMapping.from(trackedEntityInstance));
                     }
+                    getView().hideCircleProgressView();
+                    getView().showLoading("Retrieving Event Data...");
                     return Observable.from(trackedEntityInstances);
                 })
 
                 .flatMap(trackedEntityInstance->{
+
                     Observable<EventsResponse> eventsObservable = trackedEntityInstanceService
                             .getEvents(organizationUnit.getId(),
                                     trackedEntityInstance.getTrackedEntityInstanceId(), rProgram.getId())
@@ -258,7 +180,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                      return Observable.zip(eventsObservable,enrollmentObservable,
                             (eventsResponse,enrollmentsResponse)->{
 
-                                List<RTaskEvent> events = getRTastEvents(eventsResponse);
+                                List<RTaskEvent> events = getRTaskEvents(eventsResponse);
                                 Enrollment enrollment = enrollmentsResponse.getEnrollments().get(0);
                                 TMEnrollProgram tmEnrollProgram ;
                                 if (enrollment.getTrackedEntityInstance().equals(trackedEntityInstance.getTrackedEntityInstanceId())) {
@@ -293,6 +215,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                     }
                 })
                 .compose(RxScheduler.applyIoSchedulers())
+
                 .doOnCompleted(()->{
                             if(trackedEntityInstances.size()==uuidList.size() && trackedEntityInstances.size()>0){
                                 getView().downloadInstancesSuccess(uuidList,trackedEntityInstances,pageResponse.get(0));
@@ -301,14 +224,16 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                             }else{
                                 getView().showError("Not completed try re syncing");
                             }
-                            getView().hideLoading();
+
                 })
+                .doOnTerminate(()->getView().hideLoading())
                 .subscribe();
 
 
 
     }
 
+    //added by ifhaam
     public void getInstancesLocal(RProgram program,ROrganizationUnit organizationUnit){
         HashMap<String,String> uuidList = new HashMap<>();
         List<RTrackedEntityInstance> trackedEntityInstances = new ArrayList<>();
@@ -317,8 +242,12 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         subscription = taskRequestNonQueueService.getRTaskRequestNonQueryLocal(program,organizationUnit)
                     .compose(RxScheduler.applyIoSchedulers())
                     .doOnCompleted(()->{
-                        getView().hideLoading();
                         getView().downloadInstancesSuccess(uuidList,trackedEntityInstances,null);
+                    })
+                    .doOnTerminate(()->getView().hideLoading())
+                    .doOnError((error)->{
+                        getView().showError("Error downloading data try again");
+                        Log.i(TAG,error.getMessage());
                     })
                     .doOnNext((taskRequestNonQueueList)->{
                         for(RTaskRequestNonQueue taskRequestNonQueue:taskRequestNonQueueList){
@@ -345,15 +274,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         }
     }
 
-    //added by ifhaam
-    private String getTrackedInstanceId(RowModel rowModel){
-        for(int i=0;i< rowModel.getHeaders().size();i++){
-            if(rowModel.getHeaders().get(i).getName().equals("instance")){
-                return rowModel.getRows().get(i);
-            }
-        }
-        return "";
-    }
+
 
     //ADDED BY IFHAAM ON 3/9/2017
     private TMEnrollProgram prepareTMEnrollProgram(RProgram program,String orgUnitID
@@ -398,7 +319,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     }
 
     //added by ifhaam
-    public List<RTaskEvent> getRTastEvents(EventsResponse eventsResponse){
+    public List<RTaskEvent> getRTaskEvents(EventsResponse eventsResponse){
         List<Event> events = eventsResponse.getEvents();
         List<RTaskEvent> rTaskEvents = new ArrayList<>();
         for(Event event:events){
@@ -425,75 +346,8 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         return rTaskEvents;
     }
 
-    //added by ifhaam
-    public void registerProgram(TMEnrollProgram tmEnrollProgram, List<RTaskEvent> eventList) {
-        RTaskRequest taskRequest = tmEnrollProgram.getTaskRequest();
-        if (taskRequest == null) {
-            taskRequest = RTaskRequest.create(tmEnrollProgram.getTaskRequest().getTrackedEntityInstance(),
-                    tmEnrollProgram.getTaskRequest().getEnrollment(),
-                    eventList);
-        } else {
-            taskRequest.setNeedSync(true);
-            taskRequest.setEventList(eventList);
-        }
 
-        taskRequest.save();
 
-        getView().registerProgramSyncRequest("Added into queue.");
-        router.exit();
-    }
-
-    //added by ifhaam
-    public void getTrakedEntityInstance(String orgId,String tei,QueryResponse queryResponse,
-                                        RProgram program,int trackedEntityInstance
-            ,List<RTaskEvent> events){
-        RxScheduler.onStop(subscription);
-        getView().showLoading(" Getting TEI data");
-        subscription = (trackedEntityInstanceService)
-                //.getTrackedEntituInstanceLocal(orgId, programId, tei)
-                .getTrackedEntityInstances(orgId,program.getId())
-                .compose(RxScheduler.applyIoSchedulers())
-                .doOnTerminate(() -> {
-                    Log.i(TAG," Succcccccccccccceeeeeeeeeed");
-                    getView().hideLoading();
-                    getEnrollment(tei,queryResponse,program,trackedEntityInstance,orgId,events);
-
-                })
-                .doOnError((Error)-> getView().hideLoading())
-                .subscribe(trackedEntityInstances -> {
-                    this.trackedEntityInstances = new ArrayList<>();
-                    for(TrackedEntityInstance trackedEntityInstance1:trackedEntityInstances.getTrackedEntityInstances()){
-                        this.trackedEntityInstances.add(RMapping.from(trackedEntityInstance1));
-                    }
-
-                });
-    }
-
-    public void getEnrollment(String trakedEntityInstanceId,QueryResponse queryResponse,
-                              RProgram program,int trackedEntityInstance,String orgId,List<RTaskEvent> events){
-
-        RxScheduler.onStop(subscription);
-        subscription = enrollmentService
-                .getEnrollments(trakedEntityInstanceId)
-                .compose(RxScheduler.applyIoSchedulers())
-                .doOnTerminate(()->{
-                    Log.i(TAG," Enrollment Synced");
-                    getView().hideLoading();
-                }
-                )
-                .subscribe(enrollments->{
-                       for(Enrollment enrollment:enrollments.getEnrollments()){
-                           if(enrollment.getTrackedEntityInstance().equals(trakedEntityInstanceId)) {
-
-                               //TMEnrollProgram tmEnrollProgram = //prepareTMEnrollProgram(queryResponse, program, orgId, trackedEntityInstance, events, trakedEntityInstanceId, enrollment);
-                               //registerProgram(tmEnrollProgram, events);
-                               break;
-                           }
-                       }
-                }
-
-                );
-    }
 
     public void fetchingAllOrgs() {
         RSync flagSync = SyncQuery.getSyncRowByKey(SyncKey.ROrganizationUnit);

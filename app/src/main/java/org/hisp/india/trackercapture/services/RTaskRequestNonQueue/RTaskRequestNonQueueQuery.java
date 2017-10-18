@@ -8,6 +8,7 @@ import org.hisp.india.trackercapture.utils.RealmHelper;
 
 import java.util.List;
 
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
@@ -48,10 +49,21 @@ public class RTaskRequestNonQueueQuery {
         });
     }
 
-    public static void clear(){
+    public static void clearTaskQueue(){
         RealmHelper.transaction(realm->realm.where(RTaskRequest.class).findAll().deleteAllFromRealm());
         //RealmHelper.transaction(realm -> realm.where(RTaskRequestNonQueue.class).findAll().deleteAllFromRealm());
 
+    }
+
+    public static void clearTaskNonQueue(){
+        RealmHelper.transaction(realm -> realm.where(RTaskRequestNonQueue.class).findAll().deleteAllFromRealm());
+    }
+
+    public static void clearTaskNonQueue(RProgram program, ROrganizationUnit organizationUnit){
+        RealmHelper.transaction(realm-> realm.where(RTaskRequestNonQueue.class)
+                .equalTo("enrollment.orgUnitId",organizationUnit.getId())
+                .equalTo("enrollment.programId",program.getId())
+                .findAll().deleteAllFromRealm());
     }
 
 }

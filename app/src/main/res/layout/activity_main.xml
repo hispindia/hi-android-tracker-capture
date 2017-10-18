@@ -201,7 +201,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/bt_enroll"
+                    android:src="@drawable/bt_search_local"
                     />
             </FrameLayout>
             </LinearLayout>
@@ -235,19 +235,6 @@
                         android:weightSum="1"
                         >
                         <!--What you want to show-->
-                        <TextView
-                            android:id="@+id/tv_previous"
-                            fontPath="fonts/Montserrat-Regular.ttf"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:paddingLeft="15dp"
-                            android:paddingRight="15dp"
-                            android:text="Previous"
-                            android:textColor="#fff"
-                            android:textSize="16sp"
-                            android:background="#012CA5"
-                            />
                         <TextView
                             android:id="@+id/tv_page_count"
                             fontPath="fonts/Montserrat-Regular.ttf"

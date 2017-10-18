@@ -27,6 +27,7 @@ import org.androidannotations.annotations.ViewById;
 import org.greenrobot.eventbus.Subscribe;
 import org.hisp.india.core.bus.ProgressBus;
 import org.hisp.india.core.services.network.DefaultNetworkProvider;
+import org.hisp.india.core.services.network.NetworkProvider;
 import org.hisp.india.trackercapture.MainApplication;
 import org.hisp.india.trackercapture.R;
 import org.hisp.india.trackercapture.domains.base.BaseActivity;
@@ -103,8 +104,6 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     protected TextView tvHeader3;
     @ViewById(R.id.tv_next)
     protected TextView tvNext;
-    @ViewById(R.id.tv_previous)
-    protected TextView tvPrevious;
     @ViewById(R.id.tv_page_count)
     protected TextView tvPageCount;
 
@@ -121,6 +120,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     private List<ROrganizationUnit> organizationUnitList;
 
     private PageResponse pageResponse;
+
+    private NetworkProvider networkProvider;
 
     private Navigator navigator = command -> {
         if (command instanceof Replace) {
@@ -218,7 +219,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
 
         //Update info
         RUser user = presenter.getUserInfo();
-       String character = "";
+        String character = "";
         if (user != null) {
             if (!TextUtils.isEmpty(user.getFirstName()) && !TextUtils.isEmpty(user.getSurName())) {
                 character = String.valueOf(user.getFirstName().charAt(0)) +
@@ -231,6 +232,8 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
             tvDisplayName.setText(user.getDisplayName());
             tvEmail.setText(user.getEmail());
             updateBtSearch();
+            //added by ifhaam
+            networkProvider = new DefaultNetworkProvider(this,false);
 
         } else {
             presenter.logout();
@@ -244,30 +247,20 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         tvNext.setOnClickListener((event)->{
             if(pageResponse==null){
                 Toasty.info(getApplicationContext(),"No Data").show();
-            }else{
+            }else if(networkProvider.isNetworkAvailable()) {
                 if(pageResponse.getPage()<pageResponse.getPageCount()){
                     //presenter.queryPrograms(organizationUnit.getId(),program.getId(),ProgramStatus.ACTIVE,pageResponse.getPage()+1);
-                    presenter.downloadInstances(organizationUnit,program,pageResponse.getPage()+1);
+                    presenter.downloadInstances(organizationUnit, program, pageResponse.getPage() + 1);
+
                 }else{
                     presenter.downloadInstances(organizationUnit,program);
                     //presenter.queryPrograms(organizationUnit.getId(),program.getId(),ProgramStatus.ACTIVE);
                 }
+            }else{
+                showError("No Network");
             }
         });
 
-        tvPrevious.setOnClickListener((event)->{
-            if(pageResponse==null){
-                Toasty.info(getApplicationContext(),"No Data").show();
-            }else{
-                if(pageResponse.getPage()==1){
-                    presenter.downloadInstances(organizationUnit,program);
-                    //presenter.queryPrograms(organizationUnit.getId(),program.getId(),ProgramStatus.ACTIVE,pageResponse.getPageCount());
-                }else{
-                    presenter.downloadInstances(organizationUnit,program,pageResponse.getPage()-1);
-                    //presenter.queryPrograms(organizationUnit.getId(),program.getId(),ProgramStatus.ACTIVE,pageResponse.getPage()-1);
-                }
-            }
-        });
         String pageCountText = pageResponse==null?"N/A":pageResponse.getPage()+"/"+pageResponse.getPageCount();
         tvPageCount.setText(pageCountText);
 
@@ -780,7 +773,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
     @Click(R.id.activity_main_bt_search)
     void btSearch() {
        // removed by ifhaam presenter.queryPrograms(organizationUnit.getId(), program.getId(), ProgramStatus.ACTIVE);
-        presenter.downloadInstances(organizationUnit,program);
+        if(networkProvider.isNetworkAvailable()){
+            presenter.downloadInstances(organizationUnit,program);
+        }else{
+            showError("No Network");
+        }
 
     }
 
@@ -793,9 +790,11 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
         if (program != null && organizationUnit != null) {
             btSearch.setEnabled(true);
             btEnroll.setEnabled(true);
+            btSearchLocal.setEnabled(true);
         } else {
             btSearch.setEnabled(false);
             btEnroll.setEnabled(false);
+            btSearchLocal.setEnabled(false);
         }
     }
 

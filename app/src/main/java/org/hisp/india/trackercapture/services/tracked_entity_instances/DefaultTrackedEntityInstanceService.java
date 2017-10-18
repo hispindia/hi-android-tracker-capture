@@ -86,9 +86,10 @@ public class DefaultTrackedEntityInstanceService implements TrackedEntityInstanc
     }
 
     @Override
-    public Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(String orgUnitId, String programId, int page) {
-        return networkProvider.transformResponse(restService.getTrackedEntityInstances(orgUnitId,programId,page));
+    public Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(String orgUnitId, String programId, int page){
+        return networkProvider.transformResponse(restService.getTrackedEntityInstances(orgUnitId, programId, page));
     }
+
 
 
 }
