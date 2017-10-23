@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage_detail;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
@@ -22,6 +23,7 @@ import org.hisp.india.trackercapture.domains.base.BaseActivity;
 import org.hisp.india.trackercapture.domains.enroll_program_stage.EnrollProgramStageActivity;
 import org.hisp.india.trackercapture.models.base.StageDetail;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
+import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
 import org.hisp.india.trackercapture.models.storage.RProgramStageDataElement;
 import org.hisp.india.trackercapture.utils.AppUtils;
@@ -70,11 +72,12 @@ public class EnrollProgramStageDetailActivity
     protected MainApplication application;
     @Extra
     protected String programStageStr;
-    @Extra
-    protected String orgUnitJson;
+
     @Inject
     protected EnrollProgramStageDetailPresenter presenter;
     private RProgramStage programStage;
+
+
     private EnrollProgramStageSectionDetailAdapter adapter;
     private AutocompleteDialog dialog;
 
@@ -87,7 +90,6 @@ public class EnrollProgramStageDetailActivity
                                                       tvReportDateValue.getText().toString(),
                                                       adapter.getProgramStageDataElementList());
             intent.putExtra(EnrollProgramStageActivity.ENROLL_REQUEST_DATA, stageDetail.toString());
-            intent.
             setResult(EnrollProgramStageActivity.ENROLL_REQUEST_CODE, intent);
             finish();
         }
@@ -107,6 +109,7 @@ public class EnrollProgramStageDetailActivity
         AppUtils.changeStatusBarColor(this);
         //Setup toolbar
         programStage = RProgramStage.fromJson(programStageStr);
+
         toolbar.applyEnrollProgramStageDetailUi(this, programStage.getDisplayName(),
                                                 () -> presenter.onBackCommandClick());
 

@@ -59,7 +59,8 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     protected TMEnrollProgram tmEnrollProgram;
     @Extra
     protected boolean toRegisterNew;
-
+    @Extra
+    protected String orgUnitJson;
     @Inject
     protected EnrollProgramPresenter presenter;
 
@@ -75,6 +76,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
 
                 EnrollProgramStageActivity_.intent(this)
                         .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
+                        .organizationUnitJson(orgUnitJson)
                         .start();
             }
         }

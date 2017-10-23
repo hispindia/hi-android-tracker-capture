@@ -2,6 +2,7 @@ package org.hisp.india.trackercapture.domains.enroll_program_stage;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,6 +55,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     public static final int ENROLL_REQUEST_CODE = 1;
     public static final String ENROLL_REQUEST_DATA = "ENROLL_REQUEST_DATA";
     private static final String TAG = EnrollProgramStageActivity.class.getSimpleName();
+    public static final String ORG_UNIT_JSON = "ORG_UNIT_JSON";
     @ViewById(R.id.activity_enroll_program_stage_toolbar)
     protected NToolbar toolbar;
     @ViewById(R.id.fragment_enroll_program_stage_incident_date)
@@ -81,8 +83,8 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
 
     //added by ifhaam
     @Extra
-    protected String organizationUnitJson; //ends
-    protected ROrganizationUnit organizationUnit;
+    protected String organizationUnitJson;
+    protected ROrganizationUnit organizationUnit;//ends
     @Extra
     protected String tmEnrollProgramJson;
     protected TMEnrollProgram tmEnrollProgram;
@@ -109,6 +111,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
                 }
                 EnrollProgramActivity_.intent(this)
                                       .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
+                                      .orgUnitJson(ROrganizationUnit.toJson(organizationUnit))
                                       .toRegisterNew(toRegisterNew)
                                       .fromScreenName(Screens.ENROLL_PROGRAM_STAGE)
                                       .start();
@@ -136,12 +139,11 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         tmEnrollProgram = TMEnrollProgram.fromJson(tmEnrollProgramJson);
 
         //added by ifhaam
+        if(organizationUnitJson!=null) {
+            organizationUnit = ROrganizationUnit.fromJson(organizationUnitJson);
+        }
 
-
-        organizationUnit = ROrganizationUnit.fromJson(organizationUnitJson);
-
-
-        if(organizationUnitJson!=null && organizationUnit.getPrograms().size()>0){
+        if(organizationUnit!=null && organizationUnit.getPrograms().size()>0){
             for(RProgram program :organizationUnit.getPrograms()) {
                 programs.add(program);
             }
@@ -245,6 +247,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @OnActivityResult(ENROLL_REQUEST_CODE)
     protected void onResult(int resultCode, Intent data) {
         String stageDetailStr = data.getStringExtra(ENROLL_REQUEST_DATA);
+        organizationUnitJson = data.getStringExtra(ORG_UNIT_JSON);
         if (stageDetailStr != null) {
             StageDetail stageDetail = StageDetail.fromJson(stageDetailStr);
             adapter.updateProgramStageDataElement(stageDetail);
