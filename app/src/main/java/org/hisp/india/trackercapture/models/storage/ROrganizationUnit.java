@@ -1,5 +1,7 @@
 package org.hisp.india.trackercapture.models.storage;
 
+import com.google.gson.Gson;
+
 import org.hisp.india.trackercapture.models.base.Model;
 
 import io.realm.RealmList;
@@ -68,6 +70,14 @@ public class ROrganizationUnit extends RealmObject implements Model {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public static String toJson(ROrganizationUnit organizationUnit){
+        return new Gson().toJson(organizationUnit);
+    }
+
+    public static ROrganizationUnit fromJson(String json){
+        return new Gson().fromJson(json,ROrganizationUnit.class);
     }
 }
 

@@ -23,15 +23,20 @@ import org.hisp.india.trackercapture.domains.enroll_program.EnrollProgramActivit
 import org.hisp.india.trackercapture.domains.enroll_program_stage_detail.EnrollProgramStageDetailActivity_;
 import org.hisp.india.trackercapture.models.base.StageDetail;
 import org.hisp.india.trackercapture.models.e_num.ProgramStatus;
+import org.hisp.india.trackercapture.models.response.OrganizationUnitsResponse;
+import org.hisp.india.trackercapture.models.storage.ROrganizationUnit;
 import org.hisp.india.trackercapture.models.storage.RProgram;
 import org.hisp.india.trackercapture.models.storage.RProgramStage;
 import org.hisp.india.trackercapture.models.storage.RTaskEnrollment;
 import org.hisp.india.trackercapture.models.storage.RTaskEvent;
+import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
 import org.hisp.india.trackercapture.services.sync.AutoSyncService;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
+import org.hisp.india.trackercapture.widgets.autocomplete.AutocompleteDialog;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,26 +72,44 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     protected ListView lvStage;
     @ViewById(R.id.activity_main_root_scroll)
     protected View vRoot;
+    @ViewById(R.id.tv_select_program)
+    protected TextView selectProgram;
+
 
     @App
     protected MainApplication application;
+
+    //added by ifhaam
+    @Extra
+    protected String organizationUnitJson; //ends
+    protected ROrganizationUnit organizationUnit;
     @Extra
     protected String tmEnrollProgramJson;
     protected TMEnrollProgram tmEnrollProgram;
+
 
     @Inject
     protected EnrollProgramStagePresenter presenter;
 
     private EnrollProgramStageAdapter adapter;
 
+    private AutocompleteDialog dialog;
+
+    private boolean toRegisterNew;
+    ArrayList<RProgram> programs = new ArrayList<>();
     private Navigator navigator = command -> {
         if (command instanceof Back) {
             finish();
         } else if (command instanceof Forward) {
             if (((Forward) command).getScreenKey().equals(Screens.ENROLL_PROGRAM)) {
                 finish();
+                TMEnrollProgram enrollProgram = (TMEnrollProgram)((Forward)command).getTransitionData();
+                if(enrollProgram!=null){
+                    tmEnrollProgram = enrollProgram;
+                }
                 EnrollProgramActivity_.intent(this)
                                       .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
+                                      .toRegisterNew(toRegisterNew)
                                       .fromScreenName(Screens.ENROLL_PROGRAM_STAGE)
                                       .start();
 
@@ -111,6 +134,21 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @AfterViews
     void init() {
         tmEnrollProgram = TMEnrollProgram.fromJson(tmEnrollProgramJson);
+
+        //added by ifhaam
+
+
+        organizationUnit = ROrganizationUnit.fromJson(organizationUnitJson);
+
+
+        if(organizationUnitJson!=null && organizationUnit.getPrograms().size()>0){
+            for(RProgram program :organizationUnit.getPrograms()) {
+                programs.add(program);
+            }
+
+        }
+
+        selectProgram.setText(tmEnrollProgram.getProgram().getDisplayName());
 
         //Making notification bar transparent
         AppUtils.changeStatusBarColor(this);
@@ -183,6 +221,8 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             lvStage.post(() -> AppUtils.refreshListViewAsNonScroll(lvStage));
             vRoot.setVisibility(View.VISIBLE);
 
+
+
             adapter.populateData(tmEnrollProgram.getTaskRequest());
         }
     }
@@ -214,6 +254,31 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @Click(R.id.fragment_enroll_program_stage_v_basic_info)
     protected void vBasicInfoClick() {
         navigator.applyCommand(new Forward(Screens.ENROLL_PROGRAM, null));
+    }
+
+    @Click(R.id.tv_select_program)
+    protected void tvSelectProgramClick(){
+        if (programs.size()>0) {
+            dialog = AutocompleteDialog.newInstance(programs, (model) -> {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                selectProgram.setText(model.getDisplayName());
+                TMEnrollProgram newEnrollProgram = new TMEnrollProgram(organizationUnit.getId(),model.getId());
+                //newEnrollProgram.getTaskRequest().setTrackedEntityInstance(tmEnrollProgram.getTaskRequest().getTrackedEntityInstance());
+                newEnrollProgram = newEnrollProgram.setTrackedEntityInstance(tmEnrollProgram.getTaskRequest().getTrackedEntityInstance().getAttributeRequestList());
+                newEnrollProgram.getTaskRequest().getTrackedEntityInstance().setTrackedEntityInstanceId(
+                        tmEnrollProgram.getTaskRequest().getTrackedEntityInstance().getTrackedEntityInstanceId()
+                );
+                toRegisterNew = true;
+                presenter.enrollAnotherProgram(newEnrollProgram);
+            });
+            dialog.show(getSupportFragmentManager());
+        }else{
+            selectProgram.setText(tmEnrollProgram.getProgram().getDisplayName());
+        }
+
+
     }
 
     public List<RTaskEvent> getEventList(List<RProgramStage> programStageList) {

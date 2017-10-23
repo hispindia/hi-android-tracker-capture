@@ -74,4 +74,8 @@ public class EnrollProgramStagePresenter extends MvpBasePresenter<EnrollProgramS
         router.navigateTo(Screens.ENROLL_PROGRAM_STAGE_DETAIL, programStage);
     }
 
+    public void enrollAnotherProgram(TMEnrollProgram tmEnrollProgram){
+        router.navigateTo(Screens.ENROLL_PROGRAM,tmEnrollProgram);
+    }
+
 }

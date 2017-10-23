@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         android:scrollbars="none"
         >
-
         <LinearLayout
             android:id="@+id/activity_main_root_scroll"
             android:layout_width="match_parent"
@@ -23,6 +22,42 @@
             android:visibility="invisible"
             tools:ignore="MissingPrefix"
             >
+
+            <!--added by ifhaam 23/10/17-->
+
+            <LinearLayout
+                android:id="@+id/fragment_other_program"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/bg_dialog"
+                android:orientation="vertical"
+                android:paddingBottom="25dp"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/tv_select_program"
+                    fontPath="fonts/Montserrat-Regular.ttf"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Select Program"
+                    android:textColor="#6A89DF"
+                    android:textSize="16sp"
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#5f626262"
+                    android:textColorHint="#626262"
+                    />
+                </LinearLayout>
+
+            <!--added by ifhaam END -->
+
+
 
             <LinearLayout
                 android:id="@+id/fragment_enroll_program_stage_v_basic_info"
@@ -36,6 +71,8 @@
                 android:paddingRight="25dp"
                 android:paddingTop="10dp"
                 >
+
+
 
                 <RelativeLayout
                     android:layout_width="match_parent"

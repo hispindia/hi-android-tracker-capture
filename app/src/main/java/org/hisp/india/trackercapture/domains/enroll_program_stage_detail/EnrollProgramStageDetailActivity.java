@@ -70,6 +70,8 @@ public class EnrollProgramStageDetailActivity
     protected MainApplication application;
     @Extra
     protected String programStageStr;
+    @Extra
+    protected String orgUnitJson;
     @Inject
     protected EnrollProgramStageDetailPresenter presenter;
     private RProgramStage programStage;
@@ -85,6 +87,7 @@ public class EnrollProgramStageDetailActivity
                                                       tvReportDateValue.getText().toString(),
                                                       adapter.getProgramStageDataElementList());
             intent.putExtra(EnrollProgramStageActivity.ENROLL_REQUEST_DATA, stageDetail.toString());
+            intent.
             setResult(EnrollProgramStageActivity.ENROLL_REQUEST_CODE, intent);
             finish();
         }

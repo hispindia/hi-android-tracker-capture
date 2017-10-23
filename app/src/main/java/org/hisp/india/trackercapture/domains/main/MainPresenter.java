@@ -268,6 +268,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         //String trackedEntityInstance = getTrackedInstanceId(new RowModel(queryResponse.getHeaders(),queryResponse.getRows().get(position)));
         //String rTaskQueryId = SyncQuery.getRTaskRequest(uuid).getUuid();
         try {
+
             router.navigateTo(Screens.ENROLL_PROGRAM_STAGE, uuid);
         }catch (NullPointerException ex){
             getView().showError(" Insufficient Data try reloading");

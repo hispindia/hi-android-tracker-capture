@@ -162,6 +162,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                             .tmEnrollProgramJson(
                                     TMEnrollProgram
                                             .toJson(new TMEnrollProgram(taskRequest)))
+                            .organizationUnitJson(ROrganizationUnit.toJson(organizationUnit))
                             .start();
                 } else {
                     Toast.makeText(application, "TaskRequest info is null", Toast.LENGTH_SHORT).show();

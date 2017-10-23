@@ -54,9 +54,11 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
     protected MainApplication application;
     @Extra
     protected String fromScreenName;
-    @Extra
+    @Extra //added by ifhaam
     protected String tmEnrollProgramJson;
     protected TMEnrollProgram tmEnrollProgram;
+    @Extra
+    protected boolean toRegisterNew;
 
     @Inject
     protected EnrollProgramPresenter presenter;
@@ -95,7 +97,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
         //Setup toolbar
         toolbar.applyEnrollProgramUi(this, "Enroll", () -> {
             if (fromScreenName != null &&
-                    fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
+                    fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE) && !toRegisterNew) {
                 btRegisterClick();
             } else {
                 presenter.onBackCommandClick();
@@ -160,7 +162,7 @@ public class EnrollProgramActivity extends BaseActivity<EnrollProgramView, Enrol
             }
 
             if (fromScreenName == null ||
-                    !fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE)) {
+                    !fromScreenName.equals(Screens.ENROLL_PROGRAM_STAGE) || toRegisterNew) {
                 itemModels.add(TMItem.createRegisterButton());
             }
 
