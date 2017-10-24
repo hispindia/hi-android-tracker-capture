@@ -17,6 +17,7 @@ import org.hisp.india.trackercapture.domains.enroll_program_stage_detail.EnrollP
 import org.hisp.india.trackercapture.models.base.Option;
 import org.hisp.india.trackercapture.models.base.ProgramStageSection;
 import org.hisp.india.trackercapture.models.e_num.ValueType;
+import org.hisp.india.trackercapture.models.program_rules.TMPEvaluateProgramRule;
 import org.hisp.india.trackercapture.models.storage.RDataElement;
 import org.hisp.india.trackercapture.models.storage.ROption;
 import org.hisp.india.trackercapture.models.storage.RProgramStageDataElement;
@@ -27,6 +28,8 @@ import org.hisp.india.trackercapture.widgets.NTextChange;
 import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -179,9 +182,25 @@ public class EnrollProgramStageSectionDetailAdapter extends BaseAdapter{
             }
         }
         if(programStageSection==null || programStageSection.getProgramStageDataElements().size()==0){
-            programStageDataElementListRefined.addAll(programStageDataElementList);
+           programStageDataElementListRefined.addAll(programStageDataElementList);
         }
 
+    }
+
+    private void applyProgramRules(){
+        List<String> fieldsToHide = TMPEvaluateProgramRule.fieldsToHide(programStageDataElementListRefined);
+        refineList();
+        for(RProgramStageDataElement dataElement:programStageDataElementListRefined){
+            for(String key:fieldsToHide) {
+                if(dataElement.getId().equals(key)){
+                    programStageDataElementListRefined.remove(dataElement);
+                    fieldsToHide.remove(key);
+                    break;
+                }
+            }
+        }
+
+        notifyDataSetChanged();
     }
 
 
@@ -192,7 +211,7 @@ public class EnrollProgramStageSectionDetailAdapter extends BaseAdapter{
             RProgramStageDataElement itemModel = getItem(holder.ref);
             itemModel.setValue(model.getCode());
             itemModel.setValueDisplay(holder.tvValue.getText().toString());
-
+            applyProgramRules();//added to check programe rues temp
         }).show(activity.getSupportFragmentManager());
     }
 
