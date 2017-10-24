@@ -33,7 +33,7 @@ public interface TrackedEntityInstanceApi {
             @Path("trackedEntityInstanceId")
                     String trackedEntityInstanceId);
 
-    @GET("api/trackedEntityInstances/query.json?&ouMode=DESCENDANTS&totalPages=true&pageSize=150")//removed by ifhaam : &paging=false")
+    @GET("api/trackedEntityInstances/query.json?&totalPages=true&pageSize=150")//removed by ifhaam : &paging=false")
     Observable<QueryResponse> queryTrackedEntityInstances(
             @Query("ou")
                     String orgUnitId,
@@ -45,7 +45,7 @@ public interface TrackedEntityInstanceApi {
                     int page);
 
     //added by ifhaam
-    @GET("api/trackedEntityInstances/query.json&ouMode=DESCENDANTS&totalPages=true")
+    @GET("api/trackedEntityInstances/query.json&totalPages=true")
     Observable<QueryResponse> queryTrackedEntityInstances(
             @Query("ou")
                     String orgUnitId,
@@ -64,7 +64,7 @@ public interface TrackedEntityInstanceApi {
 
 
     //added by ifhaam
-    @GET("api/trackedEntityInstances?totalPages=true&fields=[*]&ouMode=DESCENDANTS&pageSize=150")
+    @GET("api/trackedEntityInstances?totalPages=true&fields=[*]&pageSize=150")
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(
             @Query("ou")
                     String orgUnitId,

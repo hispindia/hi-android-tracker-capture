@@ -32,12 +32,12 @@ public interface EnrollmentApi {
 
 
     //added by ifhaam 03/10/2017
-    @GET("api/enrollments.json?ouMode=ACCESSIBLE")
+    @GET("api/enrollments.json?")
     Observable<EnrollmentsResponse> getEnrollments(
             @Query("trackedEntityInstance")String trackedEntityInstance
     );
 
-    @GET("api/enrollments.json?ouMode=ACCESSIBLE")
+    @GET("api/enrollments.json?")
     Observable<EnrollmentsResponse> getEnrollments(
             @Query("orgUnit")String orgUnit,
             @Query("trackedEntityInstance")String trackedEntityInstance,

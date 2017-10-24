@@ -194,7 +194,11 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
 
 
                                 return tmEnrollProgram;
-                            });
+                            })
+                             .doOnError((action)->{
+                                 getView().showError("Error occurred Try Again");
+                                 Log.i(TAG,action.getMessage());
+                             });
 
                     }
                 )
