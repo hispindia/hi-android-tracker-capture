@@ -33,27 +33,14 @@ public interface TrackedEntityInstanceApi {
             @Path("trackedEntityInstanceId")
                     String trackedEntityInstanceId);
 
-    @GET("api/trackedEntityInstances/query.json?&totalPages=true&pageSize=150")//removed by ifhaam : &paging=false")
+    @GET("api/trackedEntityInstances/query.json?&ouMode=DESCENDANTS&paging=false")
     Observable<QueryResponse> queryTrackedEntityInstances(
             @Query("ou")
                     String orgUnitId,
             @Query("program")
                     String programId,
             @Query("programStatus")
-                    String programStatus,
-            @Query("page")
-                    int page);
-
-    //added by ifhaam
-    @GET("api/trackedEntityInstances/query.json&totalPages=true")
-    Observable<QueryResponse> queryTrackedEntityInstances(
-            @Query("ou")
-                    String orgUnitId,
-            @Query("program")
-                    String programId,
-            @Query("page")
-                    int page);
-
+                    String programStatus);
 
     @GET("api/trackedEntityInstances?skipPaging=true&fields=[*]")
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(
@@ -62,14 +49,11 @@ public interface TrackedEntityInstanceApi {
             @Query("program")
                     String programId);
 
-
     //added by ifhaam
-    @GET("api/trackedEntityInstances?totalPages=true&fields=[*]&pageSize=150")
+    @GET("api/trackedEntityInstances?paging=false&fields=[*]")
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(
             @Query("ou")
-                    String orgUnitId,
-            @Query("program")String programId,
-            @Query("page")int id
+                    String orgUnitId
             );
 
 
@@ -78,11 +62,4 @@ public interface TrackedEntityInstanceApi {
             @Query("orgUnit")String orgUnitId,
             @Query("trackedEntityInstance")String trackedInstanceId
                                 );
-
-    @GET("api/events?paging=false&fields=[*]")
-    Observable<EventsResponse> getEvents(
-            @Query("orgUnit")String orgUnitId,
-            @Query("trackedEntityInstance")String trackedInstanceId,
-            @Query("program")String programId
-                                         );
 }
