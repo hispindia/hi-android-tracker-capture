@@ -137,6 +137,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                 TMEnrollProgram tmEnrollProgram = new TMEnrollProgram(organizationUnit.getId(), program.getId());
                 EnrollProgramActivity_.intent(this)
                         .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
+                        .toRegisterNew(false)
                         .start();
 
             } else if (((Forward) command).getScreenKey().equals(Screens.TRACKED_ENTITY)) {
@@ -162,7 +163,7 @@ public class MainActivity extends BaseActivity<MainView, MainPresenter>
                             .tmEnrollProgramJson(
                                     TMEnrollProgram
                                             .toJson(new TMEnrollProgram(taskRequest)))
-                            .organizationUnitJson(ROrganizationUnit.toJson(organizationUnit))
+                            //.organizationUnitJson(ROrganizationUnit.toJson(organizationUnit))
                             .start();
                 } else {
                     Toast.makeText(application, "TaskRequest info is null", Toast.LENGTH_SHORT).show();

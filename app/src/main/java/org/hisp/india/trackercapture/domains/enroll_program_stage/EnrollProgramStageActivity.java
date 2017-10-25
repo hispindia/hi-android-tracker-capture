@@ -33,6 +33,7 @@ import org.hisp.india.trackercapture.models.storage.RTaskEvent;
 import org.hisp.india.trackercapture.models.storage.RTaskRequest;
 import org.hisp.india.trackercapture.models.tmp.TMEnrollProgram;
 import org.hisp.india.trackercapture.navigator.Screens;
+import org.hisp.india.trackercapture.services.organization.OrganizationQuery;
 import org.hisp.india.trackercapture.services.sync.AutoSyncService;
 import org.hisp.india.trackercapture.utils.AppUtils;
 import org.hisp.india.trackercapture.widgets.NToolbar;
@@ -81,14 +82,14 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @App
     protected MainApplication application;
 
+
+    @Extra
+    protected String tmEnrollProgramJson;
+    protected TMEnrollProgram tmEnrollProgram;
     //added by ifhaam
     @Extra
     protected String organizationUnitJson;
     protected ROrganizationUnit organizationUnit;//ends
-    @Extra
-    protected String tmEnrollProgramJson;
-    protected TMEnrollProgram tmEnrollProgram;
-
 
     @Inject
     protected EnrollProgramStagePresenter presenter;
@@ -111,7 +112,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
                 }
                 EnrollProgramActivity_.intent(this)
                                       .tmEnrollProgramJson(TMEnrollProgram.toJson(tmEnrollProgram))
-                                      .orgUnitJson(ROrganizationUnit.toJson(organizationUnit))
+                                      //.orgUnitJson(ROrganizationUnit.toJson(organizationUnit))
                                       .toRegisterNew(toRegisterNew)
                                       .fromScreenName(Screens.ENROLL_PROGRAM_STAGE)
                                       .start();
@@ -143,6 +144,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
             organizationUnit = ROrganizationUnit.fromJson(organizationUnitJson);
         }
 
+        organizationUnit = OrganizationQuery.getOrganisationUnitId(tmEnrollProgram.getOrganizationUnitId());
         if(organizationUnit!=null && organizationUnit.getPrograms().size()>0){
             for(RProgram program :organizationUnit.getPrograms()) {
                 programs.add(program);

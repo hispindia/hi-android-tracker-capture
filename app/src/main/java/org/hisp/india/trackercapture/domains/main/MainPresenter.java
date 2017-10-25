@@ -88,7 +88,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
     private int orgUnitTotalPages;
 
     private List<RTrackedEntityInstance> trackedEntityInstances;
-
+    private List<String> trackedEntityInstancesToRemove;
 
     @Inject
     public MainPresenter(Router router, NavigatorHolder navigatorHolder, AccountService accountService,
@@ -142,6 +142,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
         RTaskRequestNonQueueQuery.clearTaskQueue();
         HashMap<String,String> uuidList  = new HashMap<>();
         List<PageResponse> pageResponse = new ArrayList<>();
+        trackedEntityInstancesToRemove = new ArrayList<>();
         RxScheduler.onStop(subscription);
         getView().showLoading("Downloading TEI...");
         trackedEntityInstances = new ArrayList<>();
@@ -180,20 +181,27 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                      return Observable.zip(eventsObservable,enrollmentObservable,
                             (eventsResponse,enrollmentsResponse)->{
 
-                                List<RTaskEvent> events = getRTaskEvents(eventsResponse);
-                                Enrollment enrollment = enrollmentsResponse.getEnrollments().get(0);
-                                TMEnrollProgram tmEnrollProgram ;
-                                if (enrollment.getTrackedEntityInstance().equals(trackedEntityInstance.getTrackedEntityInstanceId())) {
-                                    if(events.size()>0&& !events.get(0).getTrackedEntityInstanceId().equals(enrollment.getTrackedEntityInstance())){
-                                        return null;
+                                if(enrollmentsResponse.getEnrollments().size()>0) {
+                                    List<RTaskEvent> events = getRTaskEvents(eventsResponse);
+                                    Enrollment enrollment = enrollmentsResponse.getEnrollments().get(0);
+                                    TMEnrollProgram tmEnrollProgram;
+                                    if (enrollment.getTrackedEntityInstance().equals(trackedEntityInstance.getTrackedEntityInstanceId())) {
+                                        if (events.size() > 0 && !events.get(0).getTrackedEntityInstanceId().equals(enrollment.getTrackedEntityInstance())) {
+                                            return null;
+                                        }
+
                                     }
+                                    tmEnrollProgram = prepareTMEnrollProgram(rProgram, organizationUnit.getId()
+                                            , events, trackedEntityInstance, enrollment);
 
+
+                                    return tmEnrollProgram;
+                                }else{
+                                    //trackedEntityInstances.remove(trackedEntityInstance.getTrackedEntityInstanceId());
+                                    trackedEntityInstancesToRemove.add(trackedEntityInstance.getTrackedEntityInstanceId());
+                                    Log.i(" EST ERROR ",trackedEntityInstance.getTrackedEntityInstanceId());
+                                    return null;
                                 }
-                                tmEnrollProgram = prepareTMEnrollProgram(rProgram,organizationUnit.getId()
-                                        ,events,trackedEntityInstance,enrollment);
-
-
-                                return tmEnrollProgram;
                             })
                              .doOnError((action)->{
                                  getView().showError("Error occurred Try Again");
@@ -215,19 +223,38 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                         Log.i(" SAVING ",tmeEnrollProgram.getTaskRequest()
                                 .getTrackedEntityInstance().getTrackedEntityInstanceId());
                     }else{
+
                         Log.i(" SAVING ","null returned");
                     }
                 })
                 .compose(RxScheduler.applyIoSchedulers())
 
                 .doOnCompleted(()->{
-                            if(trackedEntityInstances.size()==uuidList.size() && trackedEntityInstances.size()>0){
+                            if((trackedEntityInstances.size()-trackedEntityInstancesToRemove.size())==uuidList.size() && trackedEntityInstances.size()>0){
+                                //remove the tracked entity instances that doesn't
+                                List<RTrackedEntityInstance> instancesToRemove = new ArrayList<>();
+                                for(RTrackedEntityInstance trackedEntityInstance:trackedEntityInstances){
+                                    if(trackedEntityInstancesToRemove.contains(trackedEntityInstance.getTrackedEntityInstanceId())){
+                                        instancesToRemove.add(trackedEntityInstance);
+                                    }
+                                }
+                                for(RTrackedEntityInstance itemToRemove:instancesToRemove){
+                                    trackedEntityInstances.remove(itemToRemove);
+                                }
                                 getView().downloadInstancesSuccess(uuidList,trackedEntityInstances,pageResponse.get(0));
-
+                                getView().showError("Download Complete");
                                 //subscription.unsubscribe();
                             }else{
                                 getView().showError("Not completed try re syncing");
-                            }
+                            }/*
+                            if((trackedEntityInstances.size()==uuidList.size() && trackedEntityInstances.size()>0)){
+                                //remove the tracked entity instances that doesn't
+                                getView().downloadInstancesSuccess(uuidList,trackedEntityInstances,pageResponse.get(0));
+                                getView().showError("Download Complete");
+                                //subscription.unsubscribe();
+                            }else{
+                                getView().showError("Not completed try re syncing");
+                            }*/
 
                 })
                 .doOnTerminate(()->getView().hideLoading())

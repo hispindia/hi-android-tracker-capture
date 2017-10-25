@@ -211,7 +211,7 @@ public class EnrollProgramStageSectionDetailAdapter extends BaseAdapter{
             RProgramStageDataElement itemModel = getItem(holder.ref);
             itemModel.setValue(model.getCode());
             itemModel.setValueDisplay(holder.tvValue.getText().toString());
-            applyProgramRules();//added to check programe rues temp
+            //applyProgramRules();//added to check programe rues temp
         }).show(activity.getSupportFragmentManager());
     }
 

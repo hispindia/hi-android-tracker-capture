@@ -78,5 +78,19 @@ public class RTrackedEntityInstance extends RealmObject {
         this.attributeList = attributeList;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        RTrackedEntityInstance that = (RTrackedEntityInstance) o;
+
+        return trackedEntityInstanceId.equals(that.trackedEntityInstanceId);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return trackedEntityInstanceId.hashCode();
+    }
 }

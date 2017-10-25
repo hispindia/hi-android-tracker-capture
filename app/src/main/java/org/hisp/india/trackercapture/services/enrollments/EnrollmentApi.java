@@ -39,7 +39,7 @@ public interface EnrollmentApi {
 
     @GET("api/enrollments.json?")
     Observable<EnrollmentsResponse> getEnrollments(
-            @Query("orgUnit")String orgUnit,
+            @Query("ou")String orgUnit,
             @Query("trackedEntityInstance")String trackedEntityInstance,
             @Query("program")String program
     );

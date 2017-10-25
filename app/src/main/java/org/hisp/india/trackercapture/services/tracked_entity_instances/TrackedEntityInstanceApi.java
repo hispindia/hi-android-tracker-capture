@@ -6,6 +6,7 @@ import org.hisp.india.trackercapture.models.response.EventsResponse;
 import org.hisp.india.trackercapture.models.response.QueryResponse;
 import org.hisp.india.trackercapture.models.response.TrackedEntityInstancesResponse;
 import org.hisp.india.trackercapture.models.storage.RTaskTrackedEntityInstance;
+import org.hisp.india.trackercapture.utils.Constants;
 
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -64,7 +65,7 @@ public interface TrackedEntityInstanceApi {
 
 
     //added by ifhaam
-    @GET("api/trackedEntityInstances?totalPages=true&fields=[*]&pageSize=150")
+    @GET("api/trackedEntityInstances?totalPages=true&fields=[*]&pageSize="+ Constants.NUM_OF_TEI_PER_CALL)
     Observable<TrackedEntityInstancesResponse> getTrackedEntityInstances(
             @Query("ou")
                     String orgUnitId,
