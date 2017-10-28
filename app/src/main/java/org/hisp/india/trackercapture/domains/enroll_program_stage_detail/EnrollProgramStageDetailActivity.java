@@ -72,6 +72,8 @@ public class EnrollProgramStageDetailActivity
     protected MainApplication application;
     @Extra
     protected String programStageStr;
+    @Extra
+    protected String program;
 
     @Inject
     protected EnrollProgramStageDetailPresenter presenter;
@@ -114,7 +116,7 @@ public class EnrollProgramStageDetailActivity
                                                 () -> presenter.onBackCommandClick());
 
 
-        adapter = new EnrollProgramStageSectionDetailAdapter(this);
+        adapter = new EnrollProgramStageSectionDetailAdapter(this,program);
 
         lvStage.setAdapter(adapter);
         lvStage.post(() -> presenter.getProgramStageDetail(programStage.getProgramStageDataElements()));
@@ -160,6 +162,10 @@ public class EnrollProgramStageDetailActivity
         }
     }
 
+    public void refreshList(){
+        lvStage.post(()->AppUtils.refreshListViewAsNonScroll(lvStage));
+    }
+
     @Click(R.id.fragment_enroll_program_stage_detail_tv_due_date_value)
     protected void tvDueDateValueClick() {
         DatePickerDialog
@@ -196,7 +202,7 @@ public class EnrollProgramStageDetailActivity
 
 
                 adapter.setProgramStageSection(model);
-                lvStage.post(()->AppUtils.refreshListViewAsNonScroll(lvStage));
+                refreshList();
                 adapter.notifyDataSetChanged();
 
             });

@@ -50,6 +50,7 @@ import org.hisp.india.trackercapture.utils.RealmHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -232,7 +233,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                 .doOnCompleted(()->{
                             if((trackedEntityInstances.size()-trackedEntityInstancesToRemove.size())==uuidList.size() && trackedEntityInstances.size()>0){
                                 //remove the tracked entity instances that doesn't
-                                List<RTrackedEntityInstance> instancesToRemove = new ArrayList<>();
+                                /*List<RTrackedEntityInstance> instancesToRemove = new ArrayList<>();
                                 for(RTrackedEntityInstance trackedEntityInstance:trackedEntityInstances){
                                     if(trackedEntityInstancesToRemove.contains(trackedEntityInstance.getTrackedEntityInstanceId())){
                                         instancesToRemove.add(trackedEntityInstance);
@@ -240,7 +241,16 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
                                 }
                                 for(RTrackedEntityInstance itemToRemove:instancesToRemove){
                                     trackedEntityInstances.remove(itemToRemove);
+                                }*/
+
+                                Iterator<RTrackedEntityInstance> rTrackedEntityInstanceIterator = trackedEntityInstances.iterator();
+                                while (rTrackedEntityInstanceIterator.hasNext()){
+                                    RTrackedEntityInstance instance =rTrackedEntityInstanceIterator.next();
+                                    if(trackedEntityInstancesToRemove.contains(instance.getTrackedEntityInstanceId())){
+                                        rTrackedEntityInstanceIterator.remove();
+                                    }
                                 }
+
                                 getView().downloadInstancesSuccess(uuidList,trackedEntityInstances,pageResponse.get(0));
                                 getView().showError("Download Complete");
                                 //subscription.unsubscribe();

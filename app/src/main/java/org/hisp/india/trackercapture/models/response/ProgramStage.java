@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.hisp.india.trackercapture.models.base.BaseModel;
+import org.hisp.india.trackercapture.models.base.Program;
 import org.hisp.india.trackercapture.models.base.ProgramStageSection;
 
 import java.io.Serializable;
@@ -38,6 +39,7 @@ public class ProgramStage extends BaseModel implements Serializable {
     public int getMinDaysFromStart() {
         return minDaysFromStart;
     }
+
 
     public List<ProgramStageDataElement> getProgramStageDataElements() {
         return programStageDataElements;

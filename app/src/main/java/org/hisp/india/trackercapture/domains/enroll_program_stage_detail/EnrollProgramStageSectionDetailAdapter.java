@@ -29,6 +29,7 @@ import org.hisp.india.trackercapture.widgets.option.OptionDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -41,12 +42,15 @@ public class EnrollProgramStageSectionDetailAdapter extends BaseAdapter{
     private List<RProgramStageDataElement> programStageDataElementList;
     private RProgramStageSection programStageSection;
     private List<RProgramStageDataElement> programStageDataElementListRefined;
+    private String programId;
 
-    public EnrollProgramStageSectionDetailAdapter(EnrollProgramStageDetailActivity activity) {
+    public EnrollProgramStageSectionDetailAdapter(EnrollProgramStageDetailActivity activity,String programId) {
         this.activity = activity;
         this.programStageDataElementList = new ArrayList<>();
         this.programStageDataElementListRefined = new ArrayList<>();
+        this.programId = programId;
     }
+
 
     @Override
     public int getCount() {
@@ -184,23 +188,35 @@ public class EnrollProgramStageSectionDetailAdapter extends BaseAdapter{
         if(programStageSection==null || programStageSection.getProgramStageDataElements().size()==0){
            programStageDataElementListRefined.addAll(programStageDataElementList);
         }
-
+        applyProgramRules();
+        activity.refreshList();
     }
 
     private void applyProgramRules(){
-        List<String> fieldsToHide = TMPEvaluateProgramRule.fieldsToHide(programStageDataElementListRefined);
-        refineList();
+        List<String> fieldsToHide = TMPEvaluateProgramRule.fieldsToHide(programStageDataElementListRefined,programId);
+        /*
+        List<RProgramStageDataElement> elementsToRemove = new ArrayList<>();
         for(RProgramStageDataElement dataElement:programStageDataElementListRefined){
             for(String key:fieldsToHide) {
                 if(dataElement.getId().equals(key)){
-                    programStageDataElementListRefined.remove(dataElement);
-                    fieldsToHide.remove(key);
+                    elementsToRemove.add(dataElement);
                     break;
                 }
             }
         }
 
-        notifyDataSetChanged();
+        for(RProgramStageDataElement element:elementsToRemove){
+            programStageDataElementListRefined.remove(element);
+        }*/
+        Iterator<RProgramStageDataElement> programStageDataElementIterator = programStageDataElementListRefined.iterator();
+        while(programStageDataElementIterator.hasNext()){
+            RProgramStageDataElement element = programStageDataElementIterator.next();
+            if(fieldsToHide.contains(element.getId())){
+                programStageDataElementIterator.remove();
+            }
+        }
+
+
     }
 
 
@@ -211,7 +227,7 @@ public class EnrollProgramStageSectionDetailAdapter extends BaseAdapter{
             RProgramStageDataElement itemModel = getItem(holder.ref);
             itemModel.setValue(model.getCode());
             itemModel.setValueDisplay(holder.tvValue.getText().toString());
-            //applyProgramRules();//added to check programe rues temp
+            refineList();//added to check programe rules temp
         }).show(activity.getSupportFragmentManager());
     }
 

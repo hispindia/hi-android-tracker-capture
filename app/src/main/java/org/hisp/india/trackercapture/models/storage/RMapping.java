@@ -105,7 +105,6 @@ public class RMapping {
         model.setMinDaysFromStart(programStage.getMinDaysFromStart());
         model.setProgramStageDataElements(new RealmList<>());
         model.setProgramStageSections(new RealmList<>());
-
         if (programStage.getProgramStageDataElements() != null) {
             for (ProgramStageDataElement programStageDataElement : programStage.getProgramStageDataElements()) {
                 RProgramStageDataElement item = from(programStageDataElement);

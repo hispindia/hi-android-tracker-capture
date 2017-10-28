@@ -24,6 +24,7 @@ public class RProgramStage extends RealmObject implements Model {
     private RealmList<RProgramStageDataElement> programStageDataElements;
     private RealmList<RProgramStageSection> programStageSections;
 
+
     @Ignore
     private String dueDate;
     @Ignore
@@ -109,6 +110,8 @@ public class RProgramStage extends RealmObject implements Model {
     public void setStatus(String status) {
         this.status = status;
     }
+
+
 
     @Override
     public String toString() {

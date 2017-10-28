@@ -87,8 +87,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     protected String tmEnrollProgramJson;
     protected TMEnrollProgram tmEnrollProgram;
     //added by ifhaam
-    @Extra
-    protected String organizationUnitJson;
+
     protected ROrganizationUnit organizationUnit;//ends
 
     @Inject
@@ -122,6 +121,7 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
                 RProgramStage programStage = (RProgramStage) ((Forward) command).getTransitionData();
                 EnrollProgramStageDetailActivity_.intent(this)
                                                  .programStageStr(programStage.toString())
+                                                 .program(tmEnrollProgram.getProgram().getId())
                                                  .startForResult(ENROLL_REQUEST_CODE);
             }
         }
@@ -140,10 +140,6 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
         tmEnrollProgram = TMEnrollProgram.fromJson(tmEnrollProgramJson);
 
         //added by ifhaam
-        if(organizationUnitJson!=null) {
-            organizationUnit = ROrganizationUnit.fromJson(organizationUnitJson);
-        }
-
         organizationUnit = OrganizationQuery.getOrganisationUnitId(tmEnrollProgram.getOrganizationUnitId());
         if(organizationUnit!=null && organizationUnit.getPrograms().size()>0){
             for(RProgram program :organizationUnit.getPrograms()) {
@@ -249,7 +245,6 @@ public class EnrollProgramStageActivity extends BaseActivity<EnrollProgramStageV
     @OnActivityResult(ENROLL_REQUEST_CODE)
     protected void onResult(int resultCode, Intent data) {
         String stageDetailStr = data.getStringExtra(ENROLL_REQUEST_DATA);
-        organizationUnitJson = data.getStringExtra(ORG_UNIT_JSON);
         if (stageDetailStr != null) {
             StageDetail stageDetail = StageDetail.fromJson(stageDetailStr);
             adapter.updateProgramStageDataElement(stageDetail);
