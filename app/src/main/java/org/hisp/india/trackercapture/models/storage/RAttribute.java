@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class RAttribute extends RealmObject {
 
-    @PrimaryKey
+    // removing to fix the issue with house hold@PrimaryKey
     private String attributeId;
     private String displayName;
     private String valueType;
