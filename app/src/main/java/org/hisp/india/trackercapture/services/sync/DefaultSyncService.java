@@ -93,15 +93,20 @@ public class DefaultSyncService implements SyncService {
                 .postTrackedEntityInstances(taskRequest.getTrackedEntityInstance())
                 .observeOn(Schedulers.computation())
                 .flatMap(baseResponse -> {
-                    String trackedEntityInstanceId = baseResponse.getResponse().getReference();
-                    if (trackedEntityInstanceId != null) {
-                        taskRequest.getTrackedEntityInstance()
-                                .setTrackedEntityInstanceId(trackedEntityInstanceId);
-                        taskRequest.getEnrollment()
-                                .setTrackedEntityInstanceId(trackedEntityInstanceId);
-                        return enrollmentService.postEnrollments(taskRequest.getEnrollment())
-                                .compose(RxScheduler.applyIoSchedulers());
-                    } else {
+                    List<BaseResponse.Response> importSummaries = baseResponse.getResponse().getImportSummaries();
+                    if(importSummaries!=null && importSummaries.size()>0){
+                        String trackedEntityInstanceId = importSummaries.get(0).getReference();
+                        if (trackedEntityInstanceId != null) {
+                            taskRequest.getTrackedEntityInstance()
+                                    .setTrackedEntityInstanceId(trackedEntityInstanceId);
+                            taskRequest.getEnrollment()
+                                    .setTrackedEntityInstanceId(trackedEntityInstanceId);
+                            return enrollmentService.postEnrollments(taskRequest.getEnrollment())
+                                    .compose(RxScheduler.applyIoSchedulers());
+                        }else{
+                            return Observable.just(baseResponse);
+                        }
+                    }else {
                         return Observable.just(baseResponse);
                     }
                 })
