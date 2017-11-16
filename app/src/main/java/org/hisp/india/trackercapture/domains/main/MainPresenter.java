@@ -46,6 +46,7 @@ import org.hisp.india.trackercapture.services.sync.SyncQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.AppUtils;
+import org.hisp.india.trackercapture.utils.Constants;
 import org.hisp.india.trackercapture.utils.RealmHelper;
 
 import java.util.ArrayList;
@@ -472,7 +473,7 @@ public class MainPresenter extends MvpBasePresenter<MainView> {
             rx.Observable.defer(() -> rx.Observable.from(currentOrgForUser)
                     .flatMap(rOrganizationUnit -> rx.Observable
                             .from(rOrganizationUnit.getPrograms())
-                            .filter(program -> program.getDisplayName().equals("Household"))
+                            .filter(program -> program.getDisplayName().equals(Constants.HOUSEHOLD_PROGRAM_NAME))
                             .flatMap(program2 ->
                                     trackedEntityInstanceService
                                             .getTrackedEntityInstances(rOrganizationUnit.getId(), program2.getId())

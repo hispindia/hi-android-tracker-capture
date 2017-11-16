@@ -34,6 +34,7 @@ import org.hisp.india.trackercapture.models.storage.RTrackedEntityInstance;
 import org.hisp.india.trackercapture.services.programs.ProgramQuery;
 import org.hisp.india.trackercapture.services.tracked_entity_instances.TrackedEntityInstanceService;
 import org.hisp.india.trackercapture.utils.AppUtils;
+import org.hisp.india.trackercapture.utils.Constants;
 import org.hisp.india.trackercapture.widgets.ItemClickListener;
 import org.hisp.india.trackercapture.widgets.NDialog;
 import org.hisp.india.trackercapture.widgets.NTextChange;
@@ -79,7 +80,7 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
     }
 
     public void loadData() {
-        RProgram houseHoldProgram = ProgramQuery.getProgramByName("Household");
+        RProgram houseHoldProgram = ProgramQuery.getProgramByName(Constants.HOUSEHOLD_PROGRAM_NAME);
         if (houseHoldProgram == null) return;
 
         showLoading(true);
@@ -219,7 +220,7 @@ public class TrackedEntityInstanceDialog extends DialogFragment {
 
     public Attribute getMainAttribute(TrackedEntityInstance trackedEntityInstance) {
         for (Attribute attribute : trackedEntityInstance.getAttributeList()) {
-            if (attribute.getDisplayName().contains("House number")) {
+            if (attribute.getDisplayName().contains(Constants.HOUSEHOLD_ATTRIBUTE_NAME)) {
                 return attribute;
             }
         }
