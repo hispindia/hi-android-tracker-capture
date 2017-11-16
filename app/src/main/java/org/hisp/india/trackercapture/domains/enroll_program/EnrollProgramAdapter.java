@@ -373,6 +373,7 @@ public class EnrollProgramAdapter extends RecyclerView.Adapter<RecyclerView.View
                                          TMItem itemModel = getItem(holder.ref);
                                          itemModel.getProgramTrackedEntityAttribute()
                                                   .setValueDisplay(model.getValue());
+                                         itemModel.getProgramTrackedEntityAttribute().setValue(model.getValue());
                                      }).show(activity.getSupportFragmentManager());
             }
         });
